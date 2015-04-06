@@ -1,9 +1,10 @@
-package nl.inversion.domoticz.Items;
+package nl.inversion.domoticz.Containers;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Scene {
+@SuppressWarnings("unused")
+public class SceneInfo {
 
     JSONObject jsonObject;
 
@@ -18,7 +19,7 @@ public class Scene {
     String Type;
     int idx;
 
-    public Scene(JSONObject row) throws JSONException {
+    public SceneInfo(JSONObject row) throws JSONException {
         this.jsonObject = row;
 
         Favorite = row.getInt("Favorite");

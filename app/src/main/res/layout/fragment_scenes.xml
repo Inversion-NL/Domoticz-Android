@@ -5,32 +5,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/btnArrayRequest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:text="Make JSON Request"/>
-
-    <TextView
-        android:id="@+id/txtResponseTitle"
+    <ScrollView
+        android:id="@+id/scenesScrollView"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:padding="10dp"
-        android:text="Response:"/>
+        android:layout_height="fill_parent">
 
-    <TextView
-        android:id="@+id/txtResponse"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:padding="20dp"/>
+        <TextView
+            android:id="@+id/txtResponseTitle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:text="Response:"/>
+
+        <TextView
+            android:id="@+id/txtResponse"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:padding="20dp"/>
+
+    </ScrollView>
 
 </LinearLayout>

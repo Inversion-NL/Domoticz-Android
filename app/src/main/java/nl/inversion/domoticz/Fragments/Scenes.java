@@ -28,25 +28,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import nl.inversion.domoticz.Items.Scene;
+import nl.inversion.domoticz.Containers.SceneInfo;
 import nl.inversion.domoticz.R;
+import nl.inversion.domoticz.Utils.Domoticz;
 import nl.inversion.domoticz.app.AppController;
+import nl.inversion.domoticz.app.SharedPref;
 
 public class Scenes extends Fragment {
 
-    private String password = "Vak93zv";
-    private String username = "Admin";
+    public static final String DOMOTICZ_JSON_RESULT_FIELD = "result";
 
-    private String http = "http://";
-    private String url = "domotica.inversion.nl";
-    private String port = "8080";
-    private String scenesUrl = "/json.htm?type=scenes";
-    private String lightSwitches = "/json.htm?type=command&param=getlightswitches";
-
-    private String urlJsonObj = http + url + ":" + port + scenesUrl;
-
-    private static String TAG = Scenes.class.getSimpleName();
-    private Button btnArrayRequest;
+    private static final String TAG = Scenes.class.getSimpleName();
     private TextView txtResponse;
 
     // Progress dialog
@@ -54,7 +46,6 @@ public class Scenes extends Fragment {
 
     public static Fragment newInstance(Context context) {
         Scenes f = new Scenes();
-
         return f;
     }
 
@@ -68,21 +59,14 @@ public class Scenes extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        btnArrayRequest = (Button) getView().findViewById(R.id.btnArrayRequest);
         txtResponse = (TextView) getView().findViewById(R.id.txtResponse);
 
         progressDialog = new ProgressDialog(this.getActivity());
         progressDialog.setMessage("Please wait...");
         progressDialog.setCancelable(false);
 
-        btnArrayRequest.setOnClickListener(new View.OnClickListener() {
+        makeJsonObjectRequest();
 
-            @Override
-            public void onClick(View v) {
-                // making json array request
-                makeJsonObjectRequest();
-            }
-        });
     }
 
     /**
@@ -90,9 +74,26 @@ public class Scenes extends Fragment {
      * */
     private void makeJsonObjectRequest() {
 
+        Domoticz mDomoticz = new Domoticz(getActivity());
+        SharedPref mSharedPref = new SharedPref(getActivity());
+        final String username;
+        final String password;
+
         showProgressDialog();
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, urlJsonObj, new Response.Listener<JSONObject>() {
+        String url = mDomoticz.constructUrl(mDomoticz.JSON_REQUEST_URL_SCENES);
+
+        if (mDomoticz.isUserLocal()) {
+            username = mSharedPref.getDomoticzLocalUsername();
+            password = mSharedPref.getDomoticzLocalPassword();
+        } else {
+            username = mSharedPref.getDomoticzRemoteUsername();
+            password = mSharedPref.getDomoticzRemotePassword();
+        }
+
+        JsonObjectRequest jsonObjReq =
+                new JsonObjectRequest(Request.Method.GET,
+                        url, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -101,7 +102,7 @@ public class Scenes extends Fragment {
                 try {
                     // Parsing json object response
                     // response will be a json object
-                    parseResult(response.getString("result"));
+                    parseResult(response.getString(DOMOTICZ_JSON_RESULT_FIELD));
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -157,16 +158,17 @@ public class Scenes extends Fragment {
         JSONArray jsonArray = new JSONArray(result);
 
         if (jsonArray.length() > 0) {
-            ArrayList<Scene> mScenes = new ArrayList<>();
+            ArrayList<SceneInfo> mScenes = new ArrayList<>();
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject row = jsonArray.getJSONObject(i);
-                mScenes.add(new Scene(row));
+                mScenes.add(new SceneInfo(row));
             }
 
-            for (Scene scene : mScenes) {
+            StringBuilder text = new StringBuilder();
 
-                StringBuilder text = new StringBuilder();
+            for (SceneInfo scene : mScenes) {
+
                 text.append("Name: ").append(scene.getName()).append("\n")
                     .append("Type: ").append(scene.getType()).append("\n")
                     .append("Status: ").append(scene.getStatus()).append("\n")
@@ -175,6 +177,9 @@ public class Scenes extends Fragment {
                 txtResponse.setText(text.toString());
             }
         }
+    }
+
+    private void updateViews(ArrayList<SceneInfo> mScenes) {
 
     }
 

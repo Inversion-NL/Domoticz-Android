@@ -31,4 +31,6 @@
     <string name="remote_server_authentication_method_summary_on">Login form</string>
     <string name="remote_server_authentication_method_summary_off">Basic auth</string>
 
+    <string name="msg_no_ssid_found">No wifi SSID\'s found</string>
+
 </resources>

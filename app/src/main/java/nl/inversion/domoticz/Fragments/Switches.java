@@ -11,6 +11,14 @@ import nl.inversion.domoticz.R;
 
 public class Switches extends Fragment {
 
+    private String password = "Vak93zv";
+    private String username = "Admin";
+
+    private String http = "http://";
+    private String url = "domotica.inversion.nl";
+    private String port = "8080";
+    private String lightSwitches = "/json.htm?type=command&param=getlightswitches";
+
     public static Fragment newInstance(Context context) {
         Switches f = new Switches();
 
