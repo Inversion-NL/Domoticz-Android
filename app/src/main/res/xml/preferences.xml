@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/local_server_settings_label">
+
+        <EditTextPreference
+            android:key="local_server_username"
+            android:title="@string/local_server_username"
+            android:dialogTitle="@string/local_server_username"
+            android:singleLine="true"
+            android:inputType="textNoSuggestions"/>
+
+        <EditTextPreference
+            android:key="local_server_password"
+            android:title="@string/local_server_password"
+            android:dialogTitle="@string/local_server_password"
+            android:password="true"
+            android:singleLine="true"/>
+
+        <EditTextPreference
+            android:key="local_server_url"
+            android:title="@string/local_server_url_title"
+            android:summary="@string/local_server_url_summary"
+            android:dialogTitle="@string/local_server_url_title"
+            android:singleLine="true"
+            android:inputType="textNoSuggestions"/>
+
+        <EditTextPreference
+            android:key="local_server_port"
+            android:title="@string/local_server_port"
+            android:dialogTitle="@string/local_server_port"
+            android:singleLine="true"
+            android:inputType="numberSigned"/>
+
+        <CheckBoxPreference
+            android:key="local_server_secure"
+            android:title="@string/local_server_secure_title"
+            android:defaultValue="true"
+            android:summaryOn="@string/local_server_secure_summary_on"
+            android:summaryOff="@string/local_server_secure_summary_off"/>
+
+        <CheckBoxPreference
+            android:key="local_server_authentication_method"
+            android:title="@string/local_server_authentication_method"
+            android:defaultValue="true"
+            android:summaryOn="@string/local_server_authentication_method_summary_on"
+            android:summaryOff="@string/local_server_authentication_method_summary_off"/>
+
+        <MultiSelectListPreference
+            android:key="local_server_ssid"
+            android:title="@string/local_server_local_wifi_ssid_title"
+            android:summary="@string/local_server_local_wifi_ssid_summary"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/remote_server_settings_label">
+
+        <EditTextPreference
+            android:key="remote_server_username"
+            android:title="@string/remote_server_username"
+            android:dialogTitle="@string/remote_server_username"
+            android:singleLine="true"
+            android:inputType="textNoSuggestions"/>
+
+        <EditTextPreference
+            android:key="remote_server_password"
+            android:title="@string/remote_server_password"
+            android:dialogTitle="@string/remote_server_password"
+            android:password="true"
+            android:singleLine="true"/>
+
+        <EditTextPreference
+            android:key="remote_server_url"
+            android:title="@string/remote_server_url_title"
+            android:summary="@string/remote_server_url_summary"
+            android:dialogTitle="@string/remote_server_url_title"
+            android:singleLine="true"
+            android:inputType="textNoSuggestions"/>
+
+        <EditTextPreference
+            android:key="remote_server_port"
+            android:title="@string/remote_server_port"
+            android:dialogTitle="@string/remote_server_port"
+            android:singleLine="true"
+            android:inputType="numberSigned"/>
+
+        <CheckBoxPreference
+            android:key="remote_server_secure"
+            android:title="@string/remote_server_secure_title"
+            android:defaultValue="true"
+            android:summaryOn="@string/remote_server_secure_summary_on"
+            android:summaryOff="@string/remote_server_secure_summary_off"/>
+
+        <CheckBoxPreference
+            android:key="remote_server_authentication_method"
+            android:title="@string/remote_server_authentication_method"
+            android:defaultValue="true"
+            android:summaryOn="@string/remote_server_authentication_method_summary_on"
+            android:summaryOff="@string/remote_server_authentication_method_summary_off"/>
+
+    </PreferenceCategory>
+</PreferenceScreen>

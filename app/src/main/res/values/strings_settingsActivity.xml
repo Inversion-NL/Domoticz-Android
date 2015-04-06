@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="settingsActivity_name">Settings</string>
+
+    <string name="local_server_settings_label">Local server settings</string>
+    <string name="local_server_username">Username</string>
+    <string name="local_server_password">Password</string>
+    <string name="local_server_url_title">Domoticz URL</string>
+    <string name="local_server_url_summary">Enter the URL without http:// and the trailing /</string>
+    <string name="local_server_port">Domoticz port</string>
+    <string name="local_server_secure_title">Secure?</string>
+    <string name="local_server_secure_summary_on">Connect secure over https</string>
+    <string name="local_server_secure_summary_off">Connect insecure over http</string>
+    <string name="local_server_authentication_method">Authentication method</string>
+    <string name="local_server_authentication_method_summary_on">Login form</string>
+    <string name="local_server_authentication_method_summary_off">Basic auth</string>
+    <string name="local_server_local_wifi_ssid_title">Local wifi SSID</string>
+    <string name="local_server_local_wifi_ssid_summary">SSID of your local wifi network</string>
+
+    <string name="remote_server_settings_label">Remote server settings</string>
+    <string name="remote_server_username">Username</string>
+    <string name="remote_server_password">Password</string>
+    <string name="remote_server_url_title">Domoticz URL</string>
+    <string name="remote_server_url_summary">Enter the URL without http:// and the trailing /</string>
+    <string name="remote_server_port">Domoticz port</string>
+    <string name="remote_server_secure_title">Secure?</string>
+    <string name="remote_server_secure_summary_on">Connect secure over https</string>
+    <string name="remote_server_secure_summary_off">Connect insecure over http</string>
+    <string name="remote_server_authentication_method">Authentication method</string>
+    <string name="remote_server_authentication_method_summary_on">Login form</string>
+    <string name="remote_server_authentication_method_summary_off">Basic auth</string>
+
+</resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="drawer_actions">
+        <item>Dashboard</item>
+        <item>Scenes</item>
+        <item>Switches</item>
+        <item>Utilities</item>
+        <item>Temperature</item>
+        <item>Weather</item>
+        <item>Cameras</item>
+    </string-array>
+
+    <string-array name="drawer_fragments" translatable="false">
+        <item>nl.inversion.domoticz.Fragments.Dashboard</item>
+        <item>nl.inversion.domoticz.Fragments.Scenes</item>
+        <item>nl.inversion.domoticz.Fragments.Switches</item>
+        <item>nl.inversion.domoticz.Fragments.Utilities</item>
+        <item>nl.inversion.domoticz.Fragments.Temperature</item>
+        <item>nl.inversion.domoticz.Fragments.Weather</item>
+        <item>nl.inversion.domoticz.Fragments.Cameras</item>
+    </string-array>
+</resources>
