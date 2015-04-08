@@ -58,7 +58,11 @@ public class SceneInfo {
         return OnAction;
     }
 
-    public String getStatus() {
+    public boolean getStatusInBoolean() {
+        return Status.equalsIgnoreCase("on");
+    }
+
+    public String getStatusInString() {
         return Status;
     }
 

@@ -4,4 +4,9 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="drawer_navigation_title">Select category</string>
+
+    <string name="msg_please_wait">Please wait...</string>
+
+    <string name="button_on">On</string>
+    <string name="last_seen">Last seen</string>
 </resources>
