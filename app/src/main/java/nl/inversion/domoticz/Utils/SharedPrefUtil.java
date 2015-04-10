@@ -1,4 +1,4 @@
-package nl.inversion.domoticz.app;
+package nl.inversion.domoticz.Utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 import java.util.Set;
 
 @SuppressWarnings("unused")
-public class SharedPref {
+public class SharedPrefUtil {
 
     Context mContext;
     SharedPreferences preferences;
@@ -33,7 +33,7 @@ public class SharedPref {
             "remote_server_authentication_method";
 
 
-    public SharedPref(Context mContext) {
+    public SharedPrefUtil(Context mContext) {
         this.mContext = mContext;
         preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
     }

@@ -1,56 +1,37 @@
 package nl.inversion.domoticz.Fragments;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import nl.inversion.domoticz.Containers.SceneInfo;
+import nl.inversion.domoticz.Interfaces.PutCommandReceiver;
 import nl.inversion.domoticz.R;
-import nl.inversion.domoticz.Utils.Domoticz;
-import nl.inversion.domoticz.app.AppController;
-import nl.inversion.domoticz.app.SharedPref;
+import nl.inversion.domoticz.SettingsActivity;
+import nl.inversion.domoticz.Domoticz.Domoticz;
+import nl.inversion.domoticz.Interfaces.ScenesReceiver;
 
-public class Scenes extends Fragment implements View.OnClickListener {
+public class Scenes extends Fragment {
 
     private static final String TAG = Scenes.class.getSimpleName();
-
-    public static final int JSON_METHOD_GET = Request.Method.GET;
-    public static final int JSON_METHOD_POST = Request.Method.POST;
-    public static final int JSON_METHOD_PUT = Request.Method.PUT;
-
-    private TextView txtResponse;
-    private ArrayList<SceneInfo> mScenes;
-
     private ProgressDialog progressDialog;
-    private String url;
     private Domoticz mDomoticz;
-    private SharedPref mSharedPref;
 
     public static Fragment newInstance(Context context) {
         Scenes f = new Scenes();
@@ -67,83 +48,116 @@ public class Scenes extends Fragment implements View.OnClickListener {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        txtResponse = (TextView) getView().findViewById(R.id.txtResponse);
-
+        // Initialize the progress dialog
         progressDialog = new ProgressDialog(this.getActivity());
         progressDialog.setMessage(getString(R.string.msg_please_wait));
         progressDialog.setCancelable(false);
 
         mDomoticz = new Domoticz(getActivity());
-        mSharedPref = new SharedPref(getActivity());
 
-        getData();
+        // Checks if connection data (username, password, url and port) have data
+        if (mDomoticz.isConnectionDataComplete()) getData();
+        else showConnectionSettingsMissingDialog();
     }
 
-    private void getData(){
-
-        String username, password;
-
-        if (mDomoticz.isUserLocal()) {
-            username = mSharedPref.getDomoticzLocalUsername();
-            password = mSharedPref.getDomoticzLocalPassword();
-        } else {
-            username = mSharedPref.getDomoticzRemoteUsername();
-            password = mSharedPref.getDomoticzRemotePassword();
-        }
-
-        url = mDomoticz.constructRequestUrl(mDomoticz.JSON_REQUEST_URL_SCENES);
+    /**
+     * Gets the data through the scenes receiver with a call back on receive or error
+     */
+    private void getData() {
 
         showProgressDialog();
-        makeJsonObjectRequest(username, password, JSON_METHOD_GET, url);
+
+        mDomoticz.getScenes(new ScenesReceiver() {
+            @Override
+            public void onReceiveScenes(ArrayList<SceneInfo> scenes) {
+
+                hideProgressDialog();
+
+                for (SceneInfo mScene : scenes) {
+                    createRow(mScene);
+                }
+            }
+
+            @Override
+            public void onError(Exception error) {
+                error.printStackTrace();
+                String cause;
+                if (error.getCause() != null) {
+                    cause = error.getCause().getMessage();
+                    Toast.makeText(getActivity(), cause, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
+                }
+                hideProgressDialog();
+            }
+        });
     }
 
-    private void updateViews(SceneInfo scene) {
+    /**
+     * Creates a row dynamically based on the data of the scene
+     * @param mScene the scene information
+     */
+    private void createRow(SceneInfo mScene) {
         // Example: http://android-er.blogspot.nl/2013/05/add-and-remove-view-dynamically.html
 
-        if (scene.getType().equalsIgnoreCase(Domoticz.SCENE_TYPE_SCENE)) {
+        if (mScene.getType().equalsIgnoreCase(Domoticz.SCENE_TYPE_SCENE)) {
 
             LinearLayout container = (LinearLayout) getView().findViewById(R.id.container);
 
-            LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater layoutInflater =
+                    (LayoutInflater) getActivity()
+                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             final View sceneRow_switch = layoutInflater.inflate(R.layout.scene_row_scene, null);
 
-            int idx = scene.getIdx();
-            String lastUpdate = scene.getLastUpdate();
-            String name = scene.getName();
+            String lastUpdate = mScene.getLastUpdate();
+            String name = mScene.getName();
 
             Button button = (Button) sceneRow_switch.findViewById(R.id.scene_button);
-            button.setOnClickListener(this);
-            button.setId(idx);
+            button.setId(mScene.getIdx());
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    handleClick(view.getId(), true);
+                }
+            });
+
 
             TextView switch_name = (TextView) sceneRow_switch.findViewById(R.id.scene_name);
-            TextView switch_last_seen = (TextView) sceneRow_switch.findViewById(R.id.switch_lastSeen);
+            TextView switch_last_seen =
+                    (TextView) sceneRow_switch.findViewById(R.id.switch_lastSeen);
 
             switch_name.setText(name);
             switch_last_seen.setText(lastUpdate);
 
             container.addView(sceneRow_switch);
 
-        } else if (scene.getType().equalsIgnoreCase(Domoticz.SCENE_TYPE_GROUP)) {
-
-            int id = R.id.container;
+        } else if (mScene.getType().equalsIgnoreCase(Domoticz.SCENE_TYPE_GROUP)) {
 
             LinearLayout container = (LinearLayout) getView().findViewById(R.id.container);
 
-            LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater layoutInflater =
+                    (LayoutInflater) getActivity()
+                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             final View sceneRow_switch = layoutInflater.inflate(R.layout.scene_row_group, null);
 
-            int idx = scene.getIdx();
-            String lastUpdate = scene.getLastUpdate();
-            String name = scene.getName();
-            boolean status = scene.getStatusInBoolean();
+            String lastUpdate = mScene.getLastUpdate();
+            String name = mScene.getName();
+            boolean status = mScene.getStatusInBoolean();
 
-            ToggleButton toggleButton = (ToggleButton) sceneRow_switch.findViewById(R.id.scene_button);
-            toggleButton.setOnClickListener(this);
-            toggleButton.setId(idx);
+            ToggleButton toggleButton =
+                    (ToggleButton) sceneRow_switch.findViewById(R.id.scene_button);
+            toggleButton.setId(mScene.getIdx());
             toggleButton.setChecked(status);
+            toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                    handleClick(compoundButton.getId(), checked);
+                }
+            });
 
             TextView switch_name = (TextView) sceneRow_switch.findViewById(R.id.scene_name);
-            TextView switch_last_seen = (TextView) sceneRow_switch.findViewById(R.id.switch_lastSeen);
+            TextView switch_last_seen = (
+                    TextView) sceneRow_switch.findViewById(R.id.switch_lastSeen);
 
             switch_name.setText(name);
             switch_last_seen.setText(lastUpdate);
@@ -152,136 +166,72 @@ public class Scenes extends Fragment implements View.OnClickListener {
         }
     }
 
-    @Override
-    public void onClick(View view) {
-        Log.d(TAG, "button ID: " + String.valueOf(view.getId()));
+    /**
+     * Handles the clicks of the dynamically created rows
+     *
+     * @param idx idx code of the button (Domoticz)
+     * @param checked is the button currently checked?
+     */
+    public void handleClick(int idx, boolean checked) {
+        Log.d(TAG, "handleClick");
+        Log.d(TAG, "Set idx " + idx + " to " + checked);
 
-        for (SceneInfo scene : mScenes) {
-            Log.d(TAG, "Idx value: " + String.valueOf(scene.getIdx()));
-            if (scene.getIdx() == view.getId()) {
-                String username, password;
+        int jsonAction;
 
-                if (mDomoticz.isUserLocal()) {
-                    username = mSharedPref.getDomoticzLocalUsername();
-                    password = mSharedPref.getDomoticzLocalPassword();
-                } else {
-                    username = mSharedPref.getDomoticzRemoteUsername();
-                    password = mSharedPref.getDomoticzRemotePassword();
-                }
+        if (checked) jsonAction = mDomoticz.JSON_ACTION_ON;
+        else jsonAction = mDomoticz.JSON_ACTION_OFF;
 
-                url = mDomoticz.constructSetUrl(mDomoticz.JSON_SET_URL_SCENES, view.getId(), mDomoticz.JSON_ACTION_ON);
-
-                showProgressDialog();
-                makeJsonObjectRequest(username, password, JSON_METHOD_PUT, url);
+        mDomoticz.setAction(idx, jsonAction, new PutCommandReceiver() {
+            @Override
+            public void onReceiveResult(String result) {
+                hideProgressDialog();
+                Log.d(TAG, result);
             }
-        }
+
+            @Override
+            public void onError(Exception error) {
+                hideProgressDialog();
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
+
+    /**
+     * Shows the progress dialog if isn't already showing
+     */
     private void showProgressDialog() {
         if (!progressDialog.isShowing())
             progressDialog.show();
     }
 
+    /**
+     * Hides the progress dialog if it is showing
+     */
     private void hideProgressDialog() {
         if (progressDialog.isShowing())
             progressDialog.dismiss();
     }
 
     /**
-     * Method to make json object request where json response starts with {
-     * */
-    private void makeJsonObjectRequest(final String username, final String password, int method, String url) {
+     * Shows a dialog where the users is warned for missing connection settings and
+     * gives the ability to redirect the user to the app settings
+     */
+    private void showConnectionSettingsMissingDialog() {
 
-        JsonObjectRequest jsonObjReq =
-                new JsonObjectRequest(method,
-                        url, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
-
-                        try {
-                            // Parsing json object response
-                            // response will be a string of a json object
-                            parseResult(response.getString(Domoticz.JSON_FIELS_RESULT));
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(getActivity(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                        hideProgressDialog();
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        VolleyLog.d(TAG, "Error: " + error.getMessage());
-                        Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
-                        hideProgressDialog();
-                        // TODO notify user settings has to be corrected
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.msg_emptyCredentials_title)
+                .setMessage(getString(R.string.msg_emptyCredentials_msg1) + "\n\n" +
+                        getString(R.string.msg_emptyCredentials_msg2))
+                .setPositiveButton(R.string.settingsActivity_name, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent(getActivity(), SettingsActivity.class));
                     }
                 })
-                {
+                .setNegativeButton(android.R.string.cancel, null)
+                                    .setIcon(android.R.drawable.ic_dialog_alert);
 
-                    @Override
-                    // HTTP basic authentication
-                    // Taken from: http://blog.lemberg.co.uk/volley-part-1-quickstart
-                    public Map<String, String> getHeaders() throws AuthFailureError {
-                        return createBasicAuthHeader(username, password);
-                    }
-
-                };
-
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(jsonObjReq);
+        AlertDialog emptyCredentialsAlertDialog = alertDialogBuilder.create();
+        emptyCredentialsAlertDialog.show();
     }
-
-    /**
-     * Method to create a basic HTTP base64 encrypted authentication header
-     * @param username Username
-     * @param password Password
-     * @return Base64 encrypted header map
-     */
-    Map<String, String> createBasicAuthHeader(String username, String password) {
-
-        Map<String, String> headerMap = new HashMap<>();
-
-        String credentials = username + ":" + password;
-        String base64EncodedCredentials =
-                Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
-        headerMap.put("Authorization", "Basic " + base64EncodedCredentials);
-
-        return headerMap;
-    }
-
-    private void parseResult(String result) throws JSONException {
-
-        JSONArray jsonArray = new JSONArray(result);
-
-        if (jsonArray.length() > 0) {
-            mScenes = new ArrayList<>();
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject row = jsonArray.getJSONObject(i);
-                mScenes.add(new SceneInfo(row));
-            }
-
-            StringBuilder text = new StringBuilder();
-            int i = 0;
-            for (SceneInfo scene : mScenes) {
-
-                if (i != 0) text.append("\n").append("\n");
-
-                text.append("Name: ")
-                        .append(scene.getName()).append("\n")
-                        .append("Type: ").append(scene.getType()).append("\n")
-                        .append("Status: ").append(scene.getStatusInString()).append("\n")
-                        .append("Last update: ").append(scene.getLastUpdate());
-
-                txtResponse.setText(text.toString());
-                updateViews(scene);
-                i++;
-            }
-        }
-    }
-
 }

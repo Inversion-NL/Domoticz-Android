@@ -6,7 +6,14 @@
     <string name="drawer_navigation_title">Select category</string>
 
     <string name="msg_please_wait">Please wait...</string>
+    <string name="msg_emptyCredentials_title">Connection settings incorrect</string>
+    <string name="msg_emptyCredentials_msg1">
+        The connection settings for the Domoticz server are incomplete.</string>
+    <string name="msg_emptyCredentials_msg2">
+        Please review connection settings.</string>
 
-    <string name="button_on">On</string>
+    <string name="button_state_on">On</string>
+    <string name="button_state_off">Off</string>
+
     <string name="last_seen">Last seen</string>
 </resources>

@@ -5,7 +5,7 @@ import android.preference.MultiSelectListPreference;
 import android.preference.PreferenceFragment;
 
 import nl.inversion.domoticz.R;
-import nl.inversion.domoticz.Utils.WifiUtil;
+import nl.inversion.domoticz.Utils.PhoneConnectionUtil;
 
 public class Preference extends PreferenceFragment {
 
@@ -16,11 +16,11 @@ public class Preference extends PreferenceFragment {
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
 
-        WifiUtil mWifiUtil = new WifiUtil(getActivity());
+        PhoneConnectionUtil mPhoneConnectionUtil = new PhoneConnectionUtil(getActivity());
         MultiSelectListPreference listPref =
                 (MultiSelectListPreference)findPreference("local_server_ssid");
 
-        CharSequence[] entries = mWifiUtil.startSsidScanAsCharSequence();
+        CharSequence[] entries = mPhoneConnectionUtil.startSsidScanAsCharSequence();
         if (entries.length < 1) {
             // no wifi ssid's nearby found!
             entries[0] = getString(R.string.msg_no_ssid_found);

@@ -5,19 +5,27 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Scene_name" parent="@android:style/TextAppearance.Medium">
+    <style name="scene_title">
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20dp</item>
+    </style>
+
+    <style name="Scene_row_name" parent="@android:style/TextAppearance.Medium">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textSize">20dp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/default_text_color_dark</item>
         <item name="android:layout_marginBottom">2dp</item>
     </style>
 
-    <style name="Switch_lastSeen" parent="@android:style/TextAppearance.Medium">
+    <style name="Scene_row_lastSeen" parent="@android:style/TextAppearance.Medium">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textSize">12dp</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:textColor">@color/default_text_color_dark</item>
         <item name="android:layout_marginBottom">15dp</item>
     </style>
 

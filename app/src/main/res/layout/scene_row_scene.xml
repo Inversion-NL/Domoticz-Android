@@ -9,14 +9,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:text="@string/button_on"/>
+        android:text="@string/button_state_on"/>
 
     <TextView
         android:id="@+id/scene_name"
         android:layout_alignParentTop="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Scene_name"
+        style="@style/Scene_row_name"
         android:text="Scene name"/>
 
     <TextView
@@ -24,7 +24,7 @@
         android:layout_below="@id/scene_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Switch_lastSeen"
+        style="@style/Scene_row_lastSeen"
         android:text="@string/last_seen"/>
 
 </RelativeLayout>

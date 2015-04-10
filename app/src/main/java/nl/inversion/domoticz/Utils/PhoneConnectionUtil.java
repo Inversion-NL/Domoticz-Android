@@ -10,18 +10,20 @@ import android.net.wifi.WifiManager;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class WifiUtil {
+public class PhoneConnectionUtil {
 
     Context mContext;
     final WifiManager wifiManager;
     ConnectivityManager connManager;
-    NetworkInfo networkInfo;
+    NetworkInfo networkWifiInfo;
+    NetworkInfo networkCellInfo;
 
-    public WifiUtil(Context mContext){
+    public PhoneConnectionUtil(Context mContext){
         this.mContext = mContext;
         wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
         connManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        networkInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        networkWifiInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        networkCellInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
     }
 
     public CharSequence[] startSsidScanAsCharSequence() {
@@ -47,14 +49,18 @@ public class WifiUtil {
         }
     }
 
-    public boolean isConnected() {
-        return networkInfo.isConnected();
+    public boolean isCellConnected() {
+        return networkCellInfo.isConnected();
+    }
+
+    public boolean isWifiConnected() {
+        return networkWifiInfo.isConnected();
     }
 
     public String getCurrentSsid() {
         String ssid = null;
 
-        if (networkInfo.isConnected()) {
+        if (networkWifiInfo.isConnected()) {
             final WifiInfo connectionInfo = wifiManager.getConnectionInfo();
             if (connectionInfo != null && !connectionInfo.getSSID().isEmpty()) {
                 ssid = connectionInfo.getSSID();
