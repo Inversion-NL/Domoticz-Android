@@ -4,8 +4,11 @@ import android.os.Bundle;
 import android.preference.MultiSelectListPreference;
 import android.preference.PreferenceFragment;
 
+import java.util.Set;
+
 import nl.inversion.domoticz.R;
 import nl.inversion.domoticz.Utils.PhoneConnectionUtil;
+import nl.inversion.domoticz.Utils.SharedPrefUtil;
 
 public class Preference extends PreferenceFragment {
 
@@ -16,17 +19,28 @@ public class Preference extends PreferenceFragment {
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
 
+        SharedPrefUtil mSharedPres = new SharedPrefUtil(getActivity());
+
+        Set<String> ssids = mSharedPres.getLocalSsid();
+
         PhoneConnectionUtil mPhoneConnectionUtil = new PhoneConnectionUtil(getActivity());
         MultiSelectListPreference listPref =
-                (MultiSelectListPreference)findPreference("local_server_ssid");
+                (MultiSelectListPreference) findPreference("local_server_ssid");
+        // Setting summary at runtime because setting it in XML crashes the app in API 15,
+        // in API 22 is all good
+        listPref.setSummary(R.string.local_server_local_wifi_ssid_list_summary);
 
-        CharSequence[] entries = mPhoneConnectionUtil.startSsidScanAsCharSequence();
-        if (entries.length < 1) {
-            // no wifi ssid's nearby found!
-            entries[0] = getString(R.string.msg_no_ssid_found);
+        CharSequence[] ssidEntries = mPhoneConnectionUtil.startSsidScanAsCharSequence();
+
+        if (ssidEntries.length < 1) {
+
+            // no wifi ssid nearby found!
+            ssidEntries[0] = getString(R.string.msg_no_ssid_found);
+
         }
-        listPref.setEntries(entries);
-        listPref.setEntryValues(entries);
+
+        listPref.setEntries(ssidEntries);
+        listPref.setEntryValues(ssidEntries);
     }
 
 }

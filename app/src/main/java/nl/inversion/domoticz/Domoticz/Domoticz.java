@@ -7,6 +7,7 @@ import java.util.Set;
 
 import nl.inversion.domoticz.Interfaces.ScenesReceiver;
 import nl.inversion.domoticz.Interfaces.PutCommandReceiver;
+import nl.inversion.domoticz.Interfaces.StatusReceiver;
 import nl.inversion.domoticz.Interfaces.SwitchesReceiver;
 import nl.inversion.domoticz.Utils.PhoneConnectionUtil;
 import nl.inversion.domoticz.Utils.RequestUtil;
@@ -16,45 +17,65 @@ import nl.inversion.domoticz.Utils.SharedPrefUtil;
 @SuppressWarnings("unused")
 public class Domoticz {
 
+    /*
+     *  Log tag
+     */
     private static final String TAG = Domoticz.class.getSimpleName();
 
+    /*
+     *  Public variables
+     */
     public static final String JSON_FIELD_RESULT = "result";
     public static final String JSON_FIELD_STATUS = "status";
 
-    public final int JSON_REQUEST_URL_DASHBOARD = 1;
-    public final int JSON_REQUEST_URL_SCENES = 2;
-    public final int JSON_REQUEST_URL_SWITCHES = 3;
-    public final int JSON_REQUEST_URL_UTILITIES = 4;
-    public final int JSON_REQUEST_URL_TEMPERATURE = 5;
-    public final int JSON_REQUEST_URL_WEATHER = 6;
-    public final int JSON_REQUEST_URL_CAMERAS = 7;
-    public final int JSON_REQUEST_URL_SUNRISE_SUNSET = 8;
+    public static final int JSON_REQUEST_URL_DASHBOARD = 1;
+    public static final int JSON_REQUEST_URL_SCENES = 2;
+    public static final int JSON_REQUEST_URL_SWITCHES = 3;
+    public static final int JSON_REQUEST_URL_UTILITIES = 4;
+    public static final int JSON_REQUEST_URL_TEMPERATURE = 5;
+    public static final int JSON_REQUEST_URL_WEATHER = 6;
+    public static final int JSON_REQUEST_URL_CAMERAS = 7;
+    public static final int JSON_REQUEST_URL_SUNRISE_SUNSET = 8;
 
-    public final int JSON_SET_URL_SCENES = 101;
+    public static final int JSON_SET_URL_SCENES = 101;
+    public static final int JSON_GET_STATUS = 102;
 
-    public final int JSON_ACTION_ON = 201;
-    public final int JSON_ACTION_OFF = 202;
+    public static final int JSON_ACTION_ON = 201;
+    public static final int JSON_ACTION_OFF = 202;
 
     public static final String SCENE_TYPE_GROUP = "Group";
     public static final String SCENE_TYPE_SCENE = "Scene";
 
-    private final String ACTION_ON = "On";
-    private final String ACTION_OFF = "Off";
+    /*
+     *  Private variables
+     */
+    private static final String ACTION_ON = "On";
+    private static final String ACTION_OFF = "Off";
 
     private static final String URL_DASHBOARD = "";
     private static final String URL_SCENES = "/json.htm?type=scenes";
     private static final String URL_SWITCHES = "/json.htm?type=command&param=getlightswitches";
-    private static final String URL_UTILITIES = "/json.htm?type=scenes";
-    private static final String URL_TEMPERATURE = "/json.htm?type=scenes";
-    private static final String URL_WEATHER = "/json.htm?type=scenes";
-    private static final String URL_CAMERAS = "/json.htm?type=scenes";
+    private static final String URL_UTILITIES = "";
+    private static final String URL_TEMPERATURE = "";
+    private static final String URL_WEATHER = "";
+    private static final String URL_CAMERAS = "";
+
+    private static final String URL_STATUS = "/json.htm?type=devices&rid=";
     private static final String URL_SUNRISE_SUNSET = "/json.htm?type=command&param=getSunRiseSet";
 
-    private static final String URL_SWITCH_SCENE_PART1 = "/json.htm?type=command&param=switchscene&idx=";
+    /**
+     * Level should be a value between 1 (0%) and 16 (100%)
+     * When the light is off, it will be turned on
+     * Returns:
+     *      "status" : "OK",
+     "      "title" : "SwitchLight"
+     */
+    private static final String URL_SWITCH_DIM_LEVEL = "&switchcmd=Set%20Level&level=";
+    private static final String URL_SWITCH_SCENE = "/json.htm?type=command&param=switchscene&idx=";
     private static final String URL_SWITCH_CMD = "&switchcmd=";
 
-    private static final String PROTOCOL_INSECURE = "http://";
-    private static final String PROTOCOL_SECURE = "https://";
+    private static final String URL_PROTOCOL_INSECURE = "http://";
+    private static final String URL_PROTOCOL_SECURE = "https://";
 
     Context mContext;
     private final SharedPrefUtil mSharedPrefUtil;
@@ -69,10 +90,10 @@ public class Domoticz {
     public boolean isUserOnLocalWifi() {
 
         boolean local = false;
+        Set<String> localSsid = mSharedPrefUtil.getLocalSsid();
 
-        if (mPhoneConnectionUtil.isWifiConnected()) {
+        if (mPhoneConnectionUtil.isWifiConnected()&& localSsid != null) {
 
-            Set<String> localSsid = mSharedPrefUtil.getLocalSsid();
             String currentSsid = mPhoneConnectionUtil.getCurrentSsid();
 
             // Remove quotes from current SSID read out
@@ -90,8 +111,8 @@ public class Domoticz {
         boolean result = true;
 
         String[] stringsToCheck = {
-                PROTOCOL_SECURE,
-                PROTOCOL_INSECURE,
+                URL_PROTOCOL_SECURE,
+                URL_PROTOCOL_INSECURE,
                 mSharedPrefUtil.getDomoticzLocalUrl(),
                 mSharedPrefUtil.getDomoticzLocalPort(),
                 mSharedPrefUtil.getDomoticzRemoteUrl(),
@@ -138,6 +159,10 @@ public class Domoticz {
             case JSON_REQUEST_URL_CAMERAS:
                 url = URL_CAMERAS;
                 break;
+
+            case JSON_GET_STATUS:
+                url = URL_STATUS;
+                break;
         }
         return url;
     }
@@ -148,7 +173,7 @@ public class Domoticz {
 
         switch (jsonSetUrl) {
             case JSON_SET_URL_SCENES:
-                url = URL_SWITCH_SCENE_PART1;
+                url = URL_SWITCH_SCENE;
                 break;
 
         }
@@ -162,15 +187,15 @@ public class Domoticz {
         SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
 
         if (isUserOnLocalWifi()) {
-            if (mSharedPrefUtil.isDomoticzLocalSecure()) protocol = PROTOCOL_SECURE;
-            else protocol = PROTOCOL_INSECURE;
+            if (mSharedPrefUtil.isDomoticzLocalSecure()) protocol = URL_PROTOCOL_SECURE;
+            else protocol = URL_PROTOCOL_INSECURE;
 
             url = mSharedPrefUtil.getDomoticzLocalUrl();
             port = mSharedPrefUtil.getDomoticzLocalPort();
 
         } else {
-            if (mSharedPrefUtil.isDomoticzRemoteSecure()) protocol = PROTOCOL_SECURE;
-            else protocol = PROTOCOL_INSECURE;
+            if (mSharedPrefUtil.isDomoticzRemoteSecure()) protocol = URL_PROTOCOL_SECURE;
+            else protocol = URL_PROTOCOL_INSECURE;
 
             url = mSharedPrefUtil.getDomoticzRemoteUrl();
             port = mSharedPrefUtil.getDomoticzRemotePort();
@@ -197,16 +222,16 @@ public class Domoticz {
         if (isUserOnLocalWifi()) {
 
             if (mSharedPrefUtil.isDomoticzLocalSecure()) {
-                protocol = PROTOCOL_SECURE;
-            } else protocol = PROTOCOL_INSECURE;
+                protocol = URL_PROTOCOL_SECURE;
+            } else protocol = URL_PROTOCOL_INSECURE;
 
             url = mSharedPrefUtil.getDomoticzLocalUrl();
             port = mSharedPrefUtil.getDomoticzLocalPort();
 
         } else {
             if (mSharedPrefUtil.isDomoticzRemoteSecure()) {
-                protocol = PROTOCOL_SECURE;
-            } else protocol = PROTOCOL_INSECURE;
+                protocol = URL_PROTOCOL_SECURE;
+            } else protocol = URL_PROTOCOL_INSECURE;
             url = mSharedPrefUtil.getDomoticzRemoteUrl();
             port = mSharedPrefUtil.getDomoticzRemotePort();
         }
@@ -296,5 +321,27 @@ public class Domoticz {
         String url = constructSetUrl(JSON_SET_URL_SCENES, idx, jsonAction);
 
         RequestUtil.makeJsonPutRequest(putCommandParser, username, password, url);
+    }
+
+    public void getStatus(int idx, StatusReceiver receiver) {
+
+        StatusInfoParser statusInfoParser = new StatusInfoParser(receiver);
+
+        SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
+        String username, password;
+
+        if (isUserOnLocalWifi()) {
+            username = mSharedPrefUtil.getDomoticzLocalUsername();
+            password = mSharedPrefUtil.getDomoticzLocalPassword();
+        } else {
+            username = mSharedPrefUtil.getDomoticzRemoteUsername();
+            password = mSharedPrefUtil.getDomoticzRemotePassword();
+        }
+
+        String url = constructGetUrl(JSON_GET_STATUS) + String.valueOf(idx);
+        Log.d(TAG, "for idx: " + String.valueOf(idx));
+
+        RequestUtil.makeJsonGetRequest(statusInfoParser, username, password, url);
+
     }
 }

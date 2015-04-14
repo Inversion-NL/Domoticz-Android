@@ -4,7 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 @SuppressWarnings("unused")
-public class SwitchInfo {
+public class StatusInfo {
 
     JSONObject jsonObject;
 
@@ -14,7 +14,7 @@ public class SwitchInfo {
     String type;
     int idx;
 
-    public SwitchInfo(JSONObject row) throws JSONException {
+    public StatusInfo(JSONObject row) throws JSONException {
         this.jsonObject = row;
         // {"IsDimmer":false,
         // "Name":"Rolluik woonkamer achter",
@@ -29,12 +29,8 @@ public class SwitchInfo {
         idx = row.getInt("idx");
     }
 
-    public String getIsDimmerString() {
+    public String getIsDimmer() {
         return IsDimmer;
-    }
-
-    public boolean getIsDimmerBoolean() {
-        return IsDimmer.equalsIgnoreCase("true") ? true : false;
     }
 
     public void setIsDimmer(String isDimmer) {
