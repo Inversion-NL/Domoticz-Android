@@ -28,25 +28,19 @@ public class StatusInfoParser implements JSONParserInterface {
         try {
 
             JSONArray jsonArray = new JSONArray(result);
-            ArrayList<ExtendedStatusInfo> mExtendedStatusInfo = new ArrayList<>();
+            JSONObject jsonObject = jsonArray.getJSONObject(0);
 
-            if (jsonArray.length() > 0) {
+            statusReceiver.onReceiveStatus(new ExtendedStatusInfo(jsonObject));
 
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject row = jsonArray.getJSONObject(i);
-                    mExtendedStatusInfo.add(new ExtendedStatusInfo(row));
-                }
-            }
-            statusReceiver.onReceiveStatus(mExtendedStatusInfo);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (JSONException error) {
+            Log.d(TAG, "StatusInfoParser onError");
+            statusReceiver.onError(error);
         }
     }
 
     @Override
     public void onError(Exception error) {
-        Log.d(TAG, "PutCommandParser onError");
+        Log.d(TAG, "StatusInfoParser onError");
         statusReceiver.onError(error);
     }
 }

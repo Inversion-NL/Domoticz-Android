@@ -1,10 +1,7 @@
 package nl.inversion.domoticz.Fragments;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -22,7 +19,6 @@ import nl.inversion.domoticz.Domoticz.Domoticz;
 import nl.inversion.domoticz.Interfaces.StatusReceiver;
 import nl.inversion.domoticz.Interfaces.SwitchesReceiver;
 import nl.inversion.domoticz.R;
-import nl.inversion.domoticz.SettingsActivity;
 
 public class Switches extends Fragment implements View.OnClickListener {
 
@@ -54,10 +50,7 @@ public class Switches extends Fragment implements View.OnClickListener {
         statusText = (TextView) getView().findViewById(R.id.statusText);
 
         mDomoticz = new Domoticz(getActivity());
-
-        // Checks if connection data (username, password, url and port) have data
-        if (mDomoticz.isConnectionDataComplete()) getData();
-        else showConnectionSettingsMissingDialog();
+        getData();
     }
 
     private void getData() {
@@ -95,8 +88,11 @@ public class Switches extends Fragment implements View.OnClickListener {
 
         mDomoticz.getStatus(idx, new StatusReceiver() {
             @Override
-            public void onReceiveStatus(ArrayList<ExtendedStatusInfo> extendedStatusInfo) {
-
+            public void onReceiveStatus(ExtendedStatusInfo mExtendedStatusInfo) {
+                String temp = statusText.getText().toString();
+                temp = temp + "\n\n";
+                temp =  temp + mExtendedStatusInfo.getJsonObject().toString();
+                statusText.setText(temp);
             }
 
             @Override
@@ -135,23 +131,4 @@ public class Switches extends Fragment implements View.OnClickListener {
             Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
         }
     }
-
-    private void showConnectionSettingsMissingDialog() {
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.msg_emptyCredentials_title)
-                .setMessage(getString(R.string.msg_emptyCredentials_msg1) + "\n\n" +
-                        getString(R.string.msg_emptyCredentials_msg2))
-                .setPositiveButton(R.string.settingsActivity_name, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(getActivity(), SettingsActivity.class));
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, null)
-                .setIcon(android.R.drawable.ic_dialog_alert);
-
-        AlertDialog emptyCredentialsAlertDialog = alertDialogBuilder.create();
-        emptyCredentialsAlertDialog.show();
-    }
-
 }

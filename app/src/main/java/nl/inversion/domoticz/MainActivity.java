@@ -17,7 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import nl.inversion.domoticz.Domoticz.Domoticz;
-import nl.inversion.domoticz.Fragments.Preference;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -50,16 +49,29 @@ public class MainActivity extends ActionBarActivity {
         tx.replace(R.id.main, Fragment.instantiate(MainActivity.this, fragments[1]));
         tx.commit();
 
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        checkConnectionSettings();
+    }
+
+    /**
+     * Checks if connection data (username, password, url and port) have data
+     */
+    private void checkConnectionSettings() {
         Domoticz mDomoticz = new Domoticz(this);
 
-        // Checks if connection data (username, password, url and port) have data
         if (!mDomoticz.isConnectionDataComplete()) {
             Log.d(TAG, "Connection data incomplete, show warning dialog");
             mDomoticz.showConnectionSettingsMissingDialog();
         }
-
     }
 
+    /**
+     * Adds the items to the drawer and registers a click listener on the items
+     */
     private void addDrawerItems() {
 
         drawerActions = getResources().getStringArray(R.array.drawer_actions);

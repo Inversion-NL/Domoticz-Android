@@ -6,7 +6,7 @@ import nl.inversion.domoticz.Containers.ExtendedStatusInfo;
 
 public interface StatusReceiver {
 
-    void onReceiveStatus(ArrayList<ExtendedStatusInfo> extendedStatusInfo);
+    void onReceiveStatus(ExtendedStatusInfo extendedStatusInfo);
 
     void onError(Exception error);
 }

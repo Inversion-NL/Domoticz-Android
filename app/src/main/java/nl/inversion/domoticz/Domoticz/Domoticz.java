@@ -95,19 +95,23 @@ public class Domoticz {
     public boolean isUserOnLocalWifi() {
 
         boolean local = false;
-        Set<String> localSsid = mSharedPrefUtil.getLocalSsid();
 
-        if (mPhoneConnectionUtil.isWifiConnected()&& localSsid != null) {
+        if (!mSharedPrefUtil.serverUsesSameAddress()) {
+            Set<String> localSsid = mSharedPrefUtil.getLocalSsid();
 
-            String currentSsid = mPhoneConnectionUtil.getCurrentSsid();
+            if (mPhoneConnectionUtil.isWifiConnected() && localSsid != null) {
 
-            // Remove quotes from current SSID read out
-            currentSsid = currentSsid.substring(1, currentSsid.length() - 1);
+                String currentSsid = mPhoneConnectionUtil.getCurrentSsid();
 
-            for (String ssid : localSsid) {
-                if (ssid.equals(currentSsid)) local = true;
+                // Remove quotes from current SSID read out
+                currentSsid = currentSsid.substring(1, currentSsid.length() - 1);
+
+                for (String ssid : localSsid) {
+                    if (ssid.equals(currentSsid)) local = true;
+                }
             }
         }
+
         return local;
     }
 
@@ -123,8 +127,8 @@ public class Domoticz {
                 mSharedPrefUtil.getDomoticzRemoteUrl(),
                 mSharedPrefUtil.getDomoticzRemotePort()};
 
-        for(String string : stringsToCheck) {
-            if(UsefulBits.isStringEmpty(string)) {
+        for (String string : stringsToCheck) {
+            if (UsefulBits.isStringEmpty(string)) {
                 result = false;
                 break;
             }

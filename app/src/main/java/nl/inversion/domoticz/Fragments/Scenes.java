@@ -1,10 +1,7 @@
 package nl.inversion.domoticz.Fragments;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -23,7 +20,6 @@ import java.util.ArrayList;
 import nl.inversion.domoticz.Containers.SceneInfo;
 import nl.inversion.domoticz.Interfaces.PutCommandReceiver;
 import nl.inversion.domoticz.R;
-import nl.inversion.domoticz.SettingsActivity;
 import nl.inversion.domoticz.Domoticz.Domoticz;
 import nl.inversion.domoticz.Interfaces.ScenesReceiver;
 
@@ -54,6 +50,7 @@ public class Scenes extends Fragment {
         progressDialog.setCancelable(false);
 
         mDomoticz = new Domoticz(getActivity());
+        getData();
     }
 
     /**

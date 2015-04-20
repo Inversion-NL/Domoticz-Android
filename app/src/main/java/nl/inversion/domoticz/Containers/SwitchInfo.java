@@ -16,11 +16,6 @@ public class SwitchInfo {
 
     public SwitchInfo(JSONObject row) throws JSONException {
         this.jsonObject = row;
-        // {"IsDimmer":false,
-        // "Name":"Rolluik woonkamer achter",
-        // "SubType":"RFY",
-        // "Type":"RFY",
-        // "idx":"20"}
 
         IsDimmer = row.getString("IsDimmer");
         Name = row.getString("Name");
