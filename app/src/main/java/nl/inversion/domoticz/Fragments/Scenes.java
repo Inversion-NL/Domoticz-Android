@@ -54,10 +54,6 @@ public class Scenes extends Fragment {
         progressDialog.setCancelable(false);
 
         mDomoticz = new Domoticz(getActivity());
-
-        // Checks if connection data (username, password, url and port) have data
-        if (mDomoticz.isConnectionDataComplete()) getData();
-        else showConnectionSettingsMissingDialog();
     }
 
     /**
@@ -211,27 +207,5 @@ public class Scenes extends Fragment {
     private void hideProgressDialog() {
         if (progressDialog.isShowing())
             progressDialog.dismiss();
-    }
-
-    /**
-     * Shows a dialog where the users is warned for missing connection settings and
-     * gives the ability to redirect the user to the app settings
-     */
-    private void showConnectionSettingsMissingDialog() {
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.msg_emptyCredentials_title)
-                .setMessage(getString(R.string.msg_emptyCredentials_msg1) + "\n\n" +
-                        getString(R.string.msg_emptyCredentials_msg2))
-                .setPositiveButton(R.string.settingsActivity_name, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(getActivity(), SettingsActivity.class));
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, null)
-                                    .setIcon(android.R.drawable.ic_dialog_alert);
-
-        AlertDialog emptyCredentialsAlertDialog = alertDialogBuilder.create();
-        emptyCredentialsAlertDialog.show();
     }
 }

@@ -1,6 +1,9 @@
 package nl.inversion.domoticz.Domoticz;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
 
 import java.util.Set;
@@ -9,6 +12,8 @@ import nl.inversion.domoticz.Interfaces.ScenesReceiver;
 import nl.inversion.domoticz.Interfaces.PutCommandReceiver;
 import nl.inversion.domoticz.Interfaces.StatusReceiver;
 import nl.inversion.domoticz.Interfaces.SwitchesReceiver;
+import nl.inversion.domoticz.R;
+import nl.inversion.domoticz.SettingsActivity;
 import nl.inversion.domoticz.Utils.PhoneConnectionUtil;
 import nl.inversion.domoticz.Utils.RequestUtil;
 import nl.inversion.domoticz.Utils.UsefulBits;
@@ -261,6 +266,28 @@ public class Domoticz {
         Log.d(TAG, "Constructed url: " + fullString);
 
         return fullString;
+    }
+
+    /**
+     * Shows a dialog where the users is warned for missing connection settings and
+     * gives the ability to redirect the user to the app settings
+     */
+    public void showConnectionSettingsMissingDialog() {
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext)
+                .setTitle(R.string.msg_emptyCredentials_title)
+                .setCancelable(false)
+                .setMessage(mContext.getString(R.string.msg_emptyCredentials_msg1) + "\n\n" +
+                        mContext.getString(R.string.msg_emptyCredentials_msg2))
+                .setPositiveButton(R.string.settingsActivity_name, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        mContext.startActivity(new Intent(mContext, SettingsActivity.class));
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert);
+
+        AlertDialog emptyCredentialsAlertDialog = alertDialogBuilder.create();
+        emptyCredentialsAlertDialog.show();
     }
 
     public void getScenes(ScenesReceiver receiver) {
