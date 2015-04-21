@@ -15,7 +15,7 @@
         android:layout_alignParentTop="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Scene_row_name"
+        style="@style/scene_row_name"
         android:text="Group name"/>
 
     <TextView
@@ -23,7 +23,7 @@
         android:layout_below="@id/scene_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Scene_row_lastSeen"
+        style="@style/scene_row_lastSeen"
         android:text="@string/last_seen"/>
 
 </RelativeLayout>

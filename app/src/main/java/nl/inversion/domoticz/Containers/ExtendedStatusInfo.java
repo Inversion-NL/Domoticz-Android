@@ -10,11 +10,12 @@ public class ExtendedStatusInfo {
     JSONObject jsonObject;
 
     String name;
-    String level;
+    int level;
     String type;
     String status;
     int batteryLevel;
     int signalLevel;
+    int switchTypeVal;
     String switchType;
     String lastUpdate;
     int idx;
@@ -23,12 +24,13 @@ public class ExtendedStatusInfo {
         this.jsonObject = row;
 
         name = row.getString("Name");
-        level = row.getString("Level");
+        level = row.getInt("LevelInt");
         type = row.getString("Type");
         status = row.getString("Status");
         batteryLevel = row.getInt("BatteryLevel");
         signalLevel = row.getInt("SignalLevel");
         switchType = row.getString("SwitchType");
+        switchTypeVal = row.getInt("SwitchTypeVal");
         lastUpdate = row.getString("LastUpdate");
         idx = row.getInt("idx");
     }
@@ -41,7 +43,7 @@ public class ExtendedStatusInfo {
         return name;
     }
 
-    public String getLevel() {
+    public int getLevel() {
         return level;
     }
 
@@ -53,12 +55,22 @@ public class ExtendedStatusInfo {
         return status;
     }
 
+    public boolean getStatusBoolean() {
+        boolean statusBoolean = false;
+        if (status.equalsIgnoreCase("On")) statusBoolean = true;
+        return statusBoolean;
+    }
+
     public int getBatteryLevel() {
         return batteryLevel;
     }
 
     public int getSignalLevel() {
         return signalLevel;
+    }
+
+    public int getSwitchTypeVal() {
+        return switchTypeVal;
     }
 
     public String getSwitchType() {

@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
@@ -74,13 +73,7 @@ public class Scenes extends Fragment {
             @Override
             public void onError(Exception error) {
                 error.printStackTrace();
-                String cause;
-                if (error.getCause() != null) {
-                    cause = error.getCause().getMessage();
-                    Toast.makeText(getActivity(), cause, Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
-                }
+                mDomoticz.errorToast(error);
                 hideProgressDialog();
             }
         });
@@ -170,11 +163,12 @@ public class Scenes extends Fragment {
         Log.d(TAG, "Set idx " + idx + " to " + checked);
 
         int jsonAction;
+        int jsonUrl = Domoticz.JSON_SET_URL_SCENES;
 
         if (checked) jsonAction = mDomoticz.JSON_ACTION_ON;
         else jsonAction = mDomoticz.JSON_ACTION_OFF;
 
-        mDomoticz.setAction(idx, jsonAction, new PutCommandReceiver() {
+        mDomoticz.setAction(idx, jsonUrl, jsonAction, new PutCommandReceiver() {
             @Override
             public void onReceiveResult(String result) {
                 hideProgressDialog();
@@ -184,7 +178,7 @@ public class Scenes extends Fragment {
             @Override
             public void onError(Exception error) {
                 hideProgressDialog();
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
+                mDomoticz.errorToast(error);
             }
         });
 

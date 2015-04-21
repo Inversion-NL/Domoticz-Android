@@ -46,7 +46,7 @@ public class MainActivity extends ActionBarActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-        tx.replace(R.id.main, Fragment.instantiate(MainActivity.this, fragments[1]));
+        tx.replace(R.id.main, Fragment.instantiate(MainActivity.this, fragments[2]));
         tx.commit();
 
     }

@@ -16,4 +16,7 @@
     <string name="button_state_off">Off</string>
 
     <string name="last_seen">Last seen</string>
+    <string name="level">Level</string>
+    <string name="signal_level">Signal level</string>
+    <string name="status">Status</string>
 </resources>
