@@ -2,11 +2,11 @@ package nl.inversion.domoticz;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.Menu;
@@ -96,6 +96,9 @@ public class MainActivity extends ActionBarActivity {
         });
     }
 
+    /**
+     * Sets the drawer with listeners for open and closed
+     */
     private void setupDrawer() {
 
         mDrawerToggle = new ActionBarDrawerToggle(
