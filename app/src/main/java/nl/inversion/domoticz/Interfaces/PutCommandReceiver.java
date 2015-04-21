@@ -5,5 +5,5 @@ public interface PutCommandReceiver {
     void onReceiveResult(String result);
 
     void onError(Exception error);
-}
 
+}
