@@ -1,6 +1,7 @@
 package nl.inversion.domoticz.Fragments;
 
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.MultiSelectListPreference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
@@ -24,22 +25,39 @@ public class Preference extends PreferenceFragment {
 
         mSharedPrefs = new SharedPrefUtil(getActivity());
 
+        setStartUpScreenDefaultValue();
+        setLocalServerSsid();
+
+    }
+
+    private void setLocalServerSsid() {
         Set<String> ssids = mSharedPrefs.getLocalSsid();
 
         PhoneConnectionUtil mPhoneConnectionUtil = new PhoneConnectionUtil(getActivity());
-        MultiSelectListPreference listPref =
+        MultiSelectListPreference localServerSsid =
                 (MultiSelectListPreference) findPreference("local_server_ssid");
         // Setting summary at runtime because setting it in XML crashes the app in API 15,
         // in API 22 is all good
-        listPref.setSummary(R.string.local_server_local_wifi_ssid_list_summary);
+        localServerSsid.setSummary(R.string.local_server_local_wifi_ssid_list_summary);
 
         CharSequence[] ssidEntries = mPhoneConnectionUtil.startSsidScanAsCharSequence();
 
-        if (ssidEntries.length < 1)
+        if (ssidEntries.length < 1) {
+            ssidEntries = new CharSequence[1];
             ssidEntries[0] = getString(R.string.msg_no_ssid_found); // no wifi ssid nearby found!
+        }
 
-        listPref.setEntries(ssidEntries);
-        listPref.setEntryValues(ssidEntries);
+        localServerSsid.setEntries(ssidEntries);
+        localServerSsid.setEntryValues(ssidEntries);
+    }
+
+    private void setStartUpScreenDefaultValue() {
+
+        int defaultValue = mSharedPrefs.getStartupScreenIndexValue();
+
+        ListPreference startup_screen = (ListPreference) findPreference("startup_screen");
+        startup_screen.setValueIndex(defaultValue);
+
     }
 
     @Override

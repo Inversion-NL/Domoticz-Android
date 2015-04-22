@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import nl.inversion.domoticz.Domoticz.Domoticz;
+import nl.inversion.domoticz.Utils.SharedPrefUtil;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -42,11 +43,16 @@ public class MainActivity extends ActionBarActivity {
         addDrawerItems();
         setupDrawer();
 
+        SharedPrefUtil mSharedPres = new SharedPrefUtil(this);
+
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        int screenIndex = mSharedPres.getStartupScreenIndexValue();
+
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-        tx.replace(R.id.main, Fragment.instantiate(MainActivity.this, fragments[2]));
+        tx.replace(R.id.main, Fragment.instantiate(MainActivity.this, fragments[screenIndex]));
         tx.commit();
 
     }

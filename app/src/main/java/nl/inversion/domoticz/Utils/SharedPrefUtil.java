@@ -6,6 +6,8 @@ import android.preference.PreferenceManager;
 
 import java.util.Set;
 
+import nl.inversion.domoticz.R;
+
 @SuppressWarnings("unused")
 public class SharedPrefUtil {
 
@@ -40,9 +42,28 @@ public class SharedPrefUtil {
         editor = prefs.edit();
     }
 
+    /*
+     *      Generic settings
+     */
+    public int getStartupScreenIndexValue() {
+        String startupScreenSelectedValue = prefs.getString("startup_screen", null);
+        if (startupScreenSelectedValue == null) return 0;
+        else {
+            String[] startupScreenValues = mContext.getResources().getStringArray(R.array.drawer_actions);
+            int i = 0;
+
+            for (String screen : startupScreenValues) {
+                if (screen.equalsIgnoreCase(startupScreenSelectedValue)) {
+                    break;
+                }
+                i++;
+            }
+            return i;
+        }
+    }
 
     /*
-     *    Remote server settings
+     *      Remote server settings
      */
     public String getDomoticzRemoteUsername() {
         return prefs.getString(REMOTE_SERVER_USERNAME, "");
@@ -77,8 +98,8 @@ public class SharedPrefUtil {
 
 
     /*
-    *    Local server settings
-    */
+     *      Local server settings
+     */
     public boolean serverUsesSameAddress() {
         return prefs.getBoolean(LOCAL_SERVER_USES_SAME_ADDRESS, true);
     }
