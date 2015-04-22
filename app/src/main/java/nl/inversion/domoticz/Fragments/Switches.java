@@ -29,7 +29,8 @@ public class Switches extends Fragment implements View.OnClickListener {
     private static final String TAG = Scenes.class.getSimpleName();
     private ProgressDialog progressDialog;
     private Domoticz mDomoticz;
-    TextView statusText;
+    private int numberOfSwitches, currentSwitch;
+    private TextView statusText;
 
     public static Fragment newInstance(Context context) {
         Switches f = new Switches();
@@ -65,11 +66,11 @@ public class Switches extends Fragment implements View.OnClickListener {
             @Override
             public void onReceiveSwitches(ArrayList<SwitchInfo> switches) {
 
+                numberOfSwitches = switches.size();
+
                 for (SwitchInfo mSwitch : switches) {
                     getExtendedInfo(mSwitch);
                 }
-
-                hideProgressDialog();
             }
 
             @Override
@@ -199,6 +200,12 @@ public class Switches extends Fragment implements View.OnClickListener {
 
             container.addView(switchRow_blinds);
         }
+
+        // Calculate if this is the last switch were working on
+        // If so: hide progress dialog
+        if (currentSwitch+1 == numberOfSwitches) hideProgressDialog();
+        else currentSwitch++;
+
     }
 
     private void handleBlindsClick(int idx, int action) {
