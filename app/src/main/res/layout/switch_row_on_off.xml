@@ -34,7 +34,7 @@
         android:layout_below="@id/switch_lastSeen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/switch_row_level"
+        style="@style/switch_row_extraInfo"
         android:text="@string/signal_level"/>
 
 </RelativeLayout>

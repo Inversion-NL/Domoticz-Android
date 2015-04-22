@@ -46,19 +46,19 @@
     </style>
 
     <style name="switch_row_name" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">18dp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_marginBottom">2dp</item>
     </style>
 
     <style name="switch_row_lastSeen" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">12dp</item>
+        <item name="android:textSize">10dp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:layout_marginBottom">2dp</item>
     </style>
 
-    <style name="switch_row_level" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">12dp</item>
+    <style name="switch_row_extraInfo" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">14dp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:layout_marginBottom">2dp</item>
     </style>
