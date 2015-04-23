@@ -211,19 +211,39 @@ public class Switches extends Fragment implements View.OnClickListener {
     private void handleBlindsClick(int idx, int action) {
         Log.d(TAG, "handleBlindsClick");
 
+        int jsonUrl = Domoticz.JSON_SET_URL_SWITCHES;
+        int jsonAction = mDomoticz.JSON_ACTION_UP;
+
         switch (action) {
             case Domoticz.BLINDS_ACTION_UP:
                 Log.d(TAG, "Set idx " + idx + " to up");
+                jsonAction = mDomoticz.JSON_ACTION_UP;
                 break;
 
             case Domoticz.BLINDS_ACTION_STOP:
                 Log.d(TAG, "Set idx " + idx + " to stop");
+                jsonAction = mDomoticz.JSON_ACTION_STOP;
                 break;
 
             case Domoticz.BLINDS_ACTION_DOWN:
                 Log.d(TAG, "Set idx " + idx + " to down");
+                jsonAction = mDomoticz.JSON_ACTION_DOWN;
                 break;
         }
+
+        mDomoticz.setAction(idx, jsonUrl, jsonAction, new PutCommandReceiver() {
+            @Override
+            public void onReceiveResult(String result) {
+                hideProgressDialog();
+                Log.d(TAG, result);
+            }
+
+            @Override
+            public void onError(Exception error) {
+                hideProgressDialog();
+                mDomoticz.errorToast(error);
+            }
+        });
     }
 
     private void handleSwitchClick(int idx, boolean checked) {
