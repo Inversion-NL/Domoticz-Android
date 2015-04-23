@@ -62,6 +62,10 @@ public class SharedPrefUtil {
         }
     }
 
+    public boolean isDebugEnabled() {
+        return prefs.getBoolean("debugging", false);
+    }
+
     /*
      *      Remote server settings
      */

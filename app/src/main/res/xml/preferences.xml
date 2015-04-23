@@ -137,5 +137,27 @@
             </PreferenceCategory>
         </PreferenceScreen>
     </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/category_info">
+        <EditTextPreference
+            android:key="version"
+            android:title="@string/info_version"
+            android:text="Version 1.0.2"
+            android:inputType="none"
+            android:focusable="false">
+        </EditTextPreference>
+
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/category_debug">
+
+        <SwitchPreference
+            android:key="debugging"
+            android:title="@string/debug_switch_title"
+            android:defaultValue="false"
+            android:summaryOn="@string/debug_switch_summary_on"
+            android:summaryOff="@string/debug_switch_summary_off"/>
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

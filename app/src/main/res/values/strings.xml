@@ -19,4 +19,6 @@
     <string name="level">Level</string>
     <string name="signal_level">Signal level</string>
     <string name="status">Status</string>
+
+    <string name="debug_textview_title">Debugging info</string>
 </resources>

@@ -26,5 +26,13 @@
             android:layout_marginTop="20dp"
             android:orientation="vertical">
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/debugText"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/debug_textview_title"/>
     </LinearLayout>
 </ScrollView>

@@ -27,6 +27,8 @@ public class Scenes extends Fragment {
     private static final String TAG = Scenes.class.getSimpleName();
     private ProgressDialog progressDialog;
     private Domoticz mDomoticz;
+    private TextView statusText;
+    private boolean debug;
 
     public static Fragment newInstance(Context context) {
         Scenes f = new Scenes();
@@ -43,12 +45,23 @@ public class Scenes extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        mDomoticz = new Domoticz(getActivity());
+        debug = Domoticz.debug;
+
         // Initialize the progress dialog
         progressDialog = new ProgressDialog(this.getActivity());
         progressDialog.setMessage(getString(R.string.msg_please_wait));
         progressDialog.setCancelable(false);
 
-        mDomoticz = new Domoticz(getActivity());
+        if (debug) {
+            statusText = (TextView) getView().findViewById(R.id.debugText);
+            statusText.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         getData();
     }
 
@@ -85,6 +98,13 @@ public class Scenes extends Fragment {
      */
     private void createRow(SceneInfo mScene) {
         // Example: http://android-er.blogspot.nl/2013/05/add-and-remove-view-dynamically.html
+
+        if (debug) {
+            String temp = statusText.getText().toString();
+            temp = temp + "\n\n";
+            temp = temp + mScene.getJsonObject().toString();
+            statusText.setText(temp);
+        }
 
         if (mScene.getType().equalsIgnoreCase(Domoticz.SCENE_TYPE_SCENE)) {
 

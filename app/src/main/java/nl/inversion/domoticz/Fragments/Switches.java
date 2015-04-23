@@ -31,6 +31,7 @@ public class Switches extends Fragment implements View.OnClickListener {
     private Domoticz mDomoticz;
     private int numberOfSwitches, currentSwitch;
     private TextView statusText;
+    private boolean debug;
 
     public static Fragment newInstance(Context context) {
         Switches f = new Switches();
@@ -48,13 +49,23 @@ public class Switches extends Fragment implements View.OnClickListener {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        mDomoticz = new Domoticz(getActivity());
+        debug = Domoticz.debug;
+
+        // Initialize the progress dialog
         progressDialog = new ProgressDialog(this.getActivity());
         progressDialog.setMessage(getString(R.string.msg_please_wait));
         progressDialog.setCancelable(false);
 
-        statusText = (TextView) getView().findViewById(R.id.statusText);
+        if (debug) {
+            statusText = (TextView) getView().findViewById(R.id.debugText);
+            statusText.setVisibility(View.VISIBLE);
+        }
+    }
 
-        mDomoticz = new Domoticz(getActivity());
+    @Override
+    public void onResume() {
+        super.onResume();
         getData();
     }
 
@@ -106,10 +117,12 @@ public class Switches extends Fragment implements View.OnClickListener {
 
         int switchTypeVal = mExtendedStatusInfo.getSwitchTypeVal();
 
-        String temp = statusText.getText().toString();
-        temp = temp + "\n\n";
-        temp = temp + mExtendedStatusInfo.getJsonObject().toString();
-        statusText.setText(temp);
+        if (debug) {
+            String temp = statusText.getText().toString();
+            temp = temp + "\n\n";
+            temp = temp + mExtendedStatusInfo.getJsonObject().toString();
+            statusText.setText(temp);
+        }
 
         if (switchTypeVal == mDomoticz.SWITCH_TYPE_ON_OFF) {
 
@@ -288,6 +301,4 @@ public class Switches extends Fragment implements View.OnClickListener {
         if (progressDialog.isShowing())
             progressDialog.dismiss();
     }
-
-
 }

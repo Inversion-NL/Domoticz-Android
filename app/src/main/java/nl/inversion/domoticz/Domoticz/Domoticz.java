@@ -27,6 +27,7 @@ public class Domoticz {
      *  Log tag
      */
     private static final String TAG = Domoticz.class.getSimpleName();
+    public static boolean debug;
 
     /*
      *  Public variables
@@ -115,6 +116,7 @@ public class Domoticz {
         this.mContext = mContext;
         mSharedPrefUtil = new SharedPrefUtil(mContext);
         mPhoneConnectionUtil = new PhoneConnectionUtil(mContext);
+        debug = mSharedPrefUtil.isDebugEnabled();
     }
 
     public boolean isUserOnLocalWifi() {
@@ -158,17 +160,21 @@ public class Domoticz {
                 break;
             }
         }
+        if (debug) Log.d(TAG, "isConnectionDataComplete = " + result);
         return result;
     }
 
     public void errorToast(Exception error) {
+
         String cause;
-        if (error.getCause() != null) {
-            cause = error.getCause().getMessage();
-            Toast.makeText(mContext, cause, Toast.LENGTH_LONG).show();
+
+        if (debug) {
+            cause = error.toString();
         } else {
-            Toast.makeText(mContext, error.toString(), Toast.LENGTH_LONG).show();
+            if (error.getCause() != null) cause = error.getCause().getMessage();
+            else cause = error.toString();
         }
+        Toast.makeText(mContext, cause, Toast.LENGTH_LONG).show();
     }
 
     private String getJsonGetUrl(int jsonGetUrl) {
@@ -255,7 +261,7 @@ public class Domoticz {
                 .append(port)
                 .append(jsonUrl).toString();
 
-        Log.d(TAG, "Constructed url: " + fullString);
+        if (debug) Log.d(TAG, "Constructed url: " + fullString);
 
         return fullString;
     }
@@ -315,7 +321,7 @@ public class Domoticz {
                 .append(port)
                 .append(jsonUrl).toString();
 
-        Log.d(TAG, "Constructed url: " + fullString);
+        if (debug) Log.d(TAG, "Constructed url: " + fullString);
 
         return fullString;
     }
@@ -427,9 +433,8 @@ public class Domoticz {
         }
 
         String url = constructGetUrl(JSON_GET_STATUS) + String.valueOf(idx);
-        Log.d(TAG, "for idx: " + String.valueOf(idx));
+        if (debug) Log.d(TAG, "for idx: " + String.valueOf(idx));
 
         RequestUtil.makeJsonGetRequest(statusInfoParser, username, password, url);
-
     }
 }
