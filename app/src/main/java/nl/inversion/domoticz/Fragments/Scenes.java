@@ -27,6 +27,7 @@ public class Scenes extends Fragment {
     private static final String TAG = Scenes.class.getSimpleName();
     private ProgressDialog progressDialog;
     private Domoticz mDomoticz;
+    LinearLayout container;
     private TextView statusText;
     private boolean debug;
 
@@ -48,6 +49,8 @@ public class Scenes extends Fragment {
         mDomoticz = new Domoticz(getActivity());
         debug = Domoticz.debug;
 
+        container = (LinearLayout) getView().findViewById(R.id.container);
+
         // Initialize the progress dialog
         progressDialog = new ProgressDialog(this.getActivity());
         progressDialog.setMessage(getString(R.string.msg_please_wait));
@@ -62,7 +65,19 @@ public class Scenes extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        cleanScreen();
         getData();
+    }
+
+    /**
+     * Clears the container layout and, if in debugging, the debug text
+     */
+    private void cleanScreen() {
+        if (debug) {
+            statusText.setText(getActivity().getText(R.string.debug_textview_title));
+        }
+
+        container.removeAllViews();
     }
 
     /**
@@ -108,8 +123,6 @@ public class Scenes extends Fragment {
 
         if (mScene.getType().equalsIgnoreCase(Domoticz.SCENE_TYPE_SCENE)) {
 
-            LinearLayout container = (LinearLayout) getView().findViewById(R.id.container);
-
             LayoutInflater layoutInflater =
                     (LayoutInflater) getActivity()
                             .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -138,8 +151,6 @@ public class Scenes extends Fragment {
             container.addView(sceneRow_switch);
 
         } else if (mScene.getType().equalsIgnoreCase(Domoticz.SCENE_TYPE_GROUP)) {
-
-            LinearLayout container = (LinearLayout) getView().findViewById(R.id.container);
 
             LayoutInflater layoutInflater =
                     (LayoutInflater) getActivity()

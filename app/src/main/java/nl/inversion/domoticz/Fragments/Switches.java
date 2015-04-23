@@ -30,6 +30,7 @@ public class Switches extends Fragment implements View.OnClickListener {
     private ProgressDialog progressDialog;
     private Domoticz mDomoticz;
     private int numberOfSwitches, currentSwitch;
+    LinearLayout container;
     private TextView statusText;
     private boolean debug;
 
@@ -52,6 +53,8 @@ public class Switches extends Fragment implements View.OnClickListener {
         mDomoticz = new Domoticz(getActivity());
         debug = Domoticz.debug;
 
+        container = (LinearLayout) getView().findViewById(R.id.container);
+
         // Initialize the progress dialog
         progressDialog = new ProgressDialog(this.getActivity());
         progressDialog.setMessage(getString(R.string.msg_please_wait));
@@ -66,9 +69,24 @@ public class Switches extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
+        cleanScreen();
         getData();
     }
 
+    /**
+     * Clears the container layout and, if in debugging, the debug text
+     */
+    private void cleanScreen() {
+        if (debug) {
+            statusText.setText(getActivity().getText(R.string.debug_textview_title));
+        }
+
+        container.removeAllViews();
+    }
+
+    /**
+     * Gets the data through the switches receiver with a call back on receive or error
+     */
     private void getData() {
 
         showProgressDialog();
@@ -113,6 +131,10 @@ public class Switches extends Fragment implements View.OnClickListener {
 
     }
 
+    /**
+     * Creates a row dynamically based on the data of the scene
+     * @param mExtendedStatusInfo containing the information
+     */
     private void createRow(ExtendedStatusInfo mExtendedStatusInfo) {
 
         int switchTypeVal = mExtendedStatusInfo.getSwitchTypeVal();
@@ -125,8 +147,6 @@ public class Switches extends Fragment implements View.OnClickListener {
         }
 
         if (switchTypeVal == mDomoticz.SWITCH_TYPE_ON_OFF) {
-
-            LinearLayout container = (LinearLayout) getView().findViewById(R.id.container);
 
             LayoutInflater layoutInflater =
                     (LayoutInflater) getActivity()
@@ -162,8 +182,6 @@ public class Switches extends Fragment implements View.OnClickListener {
             container.addView(switchRow_onOff);
 
         } else if (switchTypeVal == mDomoticz.SWITCH_TYPE_BLINDS) {
-
-            LinearLayout container = (LinearLayout) getView().findViewById(R.id.container);
 
             LayoutInflater layoutInflater =
                     (LayoutInflater) getActivity()
