@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scenesScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -12,13 +11,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/scenesTitle"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            style="@style/scene_title"
-            android:text="@string/title_scenes"/>
-
         <LinearLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
@@ -27,12 +19,22 @@
             android:orientation="vertical">
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/debugText"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="@string/debug_textview_title"/>
+        <LinearLayout
+            android:id="@+id/debugLayout"
+            style="@style/debug_layout">
+
+            <TextView
+                android:id="@+id/debugTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/debug_textview_title"
+                android:text="@string/debug_textview_title"/>
+
+            <TextView
+                android:id="@+id/debugText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

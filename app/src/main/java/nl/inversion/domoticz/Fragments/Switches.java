@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -24,14 +27,14 @@ import nl.inversion.domoticz.Interfaces.StatusReceiver;
 import nl.inversion.domoticz.Interfaces.SwitchesReceiver;
 import nl.inversion.domoticz.R;
 
-public class Switches extends Fragment implements View.OnClickListener {
+public class Switches extends Fragment {
 
-    private static final String TAG = Scenes.class.getSimpleName();
+    private static final String TAG = Switches.class.getSimpleName();
     private ProgressDialog progressDialog;
     private Domoticz mDomoticz;
     private int numberOfSwitches, currentSwitch;
     LinearLayout container;
-    private TextView statusText;
+    private TextView debugText;
     private boolean debug;
 
     public static Fragment newInstance(Context context) {
@@ -43,6 +46,9 @@ public class Switches extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_switches, null);
+
+        getActionBar().setTitle(R.string.title_switches);
+
         return root;
     }
 
@@ -61,8 +67,10 @@ public class Switches extends Fragment implements View.OnClickListener {
         progressDialog.setCancelable(false);
 
         if (debug) {
-            statusText = (TextView) getView().findViewById(R.id.debugText);
-            statusText.setVisibility(View.VISIBLE);
+            LinearLayout debugLayout = (LinearLayout) getView().findViewById(R.id.debugLayout);
+            debugLayout.setVisibility(View.VISIBLE);
+
+            debugText = (TextView) getView().findViewById(R.id.debugText);
         }
     }
 
@@ -78,9 +86,8 @@ public class Switches extends Fragment implements View.OnClickListener {
      */
     private void cleanScreen() {
         if (debug) {
-            statusText.setText(getActivity().getText(R.string.debug_textview_title));
+            debugText.setText("");
         }
-
         container.removeAllViews();
     }
 
@@ -95,8 +102,9 @@ public class Switches extends Fragment implements View.OnClickListener {
             @Override
             public void onReceiveSwitches(ArrayList<SwitchInfo> switches) {
 
-                numberOfSwitches = switches.size();
+                successHandling(switches.toString());
 
+                numberOfSwitches = switches.size();
                 for (SwitchInfo mSwitch : switches) {
                     getExtendedInfo(mSwitch);
                 }
@@ -104,14 +112,15 @@ public class Switches extends Fragment implements View.OnClickListener {
 
             @Override
             public void onError(Exception error) {
-                error.printStackTrace();
-                mDomoticz.errorToast(error);
-
-                hideProgressDialog();
+                errorHandling(error);
             }
         });
     }
 
+    /**
+     * Gets the extended info with a callback onReceive which creates the row
+     * @param mSwitch
+     */
     private void getExtendedInfo(SwitchInfo mSwitch) {
 
         int idx = mSwitch.getIdx();
@@ -119,13 +128,13 @@ public class Switches extends Fragment implements View.OnClickListener {
         mDomoticz.getStatus(idx, new StatusReceiver() {
             @Override
             public void onReceiveStatus(ExtendedStatusInfo mExtendedStatusInfo) {
+                successHandling(mExtendedStatusInfo.toString());
                 createRow(mExtendedStatusInfo);
             }
 
             @Override
             public void onError(Exception error) {
-                error.printStackTrace();
-                mDomoticz.errorToast(error);
+                errorHandling(error);
             }
         });
 
@@ -140,10 +149,10 @@ public class Switches extends Fragment implements View.OnClickListener {
         int switchTypeVal = mExtendedStatusInfo.getSwitchTypeVal();
 
         if (debug) {
-            String temp = statusText.getText().toString();
+            String temp = debugText.getText().toString();
             temp = temp + "\n\n";
             temp = temp + mExtendedStatusInfo.getJsonObject().toString();
-            statusText.setText(temp);
+            debugText.setText(temp);
         }
 
         if (switchTypeVal == mDomoticz.SWITCH_TYPE_ON_OFF) {
@@ -265,18 +274,22 @@ public class Switches extends Fragment implements View.OnClickListener {
         mDomoticz.setAction(idx, jsonUrl, jsonAction, new PutCommandReceiver() {
             @Override
             public void onReceiveResult(String result) {
-                hideProgressDialog();
-                Log.d(TAG, result);
+                Toast.makeText(getActivity(), R.string.action_success, Toast.LENGTH_LONG).show();
+                successHandling(result);
             }
 
             @Override
             public void onError(Exception error) {
-                hideProgressDialog();
-                mDomoticz.errorToast(error);
+                errorHandling(error);
             }
         });
     }
 
+    /**
+     * Handles the clicks of the dynamically created rows
+     * @param idx idx code of the button (Domoticz)
+     * @param checked is the button currently checked?
+     */
     private void handleSwitchClick(int idx, boolean checked) {
         Log.d(TAG, "handleSwitchClick");
         Log.d(TAG, "Set idx " + idx + " to " + checked);
@@ -290,33 +303,63 @@ public class Switches extends Fragment implements View.OnClickListener {
         mDomoticz.setAction(idx, jsonUrl, jsonAction, new PutCommandReceiver() {
             @Override
             public void onReceiveResult(String result) {
-                hideProgressDialog();
-                Log.d(TAG, result);
+                successHandling(result);
             }
 
             @Override
             public void onError(Exception error) {
-                hideProgressDialog();
-                mDomoticz.errorToast(error);
+                errorHandling(error);
             }
         });
     }
 
-    @Override
-    public void onClick(View view) {
-        Log.d(TAG, "onClick");
-        Log.d(TAG, "button ID: " + String.valueOf(view.getId()));
-
-        int idx = view.getId();
-    }
-
+    /**
+     * Shows the progress dialog if isn't already showing
+     */
     private void showProgressDialog() {
         if (!progressDialog.isShowing())
             progressDialog.show();
     }
 
+    /**
+     * Hides the progress dialog if it is showing
+     */
     private void hideProgressDialog() {
         if (progressDialog.isShowing())
             progressDialog.dismiss();
+    }
+
+    /**
+     * Handles the success messages
+     * @param result String result to handle
+     */
+    private void successHandling(String result) {
+
+        Log.d(TAG, result);
+        if (debug) {
+            String temp = debugText.getText().toString();
+            debugText.setText(temp + "\n\n" + result);
+        }
+    }
+
+    /**
+     * Handles the error messages
+     * @param error Exception
+     */
+    private void errorHandling(Exception error) {
+        hideProgressDialog();
+
+        error.printStackTrace();
+
+        if (debug) {
+            String temp = debugText.getText().toString();
+            debugText.setText(temp  + "\n\n" + error.getCause().getMessage());
+        } else {
+            mDomoticz.errorToast(error);
+        }
+    }
+
+    private ActionBar getActionBar() {
+        return ((ActionBarActivity) getActivity()).getSupportActionBar();
     }
 }

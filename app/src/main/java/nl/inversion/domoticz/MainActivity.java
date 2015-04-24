@@ -107,20 +107,22 @@ public class MainActivity extends ActionBarActivity {
      */
     private void setupDrawer() {
 
+        // final CharSequence currentTitle = getSupportActionBar().getTitle();
+
         mDrawerToggle = new ActionBarDrawerToggle(
                 this, mDrawer, R.string.drawer_open, R.string.drawer_close) {
 
             /** Called when a mDrawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getSupportActionBar().setTitle(R.string.drawer_navigation_title);
+                //getSupportActionBar().setTitle(R.string.drawer_navigation_title);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             /** Called when a mDrawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                getSupportActionBar().setTitle(mActivityTitle);
+                //getSupportActionBar().setTitle(currentTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };

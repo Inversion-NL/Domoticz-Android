@@ -5,15 +5,12 @@
 
     <!-- Material design colors -->
     <!--   your app branding color for the app bar -->
-    <color name="primary">@color/material_teal_500</color>
+    <color name="primary">@color/material_indigo_500</color>
     <!--   darker variant for the status bar and contextual app bars -->
-    <color name="primary_dark">@color/material_teal_700</color>
+    <color name="primary_dark">@color/material_indigo_700</color>
     <!--   theme UI controls like checkboxes and text fields -->
-    <color name="accent">@color/material_teal_200</color>
-    <!--   background color Holo card list -->
-    <color name="holo_bg_color_cards">@color/white_smoke</color>
+    <color name="accent">@color/material_indigo_200</color>
 
-    <color name="white_smoke">#F5F5F5</color>
 
     <color name="material_teal_200">#80CBC4</color>
     <color name="material_teal_300">#4DB6AC</color>
@@ -24,4 +21,14 @@
     <color name="material_grey_300">#E0E0E0</color>
     <color name="material_grey_400">#BDBDBD</color>
     <color name="material_grey_500">#9E9E9E</color>
+
+    <color name="material_red_400">#EF5350</color>
+
+    <color name="material_indigo_200">#90CAF9</color>
+    <color name="material_indigo_300">#64B5F6</color>
+    <color name="material_indigo_400">#42A5F5</color>
+    <color name="material_indigo_500">#2196F3</color>
+    <color name="material_indigo_600">#1E88E5</color>
+    <color name="material_indigo_700">#1976D2</color>
+
 </resources>

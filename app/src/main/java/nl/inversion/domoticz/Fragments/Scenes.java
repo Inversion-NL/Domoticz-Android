@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,15 +14,16 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
 
 import nl.inversion.domoticz.Containers.SceneInfo;
 import nl.inversion.domoticz.Interfaces.PutCommandReceiver;
-import nl.inversion.domoticz.R;
 import nl.inversion.domoticz.Domoticz.Domoticz;
 import nl.inversion.domoticz.Interfaces.ScenesReceiver;
+import nl.inversion.domoticz.R;
 
 public class Scenes extends Fragment {
 
@@ -28,7 +31,7 @@ public class Scenes extends Fragment {
     private ProgressDialog progressDialog;
     private Domoticz mDomoticz;
     LinearLayout container;
-    private TextView statusText;
+    private TextView debugText;
     private boolean debug;
 
     public static Fragment newInstance(Context context) {
@@ -39,6 +42,9 @@ public class Scenes extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_scenes, null);
+
+        getActionBar().setTitle(R.string.title_scenes);
+
         return root;
     }
 
@@ -57,8 +63,10 @@ public class Scenes extends Fragment {
         progressDialog.setCancelable(false);
 
         if (debug) {
-            statusText = (TextView) getView().findViewById(R.id.debugText);
-            statusText.setVisibility(View.VISIBLE);
+            LinearLayout debugLayout = (LinearLayout) getView().findViewById(R.id.debugLayout);
+            debugLayout.setVisibility(View.VISIBLE);
+
+            debugText = (TextView) getView().findViewById(R.id.debugText);
         }
     }
 
@@ -74,7 +82,7 @@ public class Scenes extends Fragment {
      */
     private void cleanScreen() {
         if (debug) {
-            statusText.setText(getActivity().getText(R.string.debug_textview_title));
+            debugText.setText("");
         }
 
         container.removeAllViews();
@@ -91,6 +99,7 @@ public class Scenes extends Fragment {
             @Override
             public void onReceiveScenes(ArrayList<SceneInfo> scenes) {
 
+                successHandling(scenes.toString());
                 hideProgressDialog();
 
                 for (SceneInfo mScene : scenes) {
@@ -100,9 +109,7 @@ public class Scenes extends Fragment {
 
             @Override
             public void onError(Exception error) {
-                error.printStackTrace();
-                mDomoticz.errorToast(error);
-                hideProgressDialog();
+                errorHandling(error);
             }
         });
     }
@@ -115,10 +122,10 @@ public class Scenes extends Fragment {
         // Example: http://android-er.blogspot.nl/2013/05/add-and-remove-view-dynamically.html
 
         if (debug) {
-            String temp = statusText.getText().toString();
+            String temp = debugText.getText().toString();
             temp = temp + "\n\n";
             temp = temp + mScene.getJsonObject().toString();
-            statusText.setText(temp);
+            debugText.setText(temp);
         }
 
         if (mScene.getType().equalsIgnoreCase(Domoticz.SCENE_TYPE_SCENE)) {
@@ -185,7 +192,6 @@ public class Scenes extends Fragment {
 
     /**
      * Handles the clicks of the dynamically created rows
-     *
      * @param idx idx code of the button (Domoticz)
      * @param checked is the button currently checked?
      */
@@ -202,14 +208,14 @@ public class Scenes extends Fragment {
         mDomoticz.setAction(idx, jsonUrl, jsonAction, new PutCommandReceiver() {
             @Override
             public void onReceiveResult(String result) {
+                Toast.makeText(getActivity(), R.string.action_success, Toast.LENGTH_LONG).show();
+                successHandling(result);
                 hideProgressDialog();
-                Log.d(TAG, result);
             }
 
             @Override
             public void onError(Exception error) {
-                hideProgressDialog();
-                mDomoticz.errorToast(error);
+                errorHandling(error);
             }
         });
 
@@ -229,5 +235,40 @@ public class Scenes extends Fragment {
     private void hideProgressDialog() {
         if (progressDialog.isShowing())
             progressDialog.dismiss();
+    }
+
+    /**
+     * Handles the success messages
+     * @param result String result to handle
+     */
+    private void successHandling(String result) {
+        hideProgressDialog();
+
+        Log.d(TAG, result);
+        if (debug) {
+            String temp = debugText.getText().toString();
+            debugText.setText(temp + "\n\n" + result);
+        }
+    }
+
+    /**
+     * Handles the error messages
+     * @param error Exception
+     */
+    private void errorHandling(Exception error) {
+        hideProgressDialog();
+
+        error.printStackTrace();
+
+        if (debug) {
+            String temp = debugText.getText().toString();
+            debugText.setText(temp  + "\n\n" + error.getCause().getMessage());
+        } else {
+            mDomoticz.errorToast(error);
+        }
+    }
+
+    private ActionBar getActionBar() {
+        return ((ActionBarActivity) getActivity()).getSupportActionBar();
     }
 }

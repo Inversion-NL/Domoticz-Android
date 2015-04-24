@@ -2,7 +2,9 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
     </style>
 
 
@@ -15,19 +17,19 @@
         <item name="android:paddingBottom">10dp</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
     <style name="scene_row_name" parent="@android:style/TextAppearance.Medium">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_marginBottom">2dp</item>
     </style>
 
     <style name="scene_row_lastSeen" parent="@android:style/TextAppearance.Medium">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:textSize">12dp</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:layout_marginBottom">15dp</item>
     </style>
@@ -42,24 +44,41 @@
         <item name="android:paddingBottom">10dp</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
     <style name="switch_row_name" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">18dp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_marginBottom">2dp</item>
     </style>
 
     <style name="switch_row_lastSeen" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">10dp</item>
+        <item name="android:textSize">10sp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:layout_marginBottom">2dp</item>
     </style>
 
     <style name="switch_row_extraInfo" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">14dp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textStyle">normal</item>
+        <item name="android:layout_marginBottom">2dp</item>
+    </style>
+
+
+    <!--        Debugging        -->
+
+    <style name="debug_layout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_marginTop">25dp</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="debug_textview_title" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">26sp</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:layout_marginBottom">2dp</item>
     </style>
 
