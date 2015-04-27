@@ -4,7 +4,6 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="colorAccent">@color/accent</item>
     </style>
 
 
@@ -61,6 +60,20 @@
 
     <style name="switch_row_extraInfo" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:layout_marginBottom">2dp</item>
+    </style>
+
+    <!--        Utilities        -->
+
+    <style name="utilities_row_name" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginBottom">2dp</item>
+    </style>
+
+    <style name="utility_row_lastSeen" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">10sp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:layout_marginBottom">2dp</item>
     </style>

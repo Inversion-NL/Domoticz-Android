@@ -13,6 +13,7 @@ import nl.inversion.domoticz.Interfaces.PutCommandReceiver;
 import nl.inversion.domoticz.Interfaces.ScenesReceiver;
 import nl.inversion.domoticz.Interfaces.StatusReceiver;
 import nl.inversion.domoticz.Interfaces.SwitchesReceiver;
+import nl.inversion.domoticz.Interfaces.UtilitiesReceiver;
 import nl.inversion.domoticz.R;
 import nl.inversion.domoticz.SettingsActivity;
 import nl.inversion.domoticz.Utils.PhoneConnectionUtil;
@@ -71,6 +72,8 @@ public class Domoticz {
     public static final int BLINDS_ACTION_STOP = 2;
     public static final int BLINDS_ACTION_DOWN = 3;
 
+    public static final String[] ITEMS_UTILITIES = {"Thermostat"};
+
 
     /*
      *  Private variables
@@ -84,9 +87,8 @@ public class Domoticz {
 
     private static final String URL_DASHBOARD = "";
     private static final String URL_SCENES = "/json.htm?type=scenes";
-    private static final String URL_GET_SWITCHES = "/json.htm?type=command&param=getlightswitches";
-
-    private static final String URL_UTILITIES = "";
+    private static final String URL_SWITCHES = "/json.htm?type=command&param=getlightswitches";
+    private static final String URL_UTILITIES = "/json.htm?type=devices";
     private static final String URL_TEMPERATURE = "";
     private static final String URL_WEATHER = "";
     private static final String URL_CAMERAS = "";
@@ -181,7 +183,7 @@ public class Domoticz {
 
     private String getJsonGetUrl(int jsonGetUrl) {
 
-        String url = URL_GET_SWITCHES;
+        String url = URL_SWITCHES;
 
         switch (jsonGetUrl) {
             case JSON_REQUEST_URL_DASHBOARD:
@@ -193,7 +195,7 @@ public class Domoticz {
                 break;
 
             case JSON_REQUEST_URL_SWITCHES:
-                url = URL_GET_SWITCHES;
+                url = URL_SWITCHES;
                 break;
 
             case JSON_REQUEST_URL_UTILITIES:
@@ -221,7 +223,7 @@ public class Domoticz {
 
     private String getJsonSetUrl(int jsonSetUrl) {
 
-        String url = URL_GET_SWITCHES;
+        String url = URL_SWITCHES;
 
         switch (jsonSetUrl) {
             case JSON_SET_URL_SCENES:
@@ -438,5 +440,25 @@ public class Domoticz {
         if (debug) Log.d(TAG, "for idx: " + String.valueOf(idx));
 
         RequestUtil.makeJsonGetRequest(statusInfoParser, username, password, url);
+    }
+
+    public void getUtilities(UtilitiesReceiver receiver) {
+
+        UtilitiesParser utilitiesParser = new UtilitiesParser(receiver);
+
+        SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
+        String username, password;
+
+        if (isUserOnLocalWifi()) {
+            username = mSharedPrefUtil.getDomoticzLocalUsername();
+            password = mSharedPrefUtil.getDomoticzLocalPassword();
+        } else {
+            username = mSharedPrefUtil.getDomoticzRemoteUsername();
+            password = mSharedPrefUtil.getDomoticzRemotePassword();
+        }
+
+        String url = constructGetUrl(JSON_REQUEST_URL_UTILITIES);
+
+        RequestUtil.makeJsonGetRequest(utilitiesParser, username, password, url);
     }
 }

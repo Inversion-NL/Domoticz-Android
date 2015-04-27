@@ -19,6 +19,7 @@
     <string name="level">Level</string>
     <string name="signal_level">Signal level</string>
     <string name="status">Status</string>
+    <string name="set_point">Set point</string>
 
     <string name="action_success">Action successful</string>
 

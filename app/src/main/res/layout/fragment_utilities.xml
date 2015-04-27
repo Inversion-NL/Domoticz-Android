@@ -3,12 +3,32 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#FFFFFF">
+    android:layout_height="fill_parent">
 
     <ListView
-        android:id="@+id/listView1"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:id="@+id/utilitiesListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <LinearLayout
+        android:id="@+id/debugLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/debug_layout">
+
+        <TextView
+            android:id="@+id/debugTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/debug_textview_title"
+            android:text="@string/debug_textview_title"/>
+
+        <TextView
+            android:id="@+id/debugText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
 </LinearLayout>

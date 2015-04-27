@@ -1,34 +1,37 @@
 package nl.inversion.domoticz.Fragments;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import nl.inversion.domoticz.Adapters.UtilityAdapter;
+import nl.inversion.domoticz.Containers.UtilitiesInfo;
 import nl.inversion.domoticz.Domoticz.Domoticz;
+import nl.inversion.domoticz.Interfaces.UtilitiesReceiver;
 import nl.inversion.domoticz.R;
 
 public class Utilities extends Fragment implements View.OnClickListener {
 
-    private static final String TAG = Scenes.class.getSimpleName();
+    private static final String TAG = Utilities.class.getSimpleName();
     private ProgressDialog progressDialog;
     private Domoticz mDomoticz;
-    private TextView statusText;
+    private TextView debugText;
     private boolean debug;
-
-    public static Fragment newInstance(Context context) {
-        Switches f = new Switches();
-
-        return f;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_switches, null);
+        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_utilities, null);
+
+        getActionBar().setTitle(R.string.title_utilities);
+
         return root;
     }
 
@@ -45,9 +48,11 @@ public class Utilities extends Fragment implements View.OnClickListener {
         progressDialog.setCancelable(false);
 
         if (debug) {
-            statusText = (TextView) getView().findViewById(R.id.debugText);
-            statusText.setVisibility(View.VISIBLE);
+            debugText = (TextView) getView().findViewById(R.id.debugText);
+            debugText.setVisibility(View.VISIBLE);
         }
+
+
     }
 
     @Override
@@ -58,10 +63,84 @@ public class Utilities extends Fragment implements View.OnClickListener {
 
     private void getData() {
 
+        showProgressDialog();
+
+        mDomoticz.getUtilities(new UtilitiesReceiver() {
+            @Override
+            public void onReceiveUtilities(UtilitiesInfo[] mUtilitiesInfos) {
+                successHandling(mUtilitiesInfos.toString());
+
+                UtilityAdapter adapter = new UtilityAdapter(getActivity(), mUtilitiesInfos);
+                ListView utilitiesListView = (ListView) getView().findViewById(R.id.utilitiesListView);
+
+                utilitiesListView.setAdapter(adapter);
+
+                hideProgressDialog();
+            }
+
+            @Override
+            public void onError(Exception error) {
+                errorHandling(error);
+            }
+        });
+
+    }
+
+    /**
+     * Shows the progress dialog if isn't already showing
+     */
+    private void showProgressDialog() {
+        if (!progressDialog.isShowing())
+            progressDialog.show();
+    }
+
+    /**
+     * Hides the progress dialog if it is showing
+     */
+    private void hideProgressDialog() {
+        if (progressDialog.isShowing())
+            progressDialog.dismiss();
+    }
+
+    /**
+     * Handles the success messages
+     * @param result String result to handle
+     */
+    private void successHandling(String result) {
+        hideProgressDialog();
+
+        Log.d(TAG, result);
+        if (debug) {
+            String temp = debugText.getText().toString();
+            debugText.setText(temp + "\n\n" + result);
+        }
+    }
+
+    /**
+     * Handles the error messages
+     * @param error Exception
+     */
+    private void errorHandling(Exception error) {
+        hideProgressDialog();
+
+        error.printStackTrace();
+
+        if (debug) {
+            String temp = debugText.getText().toString();
+            debugText.setText(temp  + "\n\n" + error.getCause().getMessage());
+        } else {
+            mDomoticz.errorToast(error);
+        }
+    }
+
+    private ActionBar getActionBar() {
+        return ((ActionBarActivity) getActivity()).getSupportActionBar();
     }
 
     @Override
     public void onClick(View view) {
+        int test = 1;
+        test++;
 
     }
 }
