@@ -65,6 +65,8 @@ public class Domoticz {
     public static final int SWITCH_TYPE_SMOKE_DETECTOR = 5;
     public static final int SWITCH_TYPE_PUSH_ON_BUTTON = 9;
 
+    public static final String SWITCH_HIDDEN_CHARACTER = "$";
+
     public static final int BLINDS_ACTION_UP = 1;
     public static final int BLINDS_ACTION_STOP = 2;
     public static final int BLINDS_ACTION_DOWN = 3;

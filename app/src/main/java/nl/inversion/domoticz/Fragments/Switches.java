@@ -147,98 +147,100 @@ public class Switches extends Fragment {
     private void createRow(ExtendedStatusInfo mExtendedStatusInfo) {
 
         int switchTypeVal = mExtendedStatusInfo.getSwitchTypeVal();
+        String name = mExtendedStatusInfo.getName();
 
-        if (debug) {
-            String temp = debugText.getText().toString();
-            temp = temp + "\n\n";
-            temp = temp + mExtendedStatusInfo.getJsonObject().toString();
-            debugText.setText(temp);
-        }
+        if (!name.startsWith(Domoticz.SWITCH_HIDDEN_CHARACTER)) {
 
-        if (switchTypeVal == mDomoticz.SWITCH_TYPE_ON_OFF) {
+            if (debug) {
+                String temp = debugText.getText().toString();
+                temp = temp + "\n\n";
+                temp = temp + mExtendedStatusInfo.getJsonObject().toString();
+                debugText.setText(temp);
+            }
 
-            LayoutInflater layoutInflater =
-                    (LayoutInflater) getActivity()
-                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            final View switchRow_onOff = layoutInflater.inflate(R.layout.switch_row_on_off, null);
+            if (switchTypeVal == mDomoticz.SWITCH_TYPE_ON_OFF) {
 
-            String lastUpdate = mExtendedStatusInfo.getLastUpdate();
-            String name = mExtendedStatusInfo.getName();
-            int signalLevel = mExtendedStatusInfo.getSignalLevel();
-            final boolean status = mExtendedStatusInfo.getStatusBoolean();
+                LayoutInflater layoutInflater =
+                        (LayoutInflater) getActivity()
+                                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                final View switchRow_onOff = layoutInflater.inflate(R.layout.switch_row_on_off, null);
 
-            Switch mSwitch = (Switch) switchRow_onOff.findViewById(R.id.switch_button);
-            mSwitch.setId(mExtendedStatusInfo.getIdx());
-            mSwitch.setChecked(status);
-            mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    handleSwitchClick(compoundButton.getId(), checked);
-                }
-            });
+                String lastUpdate = mExtendedStatusInfo.getLastUpdate();
+                int signalLevel = mExtendedStatusInfo.getSignalLevel();
+                final boolean status = mExtendedStatusInfo.getStatusBoolean();
+
+                Switch mSwitch = (Switch) switchRow_onOff.findViewById(R.id.switch_button);
+                mSwitch.setId(mExtendedStatusInfo.getIdx());
+                mSwitch.setChecked(status);
+                mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                        handleSwitchClick(compoundButton.getId(), checked);
+                    }
+                });
 
 
-            TextView switch_name = (TextView) switchRow_onOff.findViewById(R.id.switch_name);
-            TextView switch_last_seen =
-                    (TextView) switchRow_onOff.findViewById(R.id.switch_lastSeen);
-            TextView switch_level =
-                    (TextView) switchRow_onOff.findViewById(R.id.switch_signal_level);
+                TextView switch_name = (TextView) switchRow_onOff.findViewById(R.id.switch_name);
+                TextView switch_last_seen =
+                        (TextView) switchRow_onOff.findViewById(R.id.switch_lastSeen);
+                TextView switch_level =
+                        (TextView) switchRow_onOff.findViewById(R.id.switch_signal_level);
 
-            switch_name.setText(name);
-            switch_last_seen.setText(lastUpdate);
-            switch_level.setText(getText(R.string.signal_level)  + ": " + signalLevel);
+                switch_name.setText(name);
+                switch_last_seen.setText(lastUpdate);
+                switch_level.setText(getText(R.string.signal_level) + ": " + signalLevel);
 
-            container.addView(switchRow_onOff);
+                container.addView(switchRow_onOff);
 
-        } else if (switchTypeVal == mDomoticz.SWITCH_TYPE_BLINDS) {
+            } else if (switchTypeVal == mDomoticz.SWITCH_TYPE_BLINDS) {
 
-            LayoutInflater layoutInflater =
-                    (LayoutInflater) getActivity()
-                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            final View switchRow_blinds = layoutInflater.inflate(R.layout.switch_row_blinds, null);
+                LayoutInflater layoutInflater =
+                        (LayoutInflater) getActivity()
+                                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                final View switchRow_blinds = layoutInflater.inflate(R.layout.switch_row_blinds, null);
 
-            String lastUpdate = mExtendedStatusInfo.getLastUpdate();
-            String name = mExtendedStatusInfo.getName();
-            String status = mExtendedStatusInfo.getStatus();
+                String lastUpdate = mExtendedStatusInfo.getLastUpdate();
+                String status = mExtendedStatusInfo.getStatus();
 
-            ImageButton buttonUp = (ImageButton) switchRow_blinds.findViewById(R.id.switch_button_up);
-            buttonUp.setId(mExtendedStatusInfo.getIdx());
-            buttonUp.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    handleBlindsClick(view.getId(), Domoticz.BLINDS_ACTION_UP);
-                }
-            });
+                ImageButton buttonUp = (ImageButton) switchRow_blinds.findViewById(R.id.switch_button_up);
+                buttonUp.setId(mExtendedStatusInfo.getIdx());
+                buttonUp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        handleBlindsClick(view.getId(), Domoticz.BLINDS_ACTION_UP);
+                    }
+                });
 
-            ImageButton buttonStop = (ImageButton) switchRow_blinds.findViewById(R.id.switch_button_stop);
-            buttonStop.setId(mExtendedStatusInfo.getIdx());
-            buttonStop.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    handleBlindsClick(view.getId(), Domoticz.BLINDS_ACTION_STOP);
-                }
-            });
+                ImageButton buttonStop = (ImageButton) switchRow_blinds.findViewById(R.id.switch_button_stop);
+                buttonStop.setId(mExtendedStatusInfo.getIdx());
+                buttonStop.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        handleBlindsClick(view.getId(), Domoticz.BLINDS_ACTION_STOP);
+                    }
+                });
 
-            ImageButton buttonDown = (ImageButton) switchRow_blinds.findViewById(R.id.switch_button_down);
-            buttonDown.setId(mExtendedStatusInfo.getIdx());
-            buttonDown.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    handleBlindsClick(view.getId(), Domoticz.BLINDS_ACTION_DOWN);
-                }
-            });
+                ImageButton buttonDown = (ImageButton) switchRow_blinds.findViewById(R.id.switch_button_down);
+                buttonDown.setId(mExtendedStatusInfo.getIdx());
+                buttonDown.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        handleBlindsClick(view.getId(), Domoticz.BLINDS_ACTION_DOWN);
+                    }
+                });
 
-            TextView switch_name = (TextView) switchRow_blinds.findViewById(R.id.switch_name);
-            TextView switch_last_seen =
-                    (TextView) switchRow_blinds.findViewById(R.id.switch_lastSeen);
-            TextView switch_status =
-                    (TextView) switchRow_blinds.findViewById(R.id.switch_status);
+                TextView switch_name = (TextView) switchRow_blinds.findViewById(R.id.switch_name);
+                TextView switch_last_seen =
+                        (TextView) switchRow_blinds.findViewById(R.id.switch_lastSeen);
+                TextView switch_status =
+                        (TextView) switchRow_blinds.findViewById(R.id.switch_status);
 
-            switch_name.setText(name);
-            switch_last_seen.setText(lastUpdate);
-            switch_status.setText(getText(R.string.status)  + ": " + status);
+                switch_name.setText(name);
+                switch_last_seen.setText(lastUpdate);
+                switch_status.setText(getText(R.string.status) + ": " + status);
 
-            container.addView(switchRow_blinds);
+                container.addView(switchRow_blinds);
+            }
         }
 
         // Calculate if this is the last switch were working on
