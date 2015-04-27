@@ -10,6 +10,7 @@ public class ExtendedStatusInfo {
 
     String name;
     int level;
+    int favorite;
     String type;
     String status;
     int batteryLevel;
@@ -24,6 +25,7 @@ public class ExtendedStatusInfo {
 
         name = row.getString("Name");
         level = row.getInt("LevelInt");
+        favorite = row.getInt("Favorite");
         type = row.getString("Type");
         status = row.getString("Status");
         batteryLevel = row.getInt("BatteryLevel");
@@ -39,6 +41,7 @@ public class ExtendedStatusInfo {
         return "ExtendedStatusInfo{" +
                 "name='" + name + '\'' +
                 ", level=" + level +
+                ", favorite=" + favorite +
                 ", type='" + type + '\'' +
                 ", status='" + status + '\'' +
                 ", batteryLevel=" + batteryLevel +
@@ -60,6 +63,10 @@ public class ExtendedStatusInfo {
 
     public int getLevel() {
         return level;
+    }
+
+    public int getFavorite() {
+        return favorite;
     }
 
     public String getType() {
