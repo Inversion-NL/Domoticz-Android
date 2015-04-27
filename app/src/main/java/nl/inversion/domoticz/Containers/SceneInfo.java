@@ -34,6 +34,22 @@ public class SceneInfo {
         idx = row.getInt("idx");
     }
 
+    @Override
+    public String toString() {
+        return "SceneInfo{" +
+                "Favorite=" + Favorite +
+                ", HardwareID=" + HardwareID +
+                ", LastUpdate='" + LastUpdate + '\'' +
+                ", Name='" + Name + '\'' +
+                ", OffAction='" + OffAction + '\'' +
+                ", OnAction='" + OnAction + '\'' +
+                ", Status='" + Status + '\'' +
+                ", Timers=" + Timers +
+                ", Type='" + Type + '\'' +
+                ", idx=" + idx +
+                '}';
+    }
+
     public int getFavorite() {
         return Favorite;
     }

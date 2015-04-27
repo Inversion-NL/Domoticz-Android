@@ -56,7 +56,7 @@
     </string-array>
 
     <!--        Information category       -->
-    <string name="info_version">1.0</string>
+    <string name="info_version">Version</string>
 
     <!--        Debug category       -->
     <string name="debug_switch_title">Debugging</string>

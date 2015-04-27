@@ -1,6 +1,9 @@
 package nl.inversion.domoticz.Fragments;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.MultiSelectListPreference;
 import android.preference.PreferenceFragment;
@@ -27,7 +30,23 @@ public class Preference extends PreferenceFragment {
 
         setStartUpScreenDefaultValue();
         setLocalServerSsid();
+        setVersionInfo();
 
+    }
+
+    private void setVersionInfo() {
+
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        String appVersion = "";
+        if (pInfo != null) appVersion = pInfo.versionName;
+
+        EditTextPreference version = (EditTextPreference) findPreference("version");
+        version.setSummary(appVersion);
     }
 
     private void setLocalServerSsid() {

@@ -1,6 +1,5 @@
 package nl.inversion.domoticz.Containers;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,6 +32,22 @@ public class ExtendedStatusInfo {
         switchTypeVal = row.getInt("SwitchTypeVal");
         lastUpdate = row.getString("LastUpdate");
         idx = row.getInt("idx");
+    }
+
+    @Override
+    public String toString() {
+        return "ExtendedStatusInfo{" +
+                "name='" + name + '\'' +
+                ", level=" + level +
+                ", type='" + type + '\'' +
+                ", status='" + status + '\'' +
+                ", batteryLevel=" + batteryLevel +
+                ", signalLevel=" + signalLevel +
+                ", switchTypeVal=" + switchTypeVal +
+                ", switchType='" + switchType + '\'' +
+                ", lastUpdate='" + lastUpdate + '\'' +
+                ", idx=" + idx +
+                '}';
     }
 
     public JSONObject getJsonObject() {

@@ -24,6 +24,17 @@ public class SwitchInfo {
         idx = row.getInt("idx");
     }
 
+    @Override
+    public String toString() {
+        return "SwitchInfo{" +
+                "IsDimmer='" + IsDimmer + '\'' +
+                ", Name='" + Name + '\'' +
+                ", SubType='" + SubType + '\'' +
+                ", type='" + type + '\'' +
+                ", idx=" + idx +
+                '}';
+    }
+
     public String getIsDimmerString() {
         return IsDimmer;
     }

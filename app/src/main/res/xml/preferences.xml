@@ -141,10 +141,11 @@
         android:title="@string/category_info">
         <EditTextPreference
             android:key="version"
+            android:persistent="false"
+            android:selectable="false"
+            android:shouldDisableView="false"
             android:title="@string/info_version"
-            android:text="Version 1.0.2"
-            android:inputType="none"
-            android:focusable="false">
+            android:summary="Version 1.0.2">
         </EditTextPreference>
 
     </PreferenceCategory>
