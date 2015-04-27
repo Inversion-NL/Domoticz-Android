@@ -28,12 +28,16 @@ public class PhoneConnectionUtil {
 
     public CharSequence[] startSsidScanAsCharSequence() {
         List<ScanResult> results = startSsidScan();
-        CharSequence[] entries = new CharSequence[results.size()];
+        CharSequence[] entries = new CharSequence[0];
 
-        int i = 0;
-        for (ScanResult result : results) {
-            entries[i] = result.SSID;
-            i++;
+        if (results != null && results.size() > 0) {
+            entries = new CharSequence[results.size()];
+
+            int i = 0;
+            for (ScanResult result : results) {
+                entries[i] = result.SSID;
+                i++;
+            }
         }
         return entries;
     }
