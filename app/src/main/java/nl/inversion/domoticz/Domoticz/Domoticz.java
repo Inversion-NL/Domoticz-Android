@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import java.util.Set;
 
-import nl.inversion.domoticz.Interfaces.PutCommandReceiver;
+import nl.inversion.domoticz.Interfaces.setCommandReceiver;
 import nl.inversion.domoticz.Interfaces.ScenesReceiver;
 import nl.inversion.domoticz.Interfaces.StatusReceiver;
 import nl.inversion.domoticz.Interfaces.SwitchesReceiver;
@@ -47,18 +47,21 @@ public class Domoticz {
 
     public static final int JSON_SET_URL_SCENES = 101;
     public static final int JSON_SET_URL_SWITCHES = 102;
+    public static final int JSON_SET_URL_TEMP = 103;
 
     public static final int JSON_GET_STATUS = 301;
 
     public static final int JSON_ACTION_ON = 201;
     public static final int JSON_ACTION_OFF = 202;
-
-    public static final int JSON_ACTION_UP = 301;
-    public static final int JSON_ACTION_STOP = 302;
-    public static final int JSON_ACTION_DOWN = 303;
+    public static final int JSON_ACTION_UP = 203;
+    public static final int JSON_ACTION_STOP = 204;
+    public static final int JSON_ACTION_DOWN = 205;
+    public static final int JSON_ACTION_MIN = 206;
+    public static final int JSON_ACTION_PLUS = 207;
 
     public static final String SCENE_TYPE_GROUP = "Group";
     public static final String SCENE_TYPE_SCENE = "Scene";
+    public static final String UTILITIES_TYPE_THERMOSTAT = "Thermostat";
 
     public static final int SWITCH_TYPE_ON_OFF = 0;
     public static final int SWITCH_TYPE_CONTACT = 2;
@@ -72,7 +75,11 @@ public class Domoticz {
     public static final int BLINDS_ACTION_STOP = 2;
     public static final int BLINDS_ACTION_DOWN = 3;
 
-    public static final String[] ITEMS_UTILITIES = {"Thermostat"};
+    public static final int THERMOSTAT_ACTION_PLUS = 11;
+    public static final int THERMOSTAT_ACTION_MIN = 12;
+
+
+    public static final String[] ITEMS_UTILITIES = {UTILITIES_TYPE_THERMOSTAT};
 
 
     /*
@@ -80,10 +87,11 @@ public class Domoticz {
      */
     private static final String ACTION_ON = "On";
     private static final String ACTION_OFF = "Off";
-
     private static final String ACTION_UP = "Up";
     private static final String ACTION_STOP = "Stop";
     private static final String ACTION_DOWN = "Down";
+    private static final String ACTION_PLUS = "Plus";
+    private static final String ACTION_MIN = "Min";
 
     private static final String URL_DASHBOARD = "";
     private static final String URL_SCENES = "/json.htm?type=scenes";
@@ -96,18 +104,13 @@ public class Domoticz {
     private static final String URL_STATUS = "/json.htm?type=devices&rid=";
     private static final String URL_SUNRISE_SUNSET = "/json.htm?type=command&param=getSunRiseSet";
 
-    /**
-     * Level should be a value between 1 (0%) and 16 (100%)
-     * When the light is off, it will be turned on
-     * Returns:
-     *      "status" : "OK",
-     "      "title" : "SwitchLight"
-     */
     private static final String URL_SWITCH_DIM_LEVEL = "&switchcmd=Set%20Level&level=";
     private static final String URL_SWITCH_SCENE = "/json.htm?type=command&param=switchscene&idx=";
     private static final String URL_SWITCH_SWITCHES = "/json.htm?type=command&param=switchlight&idx=";
     private static final String URL_SWITCH_CMD = "&switchcmd=";
     private static final String URL_SWITCH_LEVEL = "&level=0";
+    private static final String URL_TEMP_BASE = "/json.htm?type=command&param=udevice&idx=";
+    private static final String URL_TEMP_VALUE = "&nvalue=0&svalue=";
 
     private static final String URL_PROTOCOL_INSECURE = "http://";
     private static final String URL_PROTOCOL_SECURE = "https://";
@@ -221,22 +224,6 @@ public class Domoticz {
         return url;
     }
 
-    private String getJsonSetUrl(int jsonSetUrl) {
-
-        String url = URL_SWITCHES;
-
-        switch (jsonSetUrl) {
-            case JSON_SET_URL_SCENES:
-                url = URL_SWITCH_SCENE;
-                break;
-
-            case JSON_SET_URL_SWITCHES:
-                url = URL_SWITCH_SWITCHES;
-                break;
-        }
-        return url;
-    }
-
     private String constructGetUrl(int jsonGetUrl) {
 
         String protocol, url, port, jsonUrl;
@@ -270,9 +257,9 @@ public class Domoticz {
         return fullString;
     }
 
-    public String constructSetUrl(int jsonSetUrl, int idx, int action) {
+    public String constructSetUrl(int jsonSetUrl, int idx, int action, long value) {
 
-        String protocol, url, port, jsonUrl, actionUrl = null;
+        String protocol, baseUrl, url, port, jsonUrl = null, actionUrl = null;
         StringBuilder buildUrl = new StringBuilder();
         SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
 
@@ -282,14 +269,14 @@ public class Domoticz {
                 protocol = URL_PROTOCOL_SECURE;
             } else protocol = URL_PROTOCOL_INSECURE;
 
-            url = mSharedPrefUtil.getDomoticzLocalUrl();
+            baseUrl = mSharedPrefUtil.getDomoticzLocalUrl();
             port = mSharedPrefUtil.getDomoticzLocalPort();
 
         } else {
             if (mSharedPrefUtil.isDomoticzRemoteSecure()) {
                 protocol = URL_PROTOCOL_SECURE;
             } else protocol = URL_PROTOCOL_INSECURE;
-            url = mSharedPrefUtil.getDomoticzRemoteUrl();
+            baseUrl = mSharedPrefUtil.getDomoticzRemoteUrl();
             port = mSharedPrefUtil.getDomoticzRemotePort();
         }
 
@@ -314,14 +301,41 @@ public class Domoticz {
                 actionUrl = ACTION_DOWN;
                 break;
 
+            case JSON_ACTION_MIN:
+                actionUrl = String.valueOf(value);
+                break;
+
+            case JSON_ACTION_PLUS:
+                actionUrl = String.valueOf(value);
+                break;
+
         }
 
-        jsonUrl = getJsonSetUrl(jsonSetUrl)
-                + String.valueOf(idx)
-                + URL_SWITCH_CMD + actionUrl;
+        switch (jsonSetUrl) {
+            case JSON_SET_URL_SCENES:
+                url = URL_SWITCH_SCENE;
+                jsonUrl = url
+                        + String.valueOf(idx)
+                        + URL_SWITCH_CMD + actionUrl;
+                break;
+
+            case JSON_SET_URL_SWITCHES:
+                url = URL_SWITCH_SWITCHES;
+                jsonUrl = url
+                        + String.valueOf(idx)
+                        + URL_SWITCH_CMD + actionUrl;
+                break;
+
+            case JSON_SET_URL_TEMP:
+                url = URL_TEMP_BASE;
+                jsonUrl = url
+                        + String.valueOf(idx)
+                        + URL_TEMP_VALUE + actionUrl;
+                break;
+        }
 
         String fullString = buildUrl.append(protocol)
-                .append(url).append(":")
+                .append(baseUrl).append(":")
                 .append(port)
                 .append(jsonUrl).toString();
 
@@ -392,9 +406,9 @@ public class Domoticz {
         RequestUtil.makeJsonGetRequest(switchesParser, username, password, url);
     }
 
-    public void setAction(int idx, int jsonUrl, int jsonAction, PutCommandReceiver receiver) {
+    public void setAction(int idx, int jsonUrl, int jsonAction, long value, setCommandReceiver receiver) {
 
-        PutCommandParser putCommandParser = new PutCommandParser(receiver);
+        setCommandParser setCommandParser = new setCommandParser(receiver);
 
         SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
         String username, password;
@@ -410,15 +424,19 @@ public class Domoticz {
         String url = null;
         switch (jsonUrl) {
             case JSON_SET_URL_SCENES:
-                url = constructSetUrl(JSON_SET_URL_SCENES, idx, jsonAction);
+                url = constructSetUrl(JSON_SET_URL_SCENES, idx, jsonAction, value);
                 break;
 
             case JSON_SET_URL_SWITCHES:
-                url = constructSetUrl(JSON_SET_URL_SWITCHES, idx, jsonAction);
+                url = constructSetUrl(JSON_SET_URL_SWITCHES, idx, jsonAction, value);
+                break;
+
+            case JSON_SET_URL_TEMP:
+                url = constructSetUrl(JSON_SET_URL_TEMP, idx, jsonAction, value);
 
         }
 
-        RequestUtil.makeJsonPutRequest(putCommandParser, username, password, url);
+        RequestUtil.makeJsonPutRequest(setCommandParser, username, password, url);
     }
 
     public void getStatus(int idx, StatusReceiver receiver) {

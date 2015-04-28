@@ -1,6 +1,6 @@
 package nl.inversion.domoticz.Interfaces;
 
-public interface PutCommandReceiver {
+public interface setCommandReceiver {
 
     void onReceiveResult(String result);
 

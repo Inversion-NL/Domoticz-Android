@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import nl.inversion.domoticz.Containers.ExtendedStatusInfo;
 import nl.inversion.domoticz.Containers.SwitchInfo;
 import nl.inversion.domoticz.Domoticz.Domoticz;
-import nl.inversion.domoticz.Interfaces.PutCommandReceiver;
+import nl.inversion.domoticz.Interfaces.setCommandReceiver;
 import nl.inversion.domoticz.Interfaces.StatusReceiver;
 import nl.inversion.domoticz.Interfaces.SwitchesReceiver;
 import nl.inversion.domoticz.R;
@@ -273,7 +273,7 @@ public class Switches extends Fragment {
                 break;
         }
 
-        mDomoticz.setAction(idx, jsonUrl, jsonAction, new PutCommandReceiver() {
+        mDomoticz.setAction(idx, jsonUrl, jsonAction, 0, new setCommandReceiver() {
             @Override
             public void onReceiveResult(String result) {
                 Toast.makeText(getActivity(), R.string.action_success, Toast.LENGTH_LONG).show();
@@ -302,7 +302,7 @@ public class Switches extends Fragment {
         if (checked) jsonAction = mDomoticz.JSON_ACTION_ON;
         else jsonAction = mDomoticz.JSON_ACTION_OFF;
 
-        mDomoticz.setAction(idx, jsonUrl, jsonAction, new PutCommandReceiver() {
+        mDomoticz.setAction(idx, jsonUrl, jsonAction, 0, new setCommandReceiver() {
             @Override
             public void onReceiveResult(String result) {
                 successHandling(result);
