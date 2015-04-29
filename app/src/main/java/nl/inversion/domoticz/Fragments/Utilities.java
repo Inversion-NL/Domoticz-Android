@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,10 +28,12 @@ public class Utilities extends Fragment implements ThermostatButtonClickListener
     private ProgressDialog progressDialog;
     private Domoticz mDomoticz;
     private TextView debugText;
+    ListView utilitiesListView;
     private boolean debug;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_utilities, null);
 
         getActionBar().setTitle(R.string.title_utilities);
@@ -77,7 +80,8 @@ public class Utilities extends Fragment implements ThermostatButtonClickListener
                 successHandling(mUtilitiesInfos.toString());
 
                 UtilityAdapter adapter = new UtilityAdapter(getActivity(), mUtilitiesInfos, listener);
-                ListView utilitiesListView = (ListView) getView().findViewById(R.id.utilitiesListView);
+                utilitiesListView =
+                        (ListView) getView().findViewById(R.id.utilitiesListView);
 
                 utilitiesListView.setAdapter(adapter);
 
@@ -118,6 +122,8 @@ public class Utilities extends Fragment implements ThermostatButtonClickListener
             public void onReceiveResult(String result) {
                 Toast.makeText(getActivity(), R.string.action_success, Toast.LENGTH_LONG).show();
                 successHandling(result);
+                mU
+                notifyDataSetChanged();
             }
 
             @Override
@@ -125,6 +131,12 @@ public class Utilities extends Fragment implements ThermostatButtonClickListener
                 errorHandling(error);
             }
         });
+
+    }
+
+    private void notifyDataSetChanged() {
+
+        ((BaseAdapter) utilitiesListView.getAdapter()).notifyDataSetChanged();
 
     }
 

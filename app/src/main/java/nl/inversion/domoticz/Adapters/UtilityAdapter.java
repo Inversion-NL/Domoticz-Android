@@ -22,7 +22,8 @@ public class UtilityAdapter extends ArrayAdapter<UtilitiesInfo> {
     UtilitiesInfo data[] = null;
     private final ThermostatButtonClickListener listener;
 
-    public UtilityAdapter(Context context, UtilitiesInfo[] data, ThermostatButtonClickListener listener) {
+    public UtilityAdapter(
+            Context context, UtilitiesInfo[] data, ThermostatButtonClickListener listener) {
         super(context, 0, data);
 
         this.context = context;
@@ -66,14 +67,16 @@ public class UtilityAdapter extends ArrayAdapter<UtilitiesInfo> {
                     @Override
                     public void onClick(View view) {
                         long newValue = setPoint - 1;
-                        handleThermostatClick(view.getId(), Domoticz.THERMOSTAT_ACTION_MIN, newValue);
+                        handleThermostatClick(
+                                view.getId(), Domoticz.THERMOSTAT_ACTION_MIN, newValue);
                     }
                 });
                 holder.buttonPlus.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         long newValue = setPoint + 1;
-                        handleThermostatClick(view.getId(), Domoticz.THERMOSTAT_ACTION_PLUS, newValue);
+                        handleThermostatClick(
+                                view.getId(), Domoticz.THERMOSTAT_ACTION_PLUS, newValue);
                     }
                 });
             }

@@ -74,4 +74,36 @@ public class UtilitiesInfo {
     public JSONObject getJsonObject() {
         return this.jsonObject;
     }
+
+    public void setIdx(int idx) {
+        this.idx = idx;
+    }
+
+    public void setName(String name) {
+        Name = name;
+    }
+
+    public void setLastUpdate(String lastUpdate) {
+        LastUpdate = lastUpdate;
+    }
+
+    public void setSetPoint(long setPoint) {
+        this.setPoint = setPoint;
+    }
+
+    public void setType(String type) {
+        Type = type;
+    }
+
+    public void setFavorite(int favorite) {
+        Favorite = favorite;
+    }
+
+    public void setHardwareID(int hardwareID) {
+        HardwareID = hardwareID;
+    }
+
+    public void setSignalLevel(int signalLevel) {
+        this.signalLevel = signalLevel;
+    }
 }
