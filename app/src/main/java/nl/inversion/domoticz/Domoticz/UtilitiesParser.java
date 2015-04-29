@@ -34,7 +34,7 @@ public class UtilitiesParser implements JSONParserInterface {
 
         try {
             JSONArray jsonArray = new JSONArray(result);
-            ArrayList<UtilitiesInfo> mUtilitiesInfoArrayList = new ArrayList<>();
+            ArrayList<UtilitiesInfo> mUtilities = new ArrayList<>();
 
 
             if (jsonArray.length() > 0) {
@@ -43,14 +43,11 @@ public class UtilitiesParser implements JSONParserInterface {
                     JSONObject row = jsonArray.getJSONObject(i);
 
                     if (utilityItemsList.contains(row.getString("Type"))) {
-                        mUtilitiesInfoArrayList.add(new UtilitiesInfo(row));
+                        mUtilities.add(new UtilitiesInfo(row));
                     }
 
                 }
             }
-
-            UtilitiesInfo mUtilities[] = new UtilitiesInfo[mUtilitiesInfoArrayList.size()];
-            mUtilities = mUtilitiesInfoArrayList.toArray(mUtilities);
 
             utilitiesReceiver.onReceiveUtilities(mUtilities);
 

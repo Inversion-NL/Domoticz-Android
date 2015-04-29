@@ -9,9 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import nl.inversion.domoticz.Adapters.UtilityAdapter;
 import nl.inversion.domoticz.Containers.UtilitiesInfo;
@@ -24,8 +28,16 @@ import nl.inversion.domoticz.R;
 public class Utilities extends Fragment implements ThermostatButtonClickListener {
 
     private static final String TAG = Utilities.class.getSimpleName();
-    private ProgressDialog progressDialog;
+
     private Domoticz mDomoticz;
+    private ArrayList<UtilitiesInfo> mUtilitiesInfos;
+
+    private int clickedIdx;
+    private long thermostatSetPointValue;
+
+    private ListView utilitiesListView;
+    private UtilityAdapter adapter;
+    private ProgressDialog progressDialog;
     private TextView debugText;
     private boolean debug;
 
@@ -72,13 +84,16 @@ public class Utilities extends Fragment implements ThermostatButtonClickListener
         final ThermostatButtonClickListener listener = this;
 
         mDomoticz.getUtilities(new UtilitiesReceiver() {
+
+
             @Override
-            public void onReceiveUtilities(UtilitiesInfo[] mUtilitiesInfos) {
+            public void onReceiveUtilities(ArrayList<UtilitiesInfo> mUtilitiesInfos) {
                 successHandling(mUtilitiesInfos.toString());
 
-                UtilityAdapter adapter = new UtilityAdapter(getActivity(), mUtilitiesInfos, listener);
-                ListView utilitiesListView = (ListView) getView().findViewById(R.id.utilitiesListView);
+                Utilities.this.mUtilitiesInfos = mUtilitiesInfos;
 
+                adapter = new UtilityAdapter(getActivity(), mUtilitiesInfos, listener);
+                utilitiesListView = (ListView) getView().findViewById(R.id.utilitiesListView);
                 utilitiesListView.setAdapter(adapter);
 
                 hideProgressDialog();
@@ -94,6 +109,9 @@ public class Utilities extends Fragment implements ThermostatButtonClickListener
 
     @Override
     public void onThermostatClick(int idx, int action, long newSetPoint) {
+
+        clickedIdx = idx;
+        thermostatSetPointValue = newSetPoint;
 
         Log.d(TAG, "onThermostatClick");
 
@@ -116,7 +134,8 @@ public class Utilities extends Fragment implements ThermostatButtonClickListener
         mDomoticz.setAction(idx, jsonUrl, jsonAction, newSetPoint, new setCommandReceiver() {
             @Override
             public void onReceiveResult(String result) {
-                Toast.makeText(getActivity(), R.string.action_success, Toast.LENGTH_LONG).show();
+                updateThermostatSetPointValue(clickedIdx, thermostatSetPointValue);
+                Toast.makeText(getActivity(), R.string.action_success, Toast.LENGTH_SHORT).show();
                 successHandling(result);
             }
 
@@ -125,6 +144,33 @@ public class Utilities extends Fragment implements ThermostatButtonClickListener
                 errorHandling(error);
             }
         });
+
+    }
+
+    /**
+     * Updates the set point in the Utilities container
+     * @param idx ID of the utility to be changed
+     * @param newSetPoint The new set point value
+     */
+    private void updateThermostatSetPointValue(int idx, long newSetPoint) {
+
+        for (UtilitiesInfo info : mUtilitiesInfos) {
+            if (info.getIdx() == idx) {
+                info.setSetPoint(newSetPoint);
+                break;
+            }
+        }
+        notifyDataSetChanged();
+
+    }
+
+    /**
+     * Notifies the list view adapter the data has changed and refreshes the list view
+     */
+    private void notifyDataSetChanged() {
+
+        adapter.notifyDataSetChanged();
+        // utilitiesListView.setAdapter(adapter);
 
     }
 

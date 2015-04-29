@@ -9,6 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import nl.inversion.domoticz.Containers.UtilitiesInfo;
 import nl.inversion.domoticz.Domoticz.Domoticz;
 import nl.inversion.domoticz.Interfaces.ThermostatButtonClickListener;
@@ -19,10 +21,10 @@ import nl.inversion.domoticz.R;
 public class UtilityAdapter extends ArrayAdapter<UtilitiesInfo> {
 
     Context context;
-    UtilitiesInfo data[] = null;
+    ArrayList<UtilitiesInfo> data = null;
     private final ThermostatButtonClickListener listener;
 
-    public UtilityAdapter(Context context, UtilitiesInfo[] data, ThermostatButtonClickListener listener) {
+    public UtilityAdapter(Context context, ArrayList<UtilitiesInfo> data, ThermostatButtonClickListener listener) {
         super(context, 0, data);
 
         this.context = context;
@@ -36,7 +38,7 @@ public class UtilityAdapter extends ArrayAdapter<UtilitiesInfo> {
         ViewHolder holder;
         int layoutResourceId = 0;
 
-        UtilitiesInfo mUtilitiesInfo = data[position];
+        UtilitiesInfo mUtilitiesInfo = data.get(position);
 
         if (row == null) {
             holder = new ViewHolder();
