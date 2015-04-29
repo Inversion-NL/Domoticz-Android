@@ -24,6 +24,7 @@ public class UtilityAdapter extends ArrayAdapter<UtilitiesInfo> {
     ArrayList<UtilitiesInfo> data = null;
     private final ThermostatButtonClickListener listener;
 
+
     public UtilityAdapter(Context context, ArrayList<UtilitiesInfo> data, ThermostatButtonClickListener listener) {
         super(context, 0, data);
 
