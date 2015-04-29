@@ -169,8 +169,8 @@ public class Utilities extends Fragment implements ThermostatButtonClickListener
      */
     private void notifyDataSetChanged() {
 
-        adapter.notifyDataSetChanged();
-        // utilitiesListView.setAdapter(adapter);
+        // adapter.notifyDataSetChanged();
+        utilitiesListView.setAdapter(adapter);
 
     }
 
