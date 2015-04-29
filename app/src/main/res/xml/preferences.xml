@@ -15,6 +15,14 @@
 
     <PreferenceCategory
         android:title="@string/category_server">
+        <Preference
+            android:title="@string/server_settings">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="nl.inversion.domoticz"
+                android:targetClass="nl.inversion.domoticz.ServerSettingsActivity"
+                />
+        </Preference>
         <PreferenceScreen
             android:title="@string/server_settings">
 
