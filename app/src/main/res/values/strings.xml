@@ -20,12 +20,9 @@
     <string name="signal_level">Signal level</string>
     <string name="status">Status</string>
     <string name="set_point">Set point</string>
-
     <string name="action_success">Action successful</string>
 
     <string name="debug_textview_title">Debugging info</string>
-    <string name="title_activity_server_settings">Server settings</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+
 </resources>

@@ -62,6 +62,10 @@ public class SharedPrefUtil {
         }
     }
 
+    public void setStartupScreenIndexValue(int position) {
+        editor.putInt("startup_screen", position);
+    }
+
     public boolean isDebugEnabled() {
         return prefs.getBoolean("debugging", false);
     }
