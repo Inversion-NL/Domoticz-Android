@@ -52,6 +52,7 @@ public class ServerSettingsActivity extends ActionBarActivity {
         password_input.setText(mSharedPrefs.getDomoticzRemotePassword());
 
         setProtocol_spinner();
+        setStartScreen_spinner();
 
     }
 
@@ -73,7 +74,27 @@ public class ServerSettingsActivity extends ActionBarActivity {
 
             }
         });
+    }
 
+    private void setStartScreen_spinner() {
+
+        String[] startScreens = getResources().getStringArray(R.array.drawer_actions);
+
+        ArrayAdapter<String> startScreenAdapter
+                = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, startScreens);
+        startScreen_spinner.setAdapter(startScreenAdapter);
+        startScreen_spinner.setSelection(mSharedPrefs.getStartupScreenIndexValue());
+        startScreen_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
     }
 
