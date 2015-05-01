@@ -1,6 +1,7 @@
 package nl.inversion.domoticz;
 
 import android.app.AlertDialog;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -35,10 +36,37 @@ public class ServerSettingsActivity extends ActionBarActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                if (onBackPressedCheck()) NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onPause() {
 
         shutdownCheck();
         super.onPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (onBackPressedCheck()) super.onBackPressed();
+    }
+
+    private boolean onBackPressedCheck() {
+        shutdownCheck();
+        Domoticz mDomoticz = new Domoticz(this);
+
+        if (!mDomoticz.isConnectionDataComplete()) showConnectionDataWarning();
+        else if (mSharedPrefs.getDomoticzRemoteUrl().startsWith("http")) showUrlMalformedDialog();
+        else return true;
+
+        return false;
     }
 
     private void shutdownCheck(){
