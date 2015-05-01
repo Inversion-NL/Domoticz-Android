@@ -1,7 +1,9 @@
 package nl.inversion.domoticz;
 
+import android.app.AlertDialog;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -9,8 +11,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 
-import java.lang.reflect.Array;
-
+import nl.inversion.domoticz.Domoticz.Domoticz;
 import nl.inversion.domoticz.Utils.SharedPrefUtil;
 
 public class ServerSettingsActivity extends ActionBarActivity {
@@ -20,6 +21,7 @@ public class ServerSettingsActivity extends ActionBarActivity {
     EditText server_input, port_input, username_input, password_input;
     Spinner protocol_spinner, startScreen_spinner;
     Switch localServer_switch;
+    int protocolSelectedPosition, startScreenSelectedPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,54 @@ public class ServerSettingsActivity extends ActionBarActivity {
 
         getLayoutReferences();
         setPreferenceValues();
+    }
+
+    @Override
+    public void onPause() {
+
+        shutdownCheck();
+        super.onPause();
+    }
+
+    private void shutdownCheck(){
+
+        writePreferenceValues();
+
+        Switch useSameAddress = (Switch) findViewById(R.id.localServer_switch);
+        if (!useSameAddress.isChecked()) {
+            mSharedPrefs.setLocalSameAddressAsRemote();
+        }
+    }
+
+    /**
+     * Shows a dialog to warn the user for incorrect server address settings
+     */
+    private void showUrlMalformedDialog() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this)
+                .setTitle(R.string.msg_connectionUrlMalformed_title)
+                .setCancelable(true)
+                .setMessage(getString(R.string.msg_connectionUrlMalformed_msg))
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert);
+
+        AlertDialog emptyCredentialsAlertDialog = alertDialogBuilder.create();
+        emptyCredentialsAlertDialog.show();
+    }
+
+    /**
+     * Shows a dialog to warn the user for missing connection settings
+     */
+    private void showConnectionDataWarning() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this)
+                .setTitle(R.string.msg_connectionSettingsIncomplete_title)
+                .setCancelable(true)
+                .setMessage(getString(R.string.msg_connectionSettingsIncomplete_msg1) + "\n\n" +
+                            getString(R.string.msg_connectionSettingsIncomplete_msg2))
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert);
+
+        AlertDialog emptyCredentialsAlertDialog = alertDialogBuilder.create();
+        emptyCredentialsAlertDialog.show();
     }
 
     private void getLayoutReferences() {
@@ -46,10 +96,10 @@ public class ServerSettingsActivity extends ActionBarActivity {
 
     private void setPreferenceValues() {
 
-        server_input.setText(mSharedPrefs.getDomoticzRemoteUrl());
-        port_input.setText(mSharedPrefs.getDomoticzRemotePort());
         username_input.setText(mSharedPrefs.getDomoticzRemoteUsername());
         password_input.setText(mSharedPrefs.getDomoticzRemotePassword());
+        server_input.setText(mSharedPrefs.getDomoticzRemoteUrl());
+        port_input.setText(mSharedPrefs.getDomoticzRemotePort());
 
         setProtocol_spinner();
         setStartScreen_spinner();
@@ -63,10 +113,11 @@ public class ServerSettingsActivity extends ActionBarActivity {
         ArrayAdapter<String> protocolAdapter
                 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, protocols);
         protocol_spinner.setAdapter(protocolAdapter);
+        protocol_spinner.setSelection(getPrefsDomoticzSecureIndex());
         protocol_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-
+                protocolSelectedPosition = position;
             }
 
             @Override
@@ -83,11 +134,11 @@ public class ServerSettingsActivity extends ActionBarActivity {
         ArrayAdapter<String> startScreenAdapter
                 = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, startScreens);
         startScreen_spinner.setAdapter(startScreenAdapter);
-        startScreen_spinner.setSelection(mSharedPrefs.getStartupScreenIndexValue());
+        startScreen_spinner.setSelection(mSharedPrefs.getStartupScreenIndex());
         startScreen_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                startScreenSelectedPosition = position;
             }
 
             @Override
@@ -96,6 +147,45 @@ public class ServerSettingsActivity extends ActionBarActivity {
             }
         });
 
+    }
+
+    private void writePreferenceValues() {
+
+        mSharedPrefs.setDomoticzRemoteUsername(username_input.getText().toString());
+        mSharedPrefs.setDomoticzRemotePassword(password_input.getText().toString());
+        mSharedPrefs.setDomoticzRemoteUrl(server_input.getText().toString());
+        mSharedPrefs.setDomoticzRemotePort(port_input.getText().toString());
+        mSharedPrefs.setDomoticzRemoteSecure(getSpinnerDomoticzRemoteSecureBoolean());
+        mSharedPrefs.setStartupScreenIndex(startScreenSelectedPosition);
+
+    }
+
+    private boolean getSpinnerDomoticzRemoteSecureBoolean() {
+
+        String[] protocols = getResources().getStringArray(R.array.remote_server_protocols);
+
+        String temp = protocols[protocolSelectedPosition];
+        String temp2 = Domoticz.PROTOCOL_SECURE;
+
+        if (protocols[protocolSelectedPosition].equalsIgnoreCase(Domoticz.PROTOCOL_SECURE)) return true;
+        else return false;
+    }
+
+    private int getPrefsDomoticzSecureIndex() {
+
+        boolean isSecure = mSharedPrefs.isDomoticzRemoteSecure();
+        String[] protocols = getResources().getStringArray(R.array.remote_server_protocols);
+        int i = 0;
+        String protocolString;
+
+        if (isSecure) protocolString = Domoticz.PROTOCOL_SECURE;
+        else protocolString = Domoticz.PROTOCOL_INSECURE;
+
+        for (String protocol : protocols) {
+            if (protocol.equalsIgnoreCase(protocolString)) return i;
+            i++;
+        }
+        return i;
     }
 
 }

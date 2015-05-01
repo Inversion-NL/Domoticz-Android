@@ -49,7 +49,7 @@ public class MainActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        int screenIndex = mSharedPres.getStartupScreenIndexValue();
+        int screenIndex = mSharedPres.getStartupScreenIndex();
 
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
         tx.replace(R.id.main, Fragment.instantiate(MainActivity.this, fragments[screenIndex]));

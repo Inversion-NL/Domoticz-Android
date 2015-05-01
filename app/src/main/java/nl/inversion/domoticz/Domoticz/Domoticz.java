@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import nl.inversion.domoticz.Interfaces.setCommandReceiver;
@@ -33,6 +35,9 @@ public class Domoticz {
     /*
      *  Public variables
      */
+    public static final String PROTOCOL_SECURE = "HTTPS";
+    public static final String PROTOCOL_INSECURE = "HTTP";
+
     public static final String JSON_FIELD_RESULT = "result";
     public static final String JSON_FIELD_STATUS = "status";
 
@@ -152,20 +157,20 @@ public class Domoticz {
     public boolean isConnectionDataComplete() {
 
         boolean result = true;
+        HashMap<String, String> stringHashMap = new HashMap<>();
+        stringHashMap.put("Domoticz local URL", mSharedPrefUtil.getDomoticzLocalUrl());
+        stringHashMap.put("Domoticz local port", mSharedPrefUtil.getDomoticzLocalPort());
+        stringHashMap.put("Domoticz remote URL", mSharedPrefUtil.getDomoticzRemoteUrl());
+        stringHashMap.put("Domoticz remote port", mSharedPrefUtil.getDomoticzRemotePort());
 
-        String[] stringsToCheck = {
-                URL_PROTOCOL_SECURE,
-                URL_PROTOCOL_INSECURE,
-                mSharedPrefUtil.getDomoticzLocalUrl(),
-                mSharedPrefUtil.getDomoticzLocalPort(),
-                mSharedPrefUtil.getDomoticzRemoteUrl(),
-                mSharedPrefUtil.getDomoticzRemotePort()};
+        for (Map.Entry<String, String> entry : stringHashMap.entrySet()) {
 
-        for (String string : stringsToCheck) {
-            if (UsefulBits.isStringEmpty(string)) {
+            if (UsefulBits.isStringEmpty(entry.getValue())) {
+                Log.d(TAG, entry.getKey() + " is empty");
                 result = false;
                 break;
             }
+
         }
         if (debug) Log.d(TAG, "isConnectionDataComplete = " + result);
         return result;
@@ -351,10 +356,10 @@ public class Domoticz {
     public void showConnectionSettingsMissingDialog() {
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext)
-                .setTitle(R.string.msg_emptyCredentials_title)
+                .setTitle(R.string.msg_connectionSettingsIncomplete_title)
                 .setCancelable(false)
-                .setMessage(mContext.getString(R.string.msg_emptyCredentials_msg1) + "\n\n" +
-                        mContext.getString(R.string.msg_emptyCredentials_msg2))
+                .setMessage(mContext.getString(R.string.msg_connectionSettingsIncomplete_msg1) + "\n\n" +
+                        mContext.getString(R.string.msg_connectionSettingsIncomplete_msg2))
                 .setPositiveButton(R.string.settingsActivity_name, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         mContext.startActivity(new Intent(mContext, SettingsActivity.class));

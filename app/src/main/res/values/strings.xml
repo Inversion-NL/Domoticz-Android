@@ -6,11 +6,13 @@
     <string name="drawer_navigation_title">Select category</string>
 
     <string name="msg_please_wait">Please wait...</string>
-    <string name="msg_emptyCredentials_title">Connection settings incomplete</string>
-    <string name="msg_emptyCredentials_msg1">
+    <string name="msg_connectionSettingsIncomplete_title">Connection settings incomplete</string>
+    <string name="msg_connectionSettingsIncomplete_msg1">
         The connection settings for the Domoticz server are incomplete.</string>
-    <string name="msg_emptyCredentials_msg2">
+    <string name="msg_connectionSettingsIncomplete_msg2">
         Please review connection settings.</string>
+    <string name="msg_connectionUrlMalformed_title">Server address error</string>
+    <string name="msg_connectionUrlMalformed_msg">Specified server address is incorrect.</string>
 
     <string name="button_state_on">On</string>
     <string name="button_state_off">Off</string>
