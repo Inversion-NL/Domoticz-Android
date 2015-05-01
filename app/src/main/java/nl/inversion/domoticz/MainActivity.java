@@ -18,15 +18,13 @@ import android.widget.ListView;
 
 import nl.inversion.domoticz.Domoticz.Domoticz;
 import nl.inversion.domoticz.Utils.SharedPrefUtil;
+import nl.inversion.domoticz.Welcome.PageViewActivity;
 
 public class MainActivity extends ActionBarActivity {
 
     private ListView mDrawerList;
-    private ArrayAdapter<String> mAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawer;
-    private String mActivityTitle;
-    private String[] drawerActions;
     private String[] fragments;
     private String TAG = MainActivity.class.getSimpleName();
 
@@ -38,7 +36,6 @@ public class MainActivity extends ActionBarActivity {
         // Example used: http://blog.teamtreehouse.com/add-navigation-drawer-android
         mDrawerList = (ListView)findViewById(R.id.navList);
         mDrawer = (DrawerLayout)findViewById(R.id.drawer_layout);
-        mActivityTitle = getTitle().toString(); // Store current title of activity
 
         addDrawerItems();
         setupDrawer();
@@ -80,10 +77,10 @@ public class MainActivity extends ActionBarActivity {
      */
     private void addDrawerItems() {
 
-        drawerActions = getResources().getStringArray(R.array.drawer_actions);
+        String[] drawerActions = getResources().getStringArray(R.array.drawer_actions);
         fragments = getResources().getStringArray(R.array.drawer_fragments);
 
-        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, drawerActions);
+        ArrayAdapter<String> mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, drawerActions);
         mDrawerList.setAdapter(mAdapter);
 
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -154,15 +151,15 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+
+            case R.id.action_welcome:
+                startActivity(new Intent(this, PageViewActivity.class));
+                return true;
         }
 
         // Activate the navigation drawer toggle

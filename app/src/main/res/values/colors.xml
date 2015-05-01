@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="default_text_color_light">#FFFFFFFF</color>
-    <color name="default_text_color_dark">#FF000000</color>
-
     <!-- Material design colors -->
     <!--   your app branding color for the app bar -->
     <color name="primary">@color/material_indigo_500</color>
@@ -11,6 +8,15 @@
     <!--   theme UI controls like checkboxes and text fields -->
     <color name="accent">@color/material_indigo_200</color>
 
+    <color name="welcome_background">@color/material_indigo_500</color>
+    <color name="welcome_indicator_background">@color/black</color>
+    <color name="indicator_pageColor">@color/white</color>
+
+    <color name="default_text_color_light">#FFFFFFFF</color>
+    <color name="default_text_color_dark">#FF000000</color>
+
+    <color name="black">#00000000</color>
+    <color name="white">#ffffffff</color>
 
     <color name="material_teal_200">#80CBC4</color>
     <color name="material_teal_300">#4DB6AC</color>

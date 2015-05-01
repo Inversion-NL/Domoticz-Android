@@ -39,6 +39,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="nl.inversion.domoticz.SettingsActivity" />
         </activity>
+        <activity
+            android:name=".Welcome.PageViewActivity"
+            android:label="@string/title_activity_welcome" >
+        </activity>
     </application>
 
 </manifest>

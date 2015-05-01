@@ -14,6 +14,7 @@
 
     <!--        Preference screens      -->
     <string name="server_settings">Server connection settings</string>;
+    <string name="title_activity_server_settings">Server settings</string>
 
     <!--        Remote server settings       -->
     <string name="remote_server_settings_label">Remote server settings</string>
