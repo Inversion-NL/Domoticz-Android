@@ -111,7 +111,7 @@ public class ServerSettingsActivity extends ActionBarActivity {
         String[] protocols = getResources().getStringArray(R.array.remote_server_protocols);
 
         ArrayAdapter<String> protocolAdapter
-                = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, protocols);
+                = new ArrayAdapter<>(this, R.layout.spinner_list_item, protocols);
         protocol_spinner.setAdapter(protocolAdapter);
         protocol_spinner.setSelection(getPrefsDomoticzSecureIndex());
         protocol_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -132,7 +132,7 @@ public class ServerSettingsActivity extends ActionBarActivity {
         String[] startScreens = getResources().getStringArray(R.array.drawer_actions);
 
         ArrayAdapter<String> startScreenAdapter
-                = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, startScreens);
+                = new ArrayAdapter<>(this, R.layout.spinner_list_item, startScreens);
         startScreen_spinner.setAdapter(startScreenAdapter);
         startScreen_spinner.setSelection(mSharedPrefs.getStartupScreenIndex());
         startScreen_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

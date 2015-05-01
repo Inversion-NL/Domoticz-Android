@@ -29,7 +29,6 @@ public class Preference extends PreferenceFragment {
         mSharedPrefs = new SharedPrefUtil(getActivity());
 
         setStartUpScreenDefaultValue();
-        setLocalServerSsid();
         setVersionInfo();
 
     }
@@ -77,14 +76,5 @@ public class Preference extends PreferenceFragment {
         ListPreference startup_screen = (ListPreference) findPreference("startup_screen");
         startup_screen.setValueIndex(defaultValue);
 
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        SwitchPreference useSameAddress =
-                (SwitchPreference) findPreference("local_server_uses_different_address");
-        if (!useSameAddress.isChecked()) mSharedPrefs.setLocalSameAddressAsRemote();
     }
 }
