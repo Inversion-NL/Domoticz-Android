@@ -40,7 +40,7 @@
                 android:value="nl.inversion.domoticz.SettingsActivity" />
         </activity>
         <activity
-            android:name=".Welcome.PageViewActivity"
+            android:name=".Welcome.WelcomeViewActivity"
             android:label="@string/title_activity_welcome" >
         </activity>
     </application>

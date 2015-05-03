@@ -7,7 +7,6 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.MultiSelectListPreference;
 import android.preference.PreferenceFragment;
-import android.preference.SwitchPreference;
 
 import java.util.Set;
 

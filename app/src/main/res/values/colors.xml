@@ -10,7 +10,7 @@
 
     <color name="welcome_background">@color/material_indigo_500</color>
     <color name="welcome_indicator_background">@color/black</color>
-    <color name="indicator_pageColor">@color/white</color>
+    <color name="welcome_indicator_pageColor">@color/white</color>
 
     <color name="default_text_color_light">#FFFFFFFF</color>
     <color name="default_text_color_dark">#FF000000</color>

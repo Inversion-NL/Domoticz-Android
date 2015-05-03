@@ -18,7 +18,7 @@ import android.widget.ListView;
 
 import nl.inversion.domoticz.Domoticz.Domoticz;
 import nl.inversion.domoticz.Utils.SharedPrefUtil;
-import nl.inversion.domoticz.Welcome.PageViewActivity;
+import nl.inversion.domoticz.Welcome.WelcomeViewActivity;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -27,26 +27,31 @@ public class MainActivity extends ActionBarActivity {
     private DrawerLayout mDrawer;
     private String[] fragments;
     private String TAG = MainActivity.class.getSimpleName();
+    private SharedPrefUtil mSharedPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Example used: http://blog.teamtreehouse.com/add-navigation-drawer-android
-        mDrawerList = (ListView)findViewById(R.id.navList);
-        mDrawer = (DrawerLayout)findViewById(R.id.drawer_layout);
-
-        addDrawerItems();
-        setupDrawer();
-
-        SharedPrefUtil mSharedPres = new SharedPrefUtil(this);
-
+        mSharedPrefs = new SharedPrefUtil(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        int screenIndex = mSharedPres.getStartupScreenIndex();
+        mSharedPrefs.setFirstStart(true);
+
+        if (mSharedPrefs.isFirstStart()) {
+            startActivity(new Intent(this, WelcomeViewActivity.class));
+            mSharedPrefs.setFirstStart(false);
+        }
+        // Example used: http://blog.teamtreehouse.com/add-navigation-drawer-android
+        mDrawerList = (ListView) findViewById(R.id.navList);
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        addDrawerItems();
+        setupDrawer();
+
+        int screenIndex = mSharedPrefs.getStartupScreenIndex();
 
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
         tx.replace(R.id.main, Fragment.instantiate(MainActivity.this, fragments[screenIndex]));
@@ -57,6 +62,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public void onResume(){
         super.onResume();
+
         checkConnectionSettings();
     }
 
@@ -133,13 +139,13 @@ public class MainActivity extends ActionBarActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
+        if (mDrawerToggle != null) mDrawerToggle.syncState();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
+        if (mDrawerToggle != null) mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -158,7 +164,7 @@ public class MainActivity extends ActionBarActivity {
                 return true;
 
             case R.id.action_welcome:
-                startActivity(new Intent(this, PageViewActivity.class));
+                startActivity(new Intent(this, WelcomeViewActivity.class));
                 return true;
         }
 

@@ -16,6 +16,8 @@ public class SharedPrefUtil {
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
 
+    private static final String PREF_FIRST_START = "isFirstStart";
+
     private static final String http = "http://";
     private static final String https = "https://";
 
@@ -46,6 +48,15 @@ public class SharedPrefUtil {
     /*
      *      Generic settings
      */
+    public boolean isFirstStart() {
+        return prefs.getBoolean(PREF_FIRST_START, true);
+    }
+
+    public void setFirstStart(Boolean firstStart) {
+        editor.putBoolean(PREF_FIRST_START, firstStart);
+        editor.apply();
+    }
+
     public int getStartupScreenIndex() {
 
         String startupScreenSelectedValue = prefs.getString("startup_screen", null);
@@ -93,7 +104,7 @@ public class SharedPrefUtil {
 
     public void setDomoticzRemoteUsername(String username) {
         editor.putString(REMOTE_SERVER_USERNAME, username);
-        editor.commit();
+        editor.apply();
         Log.d("prefs", prefs.getString(REMOTE_SERVER_USERNAME, ""));
     }
 
@@ -103,7 +114,7 @@ public class SharedPrefUtil {
 
     public void setDomoticzRemotePassword(String password) {
         editor.putString(REMOTE_SERVER_PASSWORD, password);
-        editor.commit();
+        editor.apply();
         Log.d("prefs", prefs.getString(REMOTE_SERVER_PASSWORD, ""));
     }
 
@@ -113,7 +124,7 @@ public class SharedPrefUtil {
 
     public void setDomoticzRemoteUrl(String url) {
         editor.putString(REMOTE_SERVER_URL, url);
-        editor.commit();
+        editor.apply();
         Log.d("prefs", prefs.getString(REMOTE_SERVER_URL, ""));
 
     }
@@ -124,7 +135,7 @@ public class SharedPrefUtil {
 
     public void setDomoticzRemotePort(String port) {
         editor.putString(REMOTE_SERVER_PORT, port);
-        editor.commit();
+        editor.apply();
         Log.d("prefs", prefs.getString(REMOTE_SERVER_PORT, ""));
     }
 
@@ -134,7 +145,7 @@ public class SharedPrefUtil {
 
     public void setDomoticzRemoteSecure(Boolean secure) {
         editor.putBoolean(REMOTE_SERVER_SECURE, secure);
-        editor.commit();
+        editor.apply();
     }
 
     public String getDomoticzRemoteAuthenticationMethod() {

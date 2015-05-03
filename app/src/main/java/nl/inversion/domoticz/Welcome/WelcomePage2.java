@@ -9,30 +9,20 @@ import android.widget.TextView;
 
 import nl.inversion.domoticz.R;
 
-public class MyFragment extends Fragment{
+public class WelcomePage2 extends Fragment{
 
-    public static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
-
-    public static final MyFragment newInstance(String message) {
-
-        MyFragment f = new MyFragment();
-        Bundle bdl = new Bundle(1);
-        bdl.putString(EXTRA_MESSAGE, message);
-        f.setArguments(bdl);
-
+    public static final WelcomePage2 newInstance() {
+        WelcomePage2 f = new WelcomePage2();
         return f;
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_welcome2, container, false);
 
-        String message = getArguments().getString(EXTRA_MESSAGE);
-        View v = inflater.inflate(R.layout.myfragment_layout, container, false);
         TextView messageTextView = (TextView)v.findViewById(R.id.textView);
-        messageTextView.setText(message);
+        messageTextView.setText("U moet nog de app nog instellen");
 
         return v;
     }
