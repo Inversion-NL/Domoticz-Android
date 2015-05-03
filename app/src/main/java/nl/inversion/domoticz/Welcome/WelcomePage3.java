@@ -7,7 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 
@@ -57,7 +59,15 @@ public class WelcomePage3 extends Fragment {
         password_input  = (EditText) v.findViewById(R.id.password_input);
         protocol_spinner = (Spinner) v.findViewById(R.id.protocol_spinner);
         startScreen_spinner = (Spinner) v.findViewById(R.id.startScreen_spinner);
+        final LinearLayout local_server_settings = (LinearLayout) v.findViewById(R.id.local_server_settings);
         localServer_switch = (Switch) v.findViewById(R.id.localServer_switch);
+        localServer_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                if (checked) local_server_settings.setVisibility(View.VISIBLE);
+                else local_server_settings.setVisibility(View.INVISIBLE);
+            }
+        });
 
     }
 
@@ -124,6 +134,11 @@ public class WelcomePage3 extends Fragment {
         mSharedPrefs.setDomoticzRemotePort(port_input.getText().toString());
         mSharedPrefs.setDomoticzRemoteSecure(getSpinnerDomoticzRemoteSecureBoolean());
         mSharedPrefs.setStartupScreenIndex(startScreenSelectedPosition);
+
+        Switch useSameAddress = (Switch) v.findViewById(R.id.localServer_switch);
+        if (!useSameAddress.isChecked()) {
+            mSharedPrefs.setLocalSameAddressAsRemote();
+        }
 
     }
 

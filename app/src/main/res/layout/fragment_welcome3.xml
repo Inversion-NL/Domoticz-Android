@@ -134,17 +134,107 @@
             android:textStyle="bold" />
 
         <Switch
+            android:id="@+id/localServer_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/localServer_switch"
             android:checked="false" />
 
         <LinearLayout
             android:id="@+id/local_server_settings"
+            android:visibility="invisible"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp">
+
+            <TextView
+                android:id="@+id/local_server_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/welcome_server_address"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/local_server_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textNoSuggestions"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp">
+
+                <TextView
+                    android:id="@+id/local_protocol_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/welcome_server_protocol"
+                    android:textStyle="bold"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/local_port_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/welcome_server_port"
+                    android:textStyle="bold"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp" >
+
+                <Spinner
+                    android:id="@+id/local_protocol_spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:spinnerMode="dropdown"
+                    android:layout_weight="1" />
+
+                <EditText
+                    android:id="@+id/local_port_input"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="numberSigned"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/local_username_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/welcome_server_username"
+                android:textStyle="bold"
+                android:layout_marginTop="15dp" />
+
+            <EditText
+                android:id="@+id/local_username_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minWidth="175dp"
+                android:inputType="textNoSuggestions"/>
+
+            <TextView
+                android:id="@+id/local_password_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/welcome_server_password"
+                android:textStyle="bold"
+                android:layout_marginTop="15dp" />
+
+            <EditText
+                android:id="@+id/local_password_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:ems="10"/>
+
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
