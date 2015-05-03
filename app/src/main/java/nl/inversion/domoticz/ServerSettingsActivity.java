@@ -192,9 +192,6 @@ public class ServerSettingsActivity extends ActionBarActivity {
 
         String[] protocols = getResources().getStringArray(R.array.remote_server_protocols);
 
-        String temp = protocols[protocolSelectedPosition];
-        String temp2 = Domoticz.PROTOCOL_SECURE;
-
         if (protocols[protocolSelectedPosition].equalsIgnoreCase(Domoticz.PROTOCOL_SECURE)) return true;
         else return false;
     }

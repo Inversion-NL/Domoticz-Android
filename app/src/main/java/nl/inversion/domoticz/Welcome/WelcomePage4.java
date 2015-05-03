@@ -9,18 +9,20 @@ import android.widget.TextView;
 
 import nl.inversion.domoticz.R;
 
-public class WelcomePage1 extends Fragment{
+public class WelcomePage4 extends Fragment{
 
-    public static final WelcomePage1 newInstance() {
-        WelcomePage1 f = new WelcomePage1();
+    public static final WelcomePage4 newInstance() {
+        WelcomePage4 f = new WelcomePage4();
         return f;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_welcome1, container, false);
+        View v = inflater.inflate(R.layout.fragment_welcome4, container, false);
 
+        TextView messageTextView = (TextView)v.findViewById(R.id.textView);
+        messageTextView.setText("Checking your connection settings. \n\nPlease wait...");
 
         return v;
     }

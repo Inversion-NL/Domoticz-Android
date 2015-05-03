@@ -9,20 +9,12 @@
     android:paddingBottom="@dimen/activity_vertical_margin">
 
     <TextView
-        android:id="@+id/info_settings"
+
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:textSize="@dimen/text_size_welcomePage2_settingsInfo"
-        android:text="@string/welcome_info_settings"/>
-
-    <TextView
-        android:id="@+id/info_swipe2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:textSize="@dimen/text_size_welcomePage2_swipeInfo"
-        android:text="@string/welcome_info_swipe"/>
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

@@ -8,14 +8,12 @@
     <!--   theme UI controls like checkboxes and text fields -->
     <color name="accent">@color/material_indigo_200</color>
 
-    <color name="welcome_background">@color/material_indigo_500</color>
-    <color name="welcome_indicator_background">@color/black</color>
-    <color name="welcome_indicator_pageColor">@color/white</color>
+    <color name="welcome1_background">@color/black</color>
 
     <color name="default_text_color_light">#FFFFFFFF</color>
     <color name="default_text_color_dark">#FF000000</color>
 
-    <color name="black">#00000000</color>
+    <color name="black">#ff000000</color>
     <color name="white">#ffffffff</color>
 
     <color name="material_teal_200">#80CBC4</color>

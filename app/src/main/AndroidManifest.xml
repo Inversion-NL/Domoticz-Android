@@ -41,7 +41,7 @@
         </activity>
         <activity
             android:name=".Welcome.WelcomeViewActivity"
-            android:label="@string/title_activity_welcome" >
+            android:label="@string/welcome_title_activity_welcome" >
         </activity>
     </application>
 

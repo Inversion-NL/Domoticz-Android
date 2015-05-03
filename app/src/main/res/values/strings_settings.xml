@@ -37,8 +37,7 @@
     <!--        Local server settings       -->
     <string name="local_server_settings_label">Local server settings</string>
     <string name="local_server_used_switch_title">Different server address</string>
-    <string name="local_server_used_switch_summary_on">Use different address for local connection</string>
-    <string name="local_server_used_switch_summary_off">Use same address for local and remote connection</string>
+    <string name="local_server_used_switch_summary">Use different address for local connection</string>
     <string name="local_server_username">Username</string>
     <string name="local_server_password">Password</string>
     <string name="local_server_url_title">Domoticz address</string>

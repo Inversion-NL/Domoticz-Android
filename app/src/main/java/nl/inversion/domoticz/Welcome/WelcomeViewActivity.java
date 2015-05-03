@@ -1,5 +1,6 @@
 package nl.inversion.domoticz.Welcome;
 
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -26,8 +27,15 @@ public class WelcomeViewActivity extends FragmentActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.black));
+        }
+
         buildLayout();
     }
+
+    @Override
+    public void onBackPressed() {}
 
     private void buildLayout() {
 
@@ -56,28 +64,9 @@ public class WelcomeViewActivity extends FragmentActivity implements View.OnClic
         fList.add(WelcomePage1.newInstance());
         fList.add(WelcomePage2.newInstance());
         fList.add(WelcomePage3.newInstance());
+        fList.add(WelcomePage4.newInstance());
 
         return fList;
-    }
-
-    private void pageSelected(int position) {
-
-        switch (position) {
-
-            case 0:
-                buttonPrev.setVisibility(View.INVISIBLE);
-                break;
-
-            case 1:
-                buttonPrev.setVisibility(View.VISIBLE);
-                buttonNext.setText("next");
-                break;
-
-            case 2:
-                buttonNext.setText("finish");
-                break;
-        }
-
     }
 
     @Override
@@ -85,8 +74,9 @@ public class WelcomeViewActivity extends FragmentActivity implements View.OnClic
 
         switch(view.getId()) {
             case R.id.btn_next:
-                if (mPager.getCurrentItem() != fList.size()) {
+                if (mPager.getCurrentItem() < fList.size() - 1) {
                     mPager.setCurrentItem(mPager.getCurrentItem() + 1);
+                } else {
                     super.onBackPressed();
                 }
                 break;
@@ -98,9 +88,7 @@ public class WelcomeViewActivity extends FragmentActivity implements View.OnClic
     }
 
     @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 
     @Override
     public void onPageSelected(int position) {
@@ -108,7 +96,17 @@ public class WelcomeViewActivity extends FragmentActivity implements View.OnClic
     }
 
     @Override
-    public void onPageScrollStateChanged(int state) {
+    public void onPageScrollStateChanged(int state) {}
 
+    private void pageSelected(int position) {
+
+        if (position == 0) {
+            buttonPrev.setVisibility(View.INVISIBLE);
+        } else if (position == fList.size() - 1) {
+            buttonNext.setText("finish");
+        } else {
+            buttonPrev.setVisibility(View.VISIBLE);
+            buttonNext.setText("next");
+        }
     }
 }
