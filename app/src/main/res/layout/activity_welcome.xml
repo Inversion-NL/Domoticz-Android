@@ -12,6 +12,7 @@
         android:layout_weight="1" />
 
     <RelativeLayout
+        android:id="@+id/navigation"
         android:layout_width="fill_parent"
         android:layout_height="45dp">
 
@@ -19,8 +20,7 @@
             android:id="@+id/btn_prev"
             style="@style/welcome_navButtons"
             android:layout_alignParentLeft="true"
-            android:visibility="invisible"
-            android:text="prev"/>
+            android:visibility="invisible"/>
 
         <com.viewpagerindicator.CirclePageIndicator
             android:id="@+id/indicator"
@@ -33,8 +33,7 @@
         <TextView
             android:id="@+id/btn_next"
             style="@style/welcome_navButtons"
-            android:layout_alignParentRight="true"
-            android:text="next"/>
+            android:layout_alignParentRight="true"/>
 
     </RelativeLayout>
 

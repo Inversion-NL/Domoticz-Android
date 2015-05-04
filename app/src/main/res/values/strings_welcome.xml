@@ -12,4 +12,7 @@
     <string name="welcome_server_username">Username</string>
     <string name="welcome_server_password">Password</string>
     <string name="welcome_server_startScreen">Start screen</string>
+    <string name="welcome_button_next">next</string>
+    <string name="welcome_button_previous">prev</string>
+    <string name="welcome_button_finish">finish</string>
 </resources>

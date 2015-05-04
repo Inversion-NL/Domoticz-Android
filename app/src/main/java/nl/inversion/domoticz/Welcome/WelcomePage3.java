@@ -65,7 +65,7 @@ public class WelcomePage3 extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                 if (checked) local_server_settings.setVisibility(View.VISIBLE);
-                else local_server_settings.setVisibility(View.INVISIBLE);
+                else local_server_settings.setVisibility(View.GONE);
             }
         });
 

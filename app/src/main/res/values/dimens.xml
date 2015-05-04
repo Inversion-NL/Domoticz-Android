@@ -2,6 +2,7 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="welcome_top_margin">30dp</dimen>
 
     <dimen name="text_size_welcomePage1_domoticzInfo">18sp</dimen>
     <dimen name="text_size_welcomePage1_swipeInfo">12sp</dimen>
