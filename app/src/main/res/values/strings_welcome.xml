@@ -5,6 +5,11 @@
     <string name="welcome_info_domoticz">Domoticz is a Home Automation System that lets you monitor and configure various devices like: Lights, Switches, various sensors/meters like Temperature, Rain, Wind, UV, Electra, Gas, Water and much more. Notifications/Alerts can be sent to any mobile device.</string>
     <string name="welcome_info_swipe">Swipe to the right or use the navigation buttons at the bottom to continue</string>
     <string name="welcome_info_settings">The next page is for your Domoticz settings.\n\nPlease use the correct address and port settings.</string>
+    <string name="welcome_info_pleaseWait">Please wait…</string>
+    <string name="welcome_info_checkingConnection">Verifying your connection settings</string>
+    <string name="welcome_msg_connectionDataIncomplete">Connection data incomplete or empty</string>
+    <string name="welcome_msg_connectionDataInvalid">URL should not start with http</string>
+    <string name="welcome_msg_correctOnPreviousPage">Please correct the data on the previous page</string>
     <string name="welcome_server_settings_title">Server settings</string>
     <string name="welcome_server_address">Server address</string>
     <string name="welcome_server_protocol">Protocol</string>

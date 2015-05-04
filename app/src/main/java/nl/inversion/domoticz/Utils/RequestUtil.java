@@ -23,6 +23,52 @@ public class RequestUtil {
 
     private static final String TAG = RequestUtil.class.getSimpleName();
 
+    public static void makeJsonVersionRequest(final JSONParserInterface parser,
+                                              final String username,
+                                              final String password,
+                                              String url) {
+
+        JsonObjectRequest jsonObjReq =
+                new JsonObjectRequest(Request.Method.GET,
+                        url, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        String jsonString;
+
+                        try {
+                            jsonString = response.getString(Domoticz.JSON_FIELD_VERSION);
+                            if (parser != null)
+                                parser.parseResult(jsonString);
+                        } catch (JSONException e) {
+                            if (parser != null)
+                                parser.onError(e);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        Log.e(TAG, "RequestUtil volley error");
+                        if (parser != null)
+                            parser.onError(volleyError);
+                    }
+                }) {
+
+                    @Override
+                    // HTTP basic authentication
+                    // Taken from: http://blog.lemberg.co.uk/volley-part-1-quickstart
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        return createBasicAuthHeader(username, password);
+                    }
+
+                };
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(jsonObjReq);
+    }
+
 
     /**
      * Method to get json object request where json response starts with {

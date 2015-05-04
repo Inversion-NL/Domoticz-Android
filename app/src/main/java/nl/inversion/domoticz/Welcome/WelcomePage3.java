@@ -26,6 +26,7 @@ public class WelcomePage3 extends Fragment {
     Switch localServer_switch;
     int protocolSelectedPosition, startScreenSelectedPosition;
     private View v;
+    boolean hasBeenVisibleToUser = false;
 
     public static final WelcomePage3 newInstance() {
         WelcomePage3 f = new WelcomePage3();
@@ -46,9 +47,16 @@ public class WelcomePage3 extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        writePreferenceValues();
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (!isVisibleToUser) {
+            if (hasBeenVisibleToUser) {
+                writePreferenceValues();
+            }
+        } else {
+            hasBeenVisibleToUser = true;
+        }
     }
 
     private void getLayoutReferences() {
@@ -166,5 +174,4 @@ public class WelcomePage3 extends Fragment {
         }
         return i;
     }
-
 }

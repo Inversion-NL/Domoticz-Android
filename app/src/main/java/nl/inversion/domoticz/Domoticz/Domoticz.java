@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import nl.inversion.domoticz.Interfaces.VersionReceiver;
 import nl.inversion.domoticz.Interfaces.setCommandReceiver;
 import nl.inversion.domoticz.Interfaces.ScenesReceiver;
 import nl.inversion.domoticz.Interfaces.StatusReceiver;
@@ -40,6 +41,7 @@ public class Domoticz {
 
     public static final String JSON_FIELD_RESULT = "result";
     public static final String JSON_FIELD_STATUS = "status";
+    public static final String JSON_FIELD_VERSION = "version";
 
     public static final int JSON_REQUEST_URL_DASHBOARD = 1;
     public static final int JSON_REQUEST_URL_SCENES = 2;
@@ -49,6 +51,7 @@ public class Domoticz {
     public static final int JSON_REQUEST_URL_WEATHER = 6;
     public static final int JSON_REQUEST_URL_CAMERAS = 7;
     public static final int JSON_REQUEST_URL_SUNRISE_SUNSET = 8;
+    public static final int JSON_REQUEST_URL_VERSION = 9;
 
     public static final int JSON_SET_URL_SCENES = 101;
     public static final int JSON_SET_URL_SWITCHES = 102;
@@ -98,6 +101,7 @@ public class Domoticz {
     private static final String ACTION_PLUS = "Plus";
     private static final String ACTION_MIN = "Min";
 
+    private static final String URL_VERSION = "/json.htm?type=command&param=getversion";
     private static final String URL_DASHBOARD = "";
     private static final String URL_SCENES = "/json.htm?type=scenes";
     private static final String URL_SWITCHES = "/json.htm?type=command&param=getlightswitches";
@@ -106,7 +110,7 @@ public class Domoticz {
     private static final String URL_WEATHER = "";
     private static final String URL_CAMERAS = "";
 
-    private static final String URL_STATUS = "/json.htm?type=devices&rid=";
+    private static final String URL_DEVICE_STATUS = "/json.htm?type=devices&rid=";
     private static final String URL_SUNRISE_SUNSET = "/json.htm?type=command&param=getSunRiseSet";
 
     private static final String URL_SWITCH_DIM_LEVEL = "&switchcmd=Set%20Level&level=";
@@ -176,6 +180,25 @@ public class Domoticz {
         return result;
     }
 
+    public boolean isUrlValid() {
+
+        boolean result = true;
+        HashMap<String, String> stringHashMap = new HashMap<>();
+        stringHashMap.put("Domoticz local URL", mSharedPrefUtil.getDomoticzLocalUrl());
+        stringHashMap.put("Domoticz remote URL", mSharedPrefUtil.getDomoticzRemoteUrl());
+
+        for (Map.Entry<String, String> entry : stringHashMap.entrySet()) {
+
+            if (entry.getValue().toLowerCase().startsWith("http")) {
+                Log.d(TAG, entry.getKey() + " starts with http");
+                result = false;
+                break;
+            }
+
+        }
+        return result;
+    }
+
     public void errorToast(Exception error) {
 
         String cause;
@@ -194,6 +217,10 @@ public class Domoticz {
         String url = URL_SWITCHES;
 
         switch (jsonGetUrl) {
+            case JSON_REQUEST_URL_VERSION:
+                url = URL_VERSION;
+                break;
+
             case JSON_REQUEST_URL_DASHBOARD:
                 url = URL_DASHBOARD;
                 break;
@@ -223,7 +250,7 @@ public class Domoticz {
                 break;
 
             case JSON_GET_STATUS:
-                url = URL_STATUS;
+                url = URL_DEVICE_STATUS;
                 break;
         }
         return url;
@@ -371,9 +398,29 @@ public class Domoticz {
         emptyCredentialsAlertDialog.show();
     }
 
+    public void getVersion(VersionReceiver receiver) {
+
+        VersionParser parser = new VersionParser(receiver);
+
+        SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
+        String username, password;
+
+        if (isUserOnLocalWifi()) {
+            username = mSharedPrefUtil.getDomoticzLocalUsername();
+            password = mSharedPrefUtil.getDomoticzLocalPassword();
+        } else {
+            username = mSharedPrefUtil.getDomoticzRemoteUsername();
+            password = mSharedPrefUtil.getDomoticzRemotePassword();
+        }
+
+        String url = constructGetUrl(JSON_REQUEST_URL_VERSION);
+
+        RequestUtil.makeJsonVersionRequest(parser, username, password, url);
+    }
+
     public void getScenes(ScenesReceiver receiver) {
 
-        ScenesParser scenesParser = new ScenesParser(receiver);
+        ScenesParser parser = new ScenesParser(receiver);
 
         SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
         String username, password;
@@ -388,12 +435,12 @@ public class Domoticz {
 
         String url = constructGetUrl(JSON_REQUEST_URL_SCENES);
 
-        RequestUtil.makeJsonGetRequest(scenesParser, username, password, url);
+        RequestUtil.makeJsonGetRequest(parser, username, password, url);
     }
 
     public void getSwitches(SwitchesReceiver switchesReceiver) {
 
-        SwitchesParser switchesParser = new SwitchesParser(switchesReceiver);
+        SwitchesParser parser = new SwitchesParser(switchesReceiver);
 
         SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
         String username, password;
@@ -408,12 +455,12 @@ public class Domoticz {
 
         String url = constructGetUrl(JSON_REQUEST_URL_SWITCHES);
 
-        RequestUtil.makeJsonGetRequest(switchesParser, username, password, url);
+        RequestUtil.makeJsonGetRequest(parser, username, password, url);
     }
 
     public void setAction(int idx, int jsonUrl, int jsonAction, long value, setCommandReceiver receiver) {
 
-        setCommandParser setCommandParser = new setCommandParser(receiver);
+        setCommandParser parser = new setCommandParser(receiver);
 
         SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
         String username, password;
@@ -441,12 +488,12 @@ public class Domoticz {
 
         }
 
-        RequestUtil.makeJsonPutRequest(setCommandParser, username, password, url);
+        RequestUtil.makeJsonPutRequest(parser, username, password, url);
     }
 
     public void getStatus(int idx, StatusReceiver receiver) {
 
-        StatusInfoParser statusInfoParser = new StatusInfoParser(receiver);
+        StatusInfoParser parser = new StatusInfoParser(receiver);
 
         SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
         String username, password;
@@ -462,12 +509,12 @@ public class Domoticz {
         String url = constructGetUrl(JSON_GET_STATUS) + String.valueOf(idx);
         if (debug) Log.d(TAG, "for idx: " + String.valueOf(idx));
 
-        RequestUtil.makeJsonGetRequest(statusInfoParser, username, password, url);
+        RequestUtil.makeJsonGetRequest(parser, username, password, url);
     }
 
     public void getUtilities(UtilitiesReceiver receiver) {
 
-        UtilitiesParser utilitiesParser = new UtilitiesParser(receiver);
+        UtilitiesParser parser = new UtilitiesParser(receiver);
 
         SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
         String username, password;
@@ -482,6 +529,6 @@ public class Domoticz {
 
         String url = constructGetUrl(JSON_REQUEST_URL_UTILITIES);
 
-        RequestUtil.makeJsonGetRequest(utilitiesParser, username, password, url);
+        RequestUtil.makeJsonGetRequest(parser, username, password, url);
     }
 }

@@ -34,11 +34,6 @@ public class Scenes extends Fragment {
     private TextView debugText;
     private boolean debug;
 
-    public static Fragment newInstance(Context context) {
-        Scenes f = new Scenes();
-        return f;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_scenes, null);

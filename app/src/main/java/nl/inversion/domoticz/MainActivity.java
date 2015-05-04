@@ -38,50 +38,37 @@ public class MainActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        mSharedPrefs.setFirstStart(true);
-
-        if (mSharedPrefs.isFirstStart()) {
-            startActivity(new Intent(this, WelcomeViewActivity.class));
-            mSharedPrefs.setFirstStart(false);
-        }
-        // Example used: http://blog.teamtreehouse.com/add-navigation-drawer-android
-        mDrawerList = (ListView) findViewById(R.id.navList);
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        addDrawerItems();
-        setupDrawer();
-
-        int screenIndex = mSharedPrefs.getStartupScreenIndex();
-
-        FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-        tx.replace(R.id.main, Fragment.instantiate(MainActivity.this, fragments[screenIndex]));
-        tx.commit();
-
     }
 
     @Override
     public void onResume(){
         super.onResume();
 
-        checkConnectionSettings();
+        if (mSharedPrefs.isFirstStart()) {
+            startActivity(new Intent(this, WelcomeViewActivity.class));
+            mSharedPrefs.setFirstStart(false);
+        } else {
+            addDrawerItems();
+            addFragment();
+        }
     }
 
-    /**
-     * Checks if connection data (username, password, url and port) have data
-     */
-    private void checkConnectionSettings() {
-        Domoticz mDomoticz = new Domoticz(this);
+    private void addFragment() {
 
-        if (!mDomoticz.isConnectionDataComplete()) {
-            Log.d(TAG, "Connection data incomplete, show warning dialog");
-            mDomoticz.showConnectionSettingsMissingDialog();
-        }
+        int screenIndex = mSharedPrefs.getStartupScreenIndex();
+
+        FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+        tx.replace(R.id.main, Fragment.instantiate(MainActivity.this, fragments[screenIndex]));
+        tx.commit();
     }
 
     /**
      * Adds the items to the drawer and registers a click listener on the items
      */
     private void addDrawerItems() {
+
+        mDrawerList = (ListView) findViewById(R.id.navList);
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         String[] drawerActions = getResources().getStringArray(R.array.drawer_actions);
         fragments = getResources().getStringArray(R.array.drawer_fragments);
@@ -103,6 +90,7 @@ public class MainActivity extends ActionBarActivity {
                 mDrawer.closeDrawer(mDrawerList);
             }
         });
+        setupDrawer();
     }
 
     /**
