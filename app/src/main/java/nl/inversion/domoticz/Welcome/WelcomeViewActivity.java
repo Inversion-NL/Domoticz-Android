@@ -1,6 +1,7 @@
 package nl.inversion.domoticz.Welcome;
 
 import android.animation.ArgbEvaluator;
+import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -17,6 +18,7 @@ import com.viewpagerindicator.CirclePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.inversion.domoticz.MainActivity;
 import nl.inversion.domoticz.R;
 
 public class WelcomeViewActivity extends FragmentActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
@@ -141,7 +143,9 @@ public class WelcomeViewActivity extends FragmentActivity implements View.OnClic
     }
 
     private void endWelcomeWizard() {
-        super.onBackPressed();
+        Intent main = new Intent(this, MainActivity.class);
+        main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(main);
     }
 
     @Override
