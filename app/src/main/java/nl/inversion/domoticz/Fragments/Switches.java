@@ -337,7 +337,7 @@ public class Switches extends Fragment {
      */
     private void successHandling(String result) {
 
-        Log.d(TAG, result);
+        Log.d(TAG, "Result: " + result);
         if (debug) {
             String temp = debugText.getText().toString();
             debugText.setText(temp + "\n\n" + result);

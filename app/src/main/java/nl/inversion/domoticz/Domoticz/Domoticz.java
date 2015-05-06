@@ -7,10 +7,20 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import nl.inversion.domoticz.Interfaces.DevicesReceiver;
 import nl.inversion.domoticz.Interfaces.VersionReceiver;
 import nl.inversion.domoticz.Interfaces.setCommandReceiver;
 import nl.inversion.domoticz.Interfaces.ScenesReceiver;
@@ -31,6 +41,8 @@ public class Domoticz {
      *  Log tag
      */
     private static final String TAG = Domoticz.class.getSimpleName();
+    public static final String AUTH_METHOD_LOGIN_FORM = "Login form";
+    public static final String AUTH_METHOD_BASIC_AUTHENTICATION = "Basic authentication";
     public static boolean debug;
 
     /*
@@ -52,6 +64,7 @@ public class Domoticz {
     public static final int JSON_REQUEST_URL_CAMERAS = 7;
     public static final int JSON_REQUEST_URL_SUNRISE_SUNSET = 8;
     public static final int JSON_REQUEST_URL_VERSION = 9;
+    public static final int JSON_REQUEST_URL_DEVICES = 10;
 
     public static final int JSON_SET_URL_SCENES = 101;
     public static final int JSON_SET_URL_SWITCHES = 102;
@@ -109,6 +122,7 @@ public class Domoticz {
     private static final String URL_TEMPERATURE = "";
     private static final String URL_WEATHER = "";
     private static final String URL_CAMERAS = "";
+    private static final String URL_DEVICES = "/json.htm?type=devices";
 
     private static final String URL_DEVICE_STATUS = "/json.htm?type=devices&rid=";
     private static final String URL_SUNRISE_SUNSET = "/json.htm?type=command&param=getSunRiseSet";
@@ -212,6 +226,46 @@ public class Domoticz {
         Toast.makeText(mContext, cause, Toast.LENGTH_LONG).show();
     }
 
+    public String getErrorMessage(Exception error) {
+
+        String errorMessage = "Unhandled error";
+
+        if (error instanceof VolleyError) {
+
+            VolleyError volleyError = (VolleyError) error;
+
+            if(volleyError instanceof AuthFailureError) {
+                Log.e(TAG, "Authentication failure");
+                errorMessage = mContext.getString(R.string.error_authentication);
+
+            } else if (volleyError instanceof TimeoutError || volleyError instanceof NoConnectionError) {
+                Log.e(TAG, "Timeout or no connection");
+                String detail = volleyError.getCause().getMessage();
+                errorMessage = mContext.getString(R.string.error_timeout) + "\n" + detail;
+
+            } else if (volleyError instanceof ServerError) {
+                Log.e(TAG, "Server error");
+                errorMessage = mContext.getString(R.string.error_server);
+
+            } else if (volleyError instanceof NetworkError) {
+                Log.e(TAG, "Network error");
+
+                NetworkResponse networkResponse = volleyError.networkResponse;
+                if (networkResponse != null) {
+                    Log.e("Status code", String.valueOf(networkResponse.statusCode));
+                    errorMessage = String.format(mContext.getString(R.string.error_network), networkResponse.statusCode);
+                }
+            } else if (volleyError instanceof ParseError) {
+                Log.e(TAG, "Parse failure");
+                errorMessage = mContext.getString(R.string.error_parse);
+            }
+        } else {
+            errorMessage = error.getMessage();
+        }
+
+        return errorMessage;
+    }
+
     private String getJsonGetUrl(int jsonGetUrl) {
 
         String url = URL_SWITCHES;
@@ -247,6 +301,10 @@ public class Domoticz {
 
             case JSON_REQUEST_URL_CAMERAS:
                 url = URL_CAMERAS;
+                break;
+
+            case JSON_REQUEST_URL_DEVICES:
+                url = URL_DEVICES;
                 break;
 
             case JSON_GET_STATUS:
@@ -528,6 +586,26 @@ public class Domoticz {
         }
 
         String url = constructGetUrl(JSON_REQUEST_URL_UTILITIES);
+
+        RequestUtil.makeJsonGetRequest(parser, username, password, url);
+    }
+
+    public void getDevices(DevicesReceiver receiver) {
+
+        DevicesParser parser = new DevicesParser(receiver);
+
+        SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
+        String username, password;
+
+        if (isUserOnLocalWifi()) {
+            username = mSharedPrefUtil.getDomoticzLocalUsername();
+            password = mSharedPrefUtil.getDomoticzLocalPassword();
+        } else {
+            username = mSharedPrefUtil.getDomoticzRemoteUsername();
+            password = mSharedPrefUtil.getDomoticzRemotePassword();
+        }
+
+        String url = constructGetUrl(JSON_REQUEST_URL_DEVICES);
 
         RequestUtil.makeJsonGetRequest(parser, username, password, url);
     }

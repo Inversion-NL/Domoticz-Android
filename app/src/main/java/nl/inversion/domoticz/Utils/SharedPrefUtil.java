@@ -3,20 +3,23 @@ package nl.inversion.domoticz.Utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import java.util.Set;
 
+import nl.inversion.domoticz.Domoticz.Domoticz;
 import nl.inversion.domoticz.R;
 
 @SuppressWarnings("unused")
 public class SharedPrefUtil {
 
+    public static final String PREF_STARTUP_SCREEN = "startup_screen";
+    public static final String PREF_DEBUGGING = "debugging";
     Context mContext;
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
 
     private static final String PREF_FIRST_START = "isFirstStart";
+    private static final String PREF_WELCOME_SUCCESS = "welcomeSuccess";
 
     private static final String http = "http://";
     private static final String https = "https://";
@@ -52,14 +55,21 @@ public class SharedPrefUtil {
         return prefs.getBoolean(PREF_FIRST_START, true);
     }
 
-    public void setFirstStart(Boolean firstStart) {
-        editor.putBoolean(PREF_FIRST_START, firstStart);
-        editor.apply();
+    public void setFirstStart(boolean firstStart) {
+        editor.putBoolean(PREF_FIRST_START, firstStart).apply();
+    }
+
+    public boolean isWelcomeWizardSuccess() {
+        return prefs.getBoolean(PREF_WELCOME_SUCCESS, false);
+    }
+
+    public void setWelcomeWizardSuccess(boolean success) {
+        editor.putBoolean(PREF_WELCOME_SUCCESS, success).apply();
     }
 
     public int getStartupScreenIndex() {
 
-        String startupScreenSelectedValue = prefs.getString("startup_screen", null);
+        String startupScreenSelectedValue = prefs.getString(PREF_STARTUP_SCREEN, null);
         if (startupScreenSelectedValue == null) return 0;
         else {
             String[] startupScreenValues = mContext.getResources().getStringArray(R.array.drawer_actions);
@@ -87,12 +97,11 @@ public class SharedPrefUtil {
             startupScreenValue = startupScreenValues[0];
         }
 
-        editor.putString("startup_screen", startupScreenValue);
-        editor.apply();
+        editor.putString(PREF_STARTUP_SCREEN, startupScreenValue).apply();
     }
 
     public boolean isDebugEnabled() {
-        return prefs.getBoolean("debugging", false);
+        return prefs.getBoolean(PREF_DEBUGGING, false);
     }
 
     /*
@@ -103,9 +112,7 @@ public class SharedPrefUtil {
     }
 
     public void setDomoticzRemoteUsername(String username) {
-        editor.putString(REMOTE_SERVER_USERNAME, username);
-        editor.apply();
-        Log.d("prefs", prefs.getString(REMOTE_SERVER_USERNAME, ""));
+        editor.putString(REMOTE_SERVER_USERNAME, username).apply();
     }
 
     public String getDomoticzRemotePassword() {
@@ -113,9 +120,7 @@ public class SharedPrefUtil {
     }
 
     public void setDomoticzRemotePassword(String password) {
-        editor.putString(REMOTE_SERVER_PASSWORD, password);
-        editor.apply();
-        Log.d("prefs", prefs.getString(REMOTE_SERVER_PASSWORD, ""));
+        editor.putString(REMOTE_SERVER_PASSWORD, password).apply();
     }
 
     public String getDomoticzRemoteUrl() {
@@ -123,10 +128,7 @@ public class SharedPrefUtil {
     }
 
     public void setDomoticzRemoteUrl(String url) {
-        editor.putString(REMOTE_SERVER_URL, url);
-        editor.apply();
-        Log.d("prefs", prefs.getString(REMOTE_SERVER_URL, ""));
-
+        editor.putString(REMOTE_SERVER_URL, url).apply();
     }
 
     public String getDomoticzRemotePort() {
@@ -134,18 +136,15 @@ public class SharedPrefUtil {
     }
 
     public void setDomoticzRemotePort(String port) {
-        editor.putString(REMOTE_SERVER_PORT, port);
-        editor.apply();
-        Log.d("prefs", prefs.getString(REMOTE_SERVER_PORT, ""));
+        editor.putString(REMOTE_SERVER_PORT, port).apply();
     }
 
     public boolean isDomoticzRemoteSecure() {
         return prefs.getBoolean(REMOTE_SERVER_SECURE, true);
     }
 
-    public void setDomoticzRemoteSecure(Boolean secure) {
-        editor.putBoolean(REMOTE_SERVER_SECURE, secure);
-        editor.apply();
+    public void setDomoticzRemoteSecure(boolean secure) {
+        editor.putBoolean(REMOTE_SERVER_SECURE, secure).apply();
     }
 
     public String getDomoticzRemoteAuthenticationMethod() {
@@ -153,8 +152,8 @@ public class SharedPrefUtil {
                 prefs.getBoolean(REMOTE_SERVER_AUTHENTICATION_METHOD, true);
         String method;
 
-        if (remoteServerAuthenticationMethodIsLoginForm) method = "Login form";
-        else method = "Basic authentication";
+        if (remoteServerAuthenticationMethodIsLoginForm) method = Domoticz.AUTH_METHOD_LOGIN_FORM;
+        else method = Domoticz.AUTH_METHOD_BASIC_AUTHENTICATION;
 
         return method;
     }
@@ -172,8 +171,7 @@ public class SharedPrefUtil {
     }
 
     public void setDomoticzLocalUsername(String username) {
-        editor.putString(LOCAL_SERVER_USERNAME, username);
-        editor.apply();
+        editor.putString(LOCAL_SERVER_USERNAME, username).apply();
     }
 
     public String getDomoticzLocalPassword() {
@@ -181,8 +179,7 @@ public class SharedPrefUtil {
     }
 
     public void setDomoticzLocalPassword(String password) {
-        editor.putString(LOCAL_SERVER_PASSWORD, password);
-        editor.apply();
+        editor.putString(LOCAL_SERVER_PASSWORD, password).apply();
     }
 
     public String getDomoticzLocalUrl() {
@@ -190,8 +187,7 @@ public class SharedPrefUtil {
     }
 
     public void setDomoticzLocalUrl(String url) {
-        editor.putString(LOCAL_SERVER_URL, url);
-        editor.apply();
+        editor.putString(LOCAL_SERVER_URL, url).apply();
     }
 
     public String getDomoticzLocalPort() {
@@ -199,8 +195,7 @@ public class SharedPrefUtil {
     }
 
     public void setDomoticzLocalPort(String port) {
-        editor.putString(LOCAL_SERVER_PORT, port);
-        editor.apply();
+        editor.putString(LOCAL_SERVER_PORT, port).apply();
     }
 
     public boolean isDomoticzLocalSecure() {
@@ -208,8 +203,7 @@ public class SharedPrefUtil {
     }
 
     public void setDomoticzLocalSecure(boolean secure) {
-        editor.putBoolean(LOCAL_SERVER_SECURE, secure);
-        editor.apply();
+        editor.putBoolean(LOCAL_SERVER_SECURE, secure).apply();
     }
 
     public String getDomoticzLocalAuthenticationMethod() {
@@ -217,8 +211,8 @@ public class SharedPrefUtil {
                 prefs.getBoolean(LOCAL_SERVER_AUTHENTICATION_METHOD, true);
         String method;
 
-        if (localServerAuthenticationMethodIsLoginForm) method = "Login form";
-        else method = "Basic authentication";
+        if (localServerAuthenticationMethodIsLoginForm) method = Domoticz.AUTH_METHOD_LOGIN_FORM;
+        else method = Domoticz.AUTH_METHOD_BASIC_AUTHENTICATION;
 
         return method;
     }
@@ -227,11 +221,10 @@ public class SharedPrefUtil {
 
         boolean methodIsLoginForm;
 
-        if (method.equalsIgnoreCase("login form")) methodIsLoginForm = true;
+        if (method.equalsIgnoreCase(Domoticz.AUTH_METHOD_LOGIN_FORM)) methodIsLoginForm = true;
         else methodIsLoginForm = false;
 
-        editor.putBoolean(LOCAL_SERVER_AUTHENTICATION_METHOD, methodIsLoginForm);
-        editor.apply();
+        editor.putBoolean(LOCAL_SERVER_AUTHENTICATION_METHOD, methodIsLoginForm).apply();
     }
 
     public Set<String> getLocalSsid() {

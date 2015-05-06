@@ -27,7 +27,7 @@ public class WelcomeViewActivity extends FragmentActivity implements View.OnClic
     private TextView buttonPrev, buttonNext;
     private RelativeLayout navigation;
     private Integer[] background_colors;
-    ArgbEvaluator argbEvaluator = new ArgbEvaluator();
+    private ArgbEvaluator argbEvaluator = new ArgbEvaluator();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +50,14 @@ public class WelcomeViewActivity extends FragmentActivity implements View.OnClic
     @Override
     public void onBackPressed() {
 
-        if (mPager.getCurrentItem() > 0) mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+        if (mPager.getCurrentItem() > 0) {
+            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+            disableFinishButton(false);
+        }
+        else {
+            // Back button pressed while on page 0, exit app
+            super.onBackPressed();
+        }
 
     }
 
@@ -111,16 +118,26 @@ public class WelcomeViewActivity extends FragmentActivity implements View.OnClic
         switch(view.getId()) {
             case R.id.btn_next:
                 if (mPager.getCurrentItem() < fList.size() - 1) {
+                    // Go to next page
                     mPager.setCurrentItem(mPager.getCurrentItem() + 1);
                 } else {
+                    // Last page, end wizard
                     endWelcomeWizard();
                 }
                 break;
 
             case R.id.btn_prev:
-                if (mPager.getCurrentItem() != 0) mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+                if (mPager.getCurrentItem() != 0) {
+                    mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+                    disableFinishButton(false);
+                }
                 break;
         }
+    }
+
+    public void disableFinishButton(boolean disable) {
+        if (disable) buttonNext.setVisibility(View.INVISIBLE);
+        else buttonNext.setVisibility(View.VISIBLE);
     }
 
     private void endWelcomeWizard() {
@@ -166,6 +183,7 @@ public class WelcomeViewActivity extends FragmentActivity implements View.OnClic
             buttonPrev.setVisibility(View.VISIBLE);
             buttonNext.setText(getString(R.string.welcome_button_next).toUpperCase());
             buttonNext.setTextColor(getResources().getColor(R.color.light_gray));
+            disableFinishButton(false);
         }
     }
 }

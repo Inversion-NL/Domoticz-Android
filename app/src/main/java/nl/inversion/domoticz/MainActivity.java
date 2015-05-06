@@ -45,11 +45,19 @@ public class MainActivity extends ActionBarActivity {
         super.onResume();
 
         if (mSharedPrefs.isFirstStart()) {
-            startActivity(new Intent(this, WelcomeViewActivity.class));
+            Intent welcomeWizard = new Intent(this, WelcomeViewActivity.class);
+            welcomeWizard.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(welcomeWizard);
             mSharedPrefs.setFirstStart(false);
         } else {
-            addDrawerItems();
-            addFragment();
+            if (mSharedPrefs.isWelcomeWizardSuccess()) {
+                addDrawerItems();
+                addFragment();
+            } else {
+                Intent welcomeWizard = new Intent(this, WelcomeViewActivity.class);
+                welcomeWizard.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(welcomeWizard);
+            }
         }
     }
 

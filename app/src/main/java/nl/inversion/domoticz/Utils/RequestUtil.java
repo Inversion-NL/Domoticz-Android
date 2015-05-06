@@ -50,9 +50,8 @@ public class RequestUtil {
 
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        Log.e(TAG, "RequestUtil volley error");
-                        if (parser != null)
-                            parser.onError(volleyError);
+                        errorHandling(volleyError);
+                        if (parser != null) parser.onError(volleyError);
                     }
                 }) {
 
@@ -68,7 +67,6 @@ public class RequestUtil {
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(jsonObjReq);
     }
-
 
     /**
      * Method to get json object request where json response starts with {
@@ -100,7 +98,7 @@ public class RequestUtil {
 
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        Log.e(TAG, "RequestUtil volley error");
+                        errorHandling(volleyError);
                         if (parser != null)
                             parser.onError(volleyError);
                     }
@@ -118,6 +116,7 @@ public class RequestUtil {
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(jsonObjReq);
     }
+
 
     /**
      * Method to put a JSON object to a url
@@ -149,7 +148,7 @@ public class RequestUtil {
 
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        Log.e(TAG, "RequestUtil volley error");
+                        errorHandling(volleyError);
                         if (parser != null)
                             parser.onError(volleyError);
                     }
@@ -185,5 +184,10 @@ public class RequestUtil {
         headerMap.put("Authorization", "Basic " + base64EncodedCredentials);
 
         return headerMap;
+    }
+
+    private static void errorHandling(VolleyError volleyError) {
+        Log.e(TAG, "RequestUtil volley error");
+        if (volleyError.getMessage() != null) Log.e(TAG, volleyError.getMessage());
     }
 }

@@ -8,16 +8,23 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
+import nl.inversion.domoticz.Containers.DevicesInfo;
 import nl.inversion.domoticz.Domoticz.Domoticz;
+import nl.inversion.domoticz.Interfaces.DevicesReceiver;
 import nl.inversion.domoticz.Interfaces.VersionReceiver;
 import nl.inversion.domoticz.R;
+import nl.inversion.domoticz.Utils.SharedPrefUtil;
 
 public class WelcomePage4 extends Fragment {
-    LinearLayout please_wait_layout;
+
+    private LinearLayout please_wait_layout;
     private TextView result;
     private LinearLayout result_layout;
+    private String tempText = "";
 
-    public static final WelcomePage4 newInstance() {
+    public static WelcomePage4 newInstance() {
         WelcomePage4 f = new WelcomePage4();
         return f;
     }
@@ -41,11 +48,12 @@ public class WelcomePage4 extends Fragment {
         if (isVisibleToUser) {
             resetLayout();
             checkConnectionData();
+            disableFinishButton();
         }
     }
 
     private void checkConnectionData() {
-        Domoticz mDomoticz = new Domoticz(getActivity());
+        final Domoticz mDomoticz = new Domoticz(getActivity());
 
         if (!mDomoticz.isConnectionDataComplete()) {
             setResultText(getString(R.string.welcome_msg_connectionDataIncomplete) + "\n\n"
@@ -58,15 +66,48 @@ public class WelcomePage4 extends Fragment {
             mDomoticz.getVersion(new VersionReceiver() {
                 @Override
                 public void onReceiveVersion(String version) {
-                    setResultText("Version of the server: " + version);
+                    tempText = getString(R.string.welcome_msg_serverVersion) + ": " + version;
+
+                    mDomoticz.getDevices(new DevicesReceiver() {
+                        @Override
+                        public void onReceiveDevices(ArrayList<DevicesInfo> mDevicesInfo) {
+                            tempText = tempText + "\n";
+                            String formatted = String.format(getString(R.string.welcome_msg_numberOfDevices), mDevicesInfo.size());
+                            tempText = tempText + formatted;
+                            setSuccessText(tempText);
+                        }
+
+                        @Override
+                        public void onError(Exception error) {
+                            setErrorText(mDomoticz.getErrorMessage(error));
+                        }
+                    });
                 }
 
                 @Override
                 public void onError(Exception error) {
-                    setResultText(error.getMessage());
+                    setErrorText(mDomoticz.getErrorMessage(error));
                 }
             });
         }
+    }
+
+    private void setErrorText(String errorMessage) {
+        tempText = tempText + "\n";
+        tempText = tempText + errorMessage;
+        tempText = tempText + "\n\n";
+        tempText = tempText + getString(R.string.welcome_msg_correctOnPreviousPage);
+        disableFinishButton();
+        setResultText(tempText);
+        tempText = "";
+    }
+
+    private void setSuccessText(String message) {
+        SharedPrefUtil mSharedPrefs = new SharedPrefUtil(getActivity());
+        mSharedPrefs.setWelcomeWizardSuccess(true);
+        enableFinishButton();
+        setResultText(message);
+        tempText = "";
     }
 
     private void setResultText(String text) {
@@ -79,5 +120,15 @@ public class WelcomePage4 extends Fragment {
         please_wait_layout.setVisibility(View.VISIBLE);
         result_layout.setVisibility(View.GONE);
         result.setText("");
+    }
+
+    private void disableFinishButton() {
+        WelcomeViewActivity activity = (WelcomeViewActivity) getActivity();
+        activity.disableFinishButton(true);
+    }
+
+    private void enableFinishButton() {
+        WelcomeViewActivity activity = (WelcomeViewActivity) getActivity();
+        activity.disableFinishButton(false);
     }
 }
