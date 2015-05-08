@@ -8,10 +8,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
+
+import com.marvinlabs.widget.floatinglabel.edittext.FloatingLabelEditText;
 
 import nl.inversion.domoticz.Domoticz.Domoticz;
 import nl.inversion.domoticz.R;
@@ -21,16 +22,15 @@ public class WelcomePage3 extends Fragment {
 
     SharedPrefUtil mSharedPrefs;
 
-    EditText server_input, port_input, username_input, password_input;
+    FloatingLabelEditText server_input, port_input, username_input, password_input;
     Spinner protocol_spinner, startScreen_spinner;
     Switch localServer_switch;
     int protocolSelectedPosition, startScreenSelectedPosition;
     private View v;
     boolean hasBeenVisibleToUser = false;
 
-    public static final WelcomePage3 newInstance() {
-        WelcomePage3 f = new WelcomePage3();
-        return f;
+    public static WelcomePage3 newInstance() {
+        return new WelcomePage3();
     }
 
     @Override
@@ -61,10 +61,10 @@ public class WelcomePage3 extends Fragment {
 
     private void getLayoutReferences() {
 
-        server_input = (EditText) v.findViewById(R.id.server_input);
-        port_input = (EditText) v.findViewById(R.id.port_input);
-        username_input  = (EditText) v.findViewById(R.id.username_input);
-        password_input  = (EditText) v.findViewById(R.id.password_input);
+        server_input = (FloatingLabelEditText) v.findViewById(R.id.server_input);
+        port_input = (FloatingLabelEditText) v.findViewById(R.id.port_input);
+        username_input  = (FloatingLabelEditText) v.findViewById(R.id.username_input);
+        password_input  = (FloatingLabelEditText) v.findViewById(R.id.password_input);
         protocol_spinner = (Spinner) v.findViewById(R.id.protocol_spinner);
         startScreen_spinner = (Spinner) v.findViewById(R.id.startScreen_spinner);
         final LinearLayout local_server_settings = (LinearLayout) v.findViewById(R.id.local_server_settings);
@@ -81,10 +81,10 @@ public class WelcomePage3 extends Fragment {
 
     private void setPreferenceValues() {
 
-        username_input.setText(mSharedPrefs.getDomoticzRemoteUsername());
-        password_input.setText(mSharedPrefs.getDomoticzRemotePassword());
-        server_input.setText(mSharedPrefs.getDomoticzRemoteUrl());
-        port_input.setText(mSharedPrefs.getDomoticzRemotePort());
+        username_input.setInputWidgetText(mSharedPrefs.getDomoticzRemoteUsername());
+        password_input.setInputWidgetText(mSharedPrefs.getDomoticzRemotePassword());
+        server_input.setInputWidgetText(mSharedPrefs.getDomoticzRemoteUrl());
+        port_input.setInputWidgetText(mSharedPrefs.getDomoticzRemotePort());
 
         setProtocol_spinner();
         setStartScreen_spinner();
@@ -136,10 +136,10 @@ public class WelcomePage3 extends Fragment {
 
     private void writePreferenceValues() {
 
-        mSharedPrefs.setDomoticzRemoteUsername(username_input.getText().toString());
-        mSharedPrefs.setDomoticzRemotePassword(password_input.getText().toString());
-        mSharedPrefs.setDomoticzRemoteUrl(server_input.getText().toString());
-        mSharedPrefs.setDomoticzRemotePort(port_input.getText().toString());
+        mSharedPrefs.setDomoticzRemoteUsername(username_input.getInputWidgetText().toString());
+        mSharedPrefs.setDomoticzRemotePassword(password_input.getInputWidgetText().toString());
+        mSharedPrefs.setDomoticzRemoteUrl(server_input.getInputWidgetText().toString());
+        mSharedPrefs.setDomoticzRemotePort(port_input.getInputWidgetText().toString());
         mSharedPrefs.setDomoticzRemoteSecure(getSpinnerDomoticzRemoteSecureBoolean());
         mSharedPrefs.setStartupScreenIndex(startScreenSelectedPosition);
 
@@ -154,8 +154,7 @@ public class WelcomePage3 extends Fragment {
 
         String[] protocols = getResources().getStringArray(R.array.remote_server_protocols);
 
-        if (protocols[protocolSelectedPosition].equalsIgnoreCase(Domoticz.PROTOCOL_SECURE)) return true;
-        else return false;
+        return protocols[protocolSelectedPosition].equalsIgnoreCase(Domoticz.PROTOCOL_SECURE);
     }
 
     private int getPrefsDomoticzSecureIndex() {

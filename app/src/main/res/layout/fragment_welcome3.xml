@@ -1,5 +1,5 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -21,17 +21,13 @@
             android:textSize="@dimen/text_size_welcomePage3_serverSettings_title"
             android:text="@string/welcome_server_settings_title" />
 
-        <TextView
-            android:id="@+id/server_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/welcome_server_address"
-            android:textStyle="bold" />
-
-        <EditText
+        <com.marvinlabs.widget.floatinglabel.edittext.FloatingLabelEditText
             android:id="@+id/server_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:flw_labelTextSize="@dimen/text_size_medium"
+            app:flw_inputWidgetTextSize="@dimen/text_size_large"
+            app:flw_labelText="@string/welcome_server_address"
             android:inputType="textNoSuggestions"/>
 
         <LinearLayout
@@ -52,7 +48,7 @@
                 android:id="@+id/port_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/welcome_server_port"
+                android:text=""
                 android:textStyle="bold"
                 android:layout_weight="1" />
         </LinearLayout>
@@ -70,43 +66,34 @@
                 android:spinnerMode="dropdown"
                 android:layout_weight="1" />
 
-            <EditText
+            <com.marvinlabs.widget.floatinglabel.edittext.FloatingLabelEditText
                 android:id="@+id/port_input"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:inputType="numberSigned"/>
+                android:inputType="numberSigned"
+                app:flw_labelTextSize="@dimen/text_size_medium"
+                app:flw_inputWidgetTextSize="@dimen/text_size_large"
+                app:flw_labelText="@string/welcome_server_port"/>
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/username_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/welcome_server_username"
-            android:textStyle="bold"
-            android:layout_marginTop="15dp" />
-
-        <EditText
+        <com.marvinlabs.widget.floatinglabel.edittext.FloatingLabelEditText
             android:id="@+id/username_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minWidth="175dp"
+            app:flw_labelText="@string/welcome_server_username"
             android:inputType="textNoSuggestions"/>
 
-        <TextView
-            android:id="@+id/password_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/welcome_server_password"
-            android:textStyle="bold"
-            android:layout_marginTop="15dp" />
-
-        <EditText
+        <com.marvinlabs.widget.floatinglabel.edittext.FloatingLabelEditText
             android:id="@+id/password_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
+            app:flw_labelTextSize="@dimen/text_size_medium"
+            app:flw_inputWidgetTextSize="@dimen/text_size_large"
+            app:flw_labelText="@string/welcome_server_password"
             android:ems="10"/>
 
         <TextView

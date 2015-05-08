@@ -11,9 +11,8 @@ import nl.inversion.domoticz.R;
 
 public class WelcomePage1 extends Fragment{
 
-    public static final WelcomePage1 newInstance() {
-        WelcomePage1 f = new WelcomePage1();
-        return f;
+    public static WelcomePage1 newInstance() {
+        return new WelcomePage1();
     }
 
     @Override

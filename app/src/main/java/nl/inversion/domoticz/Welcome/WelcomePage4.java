@@ -25,8 +25,7 @@ public class WelcomePage4 extends Fragment {
     private String tempText = "";
 
     public static WelcomePage4 newInstance() {
-        WelcomePage4 f = new WelcomePage4();
-        return f;
+        return new WelcomePage4();
     }
 
     @Override
