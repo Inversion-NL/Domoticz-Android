@@ -50,6 +50,8 @@ public class Domoticz {
      */
     public static final String PROTOCOL_SECURE = "HTTPS";
     public static final String PROTOCOL_INSECURE = "HTTP";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
 
     public static final String JSON_FIELD_RESULT = "result";
     public static final String JSON_FIELD_STATUS = "status";
@@ -151,9 +153,9 @@ public class Domoticz {
 
     public boolean isUserOnLocalWifi() {
 
-        boolean local = false;
+        boolean userIsLocal = false;
 
-        if (!mSharedPrefUtil.localServerUsesSameAddress()) {
+        if (mSharedPrefUtil.isLocalServerAddressDifferent()) {
             Set<String> localSsid = mSharedPrefUtil.getLocalSsid();
 
             if (mPhoneConnectionUtil.isWifiConnected() && localSsid != null) {
@@ -164,12 +166,12 @@ public class Domoticz {
                 currentSsid = currentSsid.substring(1, currentSsid.length() - 1);
 
                 for (String ssid : localSsid) {
-                    if (ssid.equals(currentSsid)) local = true;
+                    if (ssid.equals(currentSsid)) userIsLocal = true;
                 }
             }
         }
 
-        return local;
+        return userIsLocal;
     }
 
     public boolean isConnectionDataComplete() {
@@ -240,7 +242,7 @@ public class Domoticz {
 
             } else if (volleyError instanceof TimeoutError || volleyError instanceof NoConnectionError) {
                 Log.e(TAG, "Timeout or no connection");
-                String detail = "";
+                String detail;
 
                 if (volleyError.getCause() != null) detail = volleyError.getCause().getMessage();
                 else {
@@ -461,81 +463,55 @@ public class Domoticz {
         emptyCredentialsAlertDialog.show();
     }
 
-    public void getVersion(VersionReceiver receiver) {
+    public String getUserCredentials(String credential) {
 
-        VersionParser parser = new VersionParser(receiver);
+        if (credential.equals(USERNAME) || credential.equals(PASSWORD)) {
 
-        SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
-        String username, password;
+            SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
+            String username, password;
 
-        if (isUserOnLocalWifi()) {
-            username = mSharedPrefUtil.getDomoticzLocalUsername();
-            password = mSharedPrefUtil.getDomoticzLocalPassword();
-        } else {
-            username = mSharedPrefUtil.getDomoticzRemoteUsername();
-            password = mSharedPrefUtil.getDomoticzRemotePassword();
+            if (isUserOnLocalWifi()) {
+                Log.d(TAG, "On local wifi");
+                username = mSharedPrefUtil.getDomoticzLocalUsername();
+                password = mSharedPrefUtil.getDomoticzLocalPassword();
+            } else {
+                Log.d(TAG, "Not on local wifi");
+                username = mSharedPrefUtil.getDomoticzRemoteUsername();
+                password = mSharedPrefUtil.getDomoticzRemotePassword();
+            }
+            HashMap<String, String> credentials = new HashMap<>();
+            credentials.put(USERNAME, username);
+            credentials.put(PASSWORD, password);
+
+            return credentials.get(credential);
         }
+        else return "";
+    }
 
+    public void getVersion(VersionReceiver receiver) {
+        VersionParser parser = new VersionParser(receiver);
         String url = constructGetUrl(JSON_REQUEST_URL_VERSION);
-
-        RequestUtil.makeJsonVersionRequest(parser, username, password, url);
+        RequestUtil.makeJsonVersionRequest(parser,
+                getUserCredentials(USERNAME), getUserCredentials(PASSWORD), url);
     }
 
     public void getScenes(ScenesReceiver receiver) {
-
         ScenesParser parser = new ScenesParser(receiver);
-
-        SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
-        String username, password;
-
-        if (isUserOnLocalWifi()) {
-            username = mSharedPrefUtil.getDomoticzLocalUsername();
-            password = mSharedPrefUtil.getDomoticzLocalPassword();
-        } else {
-            username = mSharedPrefUtil.getDomoticzRemoteUsername();
-            password = mSharedPrefUtil.getDomoticzRemotePassword();
-        }
-
         String url = constructGetUrl(JSON_REQUEST_URL_SCENES);
-
-        RequestUtil.makeJsonGetRequest(parser, username, password, url);
+        RequestUtil.makeJsonGetRequest(parser,
+                getUserCredentials(USERNAME), getUserCredentials(PASSWORD), url);
     }
 
     public void getSwitches(SwitchesReceiver switchesReceiver) {
-
         SwitchesParser parser = new SwitchesParser(switchesReceiver);
-
-        SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
-        String username, password;
-
-        if (isUserOnLocalWifi()) {
-            username = mSharedPrefUtil.getDomoticzLocalUsername();
-            password = mSharedPrefUtil.getDomoticzLocalPassword();
-        } else {
-            username = mSharedPrefUtil.getDomoticzRemoteUsername();
-            password = mSharedPrefUtil.getDomoticzRemotePassword();
-        }
-
         String url = constructGetUrl(JSON_REQUEST_URL_SWITCHES);
-
-        RequestUtil.makeJsonGetRequest(parser, username, password, url);
+        RequestUtil.makeJsonGetRequest(parser,
+                getUserCredentials(USERNAME), getUserCredentials(PASSWORD), url);
     }
 
-    public void setAction(int idx, int jsonUrl, int jsonAction, long value, setCommandReceiver receiver) {
-
+    public void setAction(int idx, int jsonUrl, int jsonAction,
+                          long value, setCommandReceiver receiver) {
         setCommandParser parser = new setCommandParser(receiver);
-
-        SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
-        String username, password;
-
-        if (isUserOnLocalWifi()) {
-            username = mSharedPrefUtil.getDomoticzLocalUsername();
-            password = mSharedPrefUtil.getDomoticzLocalPassword();
-        } else {
-            username = mSharedPrefUtil.getDomoticzRemoteUsername();
-            password = mSharedPrefUtil.getDomoticzRemotePassword();
-        }
-
         String url = null;
         switch (jsonUrl) {
             case JSON_SET_URL_SCENES:
@@ -551,67 +527,30 @@ public class Domoticz {
 
         }
 
-        RequestUtil.makeJsonPutRequest(parser, username, password, url);
+        RequestUtil.makeJsonPutRequest(parser,
+                getUserCredentials(USERNAME), getUserCredentials(PASSWORD), url);
     }
 
     public void getStatus(int idx, StatusReceiver receiver) {
-
         StatusInfoParser parser = new StatusInfoParser(receiver);
-
-        SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
-        String username, password;
-
-        if (isUserOnLocalWifi()) {
-            username = mSharedPrefUtil.getDomoticzLocalUsername();
-            password = mSharedPrefUtil.getDomoticzLocalPassword();
-        } else {
-            username = mSharedPrefUtil.getDomoticzRemoteUsername();
-            password = mSharedPrefUtil.getDomoticzRemotePassword();
-        }
-
         String url = constructGetUrl(JSON_GET_STATUS) + String.valueOf(idx);
         if (debug) Log.d(TAG, "for idx: " + String.valueOf(idx));
 
-        RequestUtil.makeJsonGetRequest(parser, username, password, url);
+        RequestUtil.makeJsonGetRequest(parser,
+                getUserCredentials(USERNAME), getUserCredentials(PASSWORD), url);
     }
 
     public void getUtilities(UtilitiesReceiver receiver) {
-
         UtilitiesParser parser = new UtilitiesParser(receiver);
-
-        SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
-        String username, password;
-
-        if (isUserOnLocalWifi()) {
-            username = mSharedPrefUtil.getDomoticzLocalUsername();
-            password = mSharedPrefUtil.getDomoticzLocalPassword();
-        } else {
-            username = mSharedPrefUtil.getDomoticzRemoteUsername();
-            password = mSharedPrefUtil.getDomoticzRemotePassword();
-        }
-
         String url = constructGetUrl(JSON_REQUEST_URL_UTILITIES);
-
-        RequestUtil.makeJsonGetRequest(parser, username, password, url);
+        RequestUtil.makeJsonGetRequest(parser,
+                getUserCredentials(USERNAME), getUserCredentials(PASSWORD), url);
     }
 
     public void getDevices(DevicesReceiver receiver) {
-
         DevicesParser parser = new DevicesParser(receiver);
-
-        SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
-        String username, password;
-
-        if (isUserOnLocalWifi()) {
-            username = mSharedPrefUtil.getDomoticzLocalUsername();
-            password = mSharedPrefUtil.getDomoticzLocalPassword();
-        } else {
-            username = mSharedPrefUtil.getDomoticzRemoteUsername();
-            password = mSharedPrefUtil.getDomoticzRemotePassword();
-        }
-
         String url = constructGetUrl(JSON_REQUEST_URL_DEVICES);
-
-        RequestUtil.makeJsonGetRequest(parser, username, password, url);
+        RequestUtil.makeJsonGetRequest(parser,
+                getUserCredentials(USERNAME), getUserCredentials(PASSWORD), url);
     }
 }

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,7 +34,7 @@ public class SharedPrefUtil {
     private static final String REMOTE_SERVER_AUTHENTICATION_METHOD =
             "remote_server_authentication_method";
 
-    private static final String LOCAL_SERVER_USES_SAME_ADDRESS = "local_server_different_address";
+    private static final String IS_LOCAL_SERVER_ADDRESS_DIFFERENT = "local_server_different_address";
     private static final String LOCAL_SERVER_USERNAME = "local_server_username";
     private static final String LOCAL_SERVER_PASSWORD = "local_server_password";
     private static final String LOCAL_SERVER_URL = "local_server_url";
@@ -165,12 +164,12 @@ public class SharedPrefUtil {
     /*
      *      Local server settings
      */
-    public boolean localServerUsesSameAddress() {
-        return prefs.getBoolean(LOCAL_SERVER_USES_SAME_ADDRESS, true);
+    public boolean isLocalServerAddressDifferent() {
+        return prefs.getBoolean(IS_LOCAL_SERVER_ADDRESS_DIFFERENT, true);
     }
 
     public void setLocalServerUsesSameAddress(boolean b) {
-        editor.putBoolean(LOCAL_SERVER_USES_SAME_ADDRESS, b).apply();
+        editor.putBoolean(IS_LOCAL_SERVER_ADDRESS_DIFFERENT, b).apply();
     }
 
     public String getDomoticzLocalUsername() {
@@ -228,8 +227,7 @@ public class SharedPrefUtil {
 
         boolean methodIsLoginForm;
 
-        if (method.equalsIgnoreCase(Domoticz.AUTH_METHOD_LOGIN_FORM)) methodIsLoginForm = true;
-        else methodIsLoginForm = false;
+        methodIsLoginForm = method.equalsIgnoreCase(Domoticz.AUTH_METHOD_LOGIN_FORM);
 
         editor.putBoolean(LOCAL_SERVER_AUTHENTICATION_METHOD, methodIsLoginForm).apply();
     }

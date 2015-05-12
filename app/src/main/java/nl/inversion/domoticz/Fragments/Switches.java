@@ -72,11 +72,6 @@ public class Switches extends Fragment {
 
             debugText = (TextView) getView().findViewById(R.id.debugText);
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         cleanScreen();
         getData();
     }

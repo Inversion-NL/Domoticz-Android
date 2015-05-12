@@ -1,5 +1,6 @@
 package nl.inversion.domoticz.Fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -40,6 +41,7 @@ public class Utilities extends Fragment implements ThermostatButtonClickListener
     private ProgressDialog progressDialog;
     private TextView debugText;
     private boolean debug;
+    private Activity mActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,6 +50,12 @@ public class Utilities extends Fragment implements ThermostatButtonClickListener
         getActionBar().setTitle(R.string.title_utilities);
 
         return root;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = activity;
     }
 
     @Override
@@ -67,14 +75,8 @@ public class Utilities extends Fragment implements ThermostatButtonClickListener
             debugText = (TextView) getView().findViewById(R.id.debugText);
             debugText.setVisibility(View.VISIBLE);
         }
-
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         getData();
+
     }
 
     private void getData() {
@@ -92,7 +94,7 @@ public class Utilities extends Fragment implements ThermostatButtonClickListener
 
                 Utilities.this.mUtilitiesInfos = mUtilitiesInfos;
 
-                adapter = new UtilityAdapter(getActivity(), mUtilitiesInfos, listener);
+                adapter = new UtilityAdapter(mActivity, mUtilitiesInfos, listener);
                 utilitiesListView = (ListView) getView().findViewById(R.id.utilitiesListView);
                 utilitiesListView.setAdapter(adapter);
 

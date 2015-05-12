@@ -15,7 +15,6 @@ import android.widget.Switch;
 import com.marvinlabs.widget.floatinglabel.edittext.FloatingLabelEditText;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import nl.inversion.domoticz.Domoticz.Domoticz;
@@ -104,7 +103,7 @@ public class WelcomePage3 extends Fragment {
         remote_server_input.setInputWidgetText(mSharedPrefs.getDomoticzRemoteUrl());
         remote_port_input.setInputWidgetText(mSharedPrefs.getDomoticzRemotePort());
 
-        localServer_switch.setChecked(mSharedPrefs.localServerUsesSameAddress());
+        localServer_switch.setChecked(mSharedPrefs.isLocalServerAddressDifferent());
 
         local_username_input.setInputWidgetText(mSharedPrefs.getDomoticzLocalUsername());
         local_password_input.setInputWidgetText(mSharedPrefs.getDomoticzLocalPassword());
