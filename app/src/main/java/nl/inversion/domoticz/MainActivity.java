@@ -57,6 +57,7 @@ public class MainActivity extends ActionBarActivity {
                 Intent welcomeWizard = new Intent(this, WelcomeViewActivity.class);
                 welcomeWizard.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(welcomeWizard);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
         }
     }

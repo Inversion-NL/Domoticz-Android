@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -37,8 +38,7 @@ public class WelcomeViewActivity extends FragmentActivity implements View.OnClic
         setContentView(R.layout.activity_welcome);
 
         /*
-            Setting this makes sure we draw fullscreen, without this the transparent Activity shows
-            the bright orange notification header from the main Activity below
+            Setting this makes sure we draw fullscreen, and have a transparent task bar
         */
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window window = getWindow();
@@ -70,11 +70,9 @@ public class WelcomeViewActivity extends FragmentActivity implements View.OnClic
         Integer color3 = getResources().getColor(R.color.welcome3_background);
         Integer color4 = getResources().getColor(R.color.welcome4_background);
 
-        Integer[] colors_temp = {color1, color2, color3, color4};
-        background_colors = colors_temp;
+        background_colors = new Integer[]{color1, color2, color3, color4};
 
     }
-
 
     private void buildLayout() {
 

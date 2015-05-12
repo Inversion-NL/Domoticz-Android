@@ -23,7 +23,7 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/server_input"
+            android:id="@+id/remote_server_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textNoSuggestions"/>
@@ -35,7 +35,7 @@
             android:layout_marginTop="15dp">
 
             <TextView
-                android:id="@+id/protocol_title"
+                android:id="@+id/remote_protocol_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Protocol"
@@ -58,14 +58,14 @@
             android:layout_marginTop="15dp" >
 
             <Spinner
-                android:id="@+id/protocol_spinner"
+                android:id="@+id/remote_protocol_spinner"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:spinnerMode="dropdown"
                 android:layout_weight="1" />
 
             <EditText
-                android:id="@+id/port_input"
+                android:id="@+id/remote_port_input"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -82,7 +82,7 @@
             android:layout_marginTop="15dp" />
 
         <EditText
-            android:id="@+id/username_input"
+            android:id="@+id/remote_username_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minWidth="175dp"
@@ -97,7 +97,7 @@
             android:layout_marginTop="15dp" />
 
         <EditText
-            android:id="@+id/password_input"
+            android:id="@+id/remote_password_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"

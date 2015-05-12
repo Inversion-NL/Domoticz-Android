@@ -5,8 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:textAppearance="?android:attr/textAppearanceListItemSmall"
+    android:textColor="@color/default_text_color_light"
     android:gravity="center_vertical"
     android:paddingLeft="10dp"
     android:paddingTop="5dp"
     android:paddingBottom="5dp"
-    android:text="testje"/>
+    android:paddingRight="10dp"/>

@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import nl.inversion.domoticz.Domoticz.Domoticz;
@@ -162,8 +165,12 @@ public class SharedPrefUtil {
     /*
      *      Local server settings
      */
-    public boolean serverUsesSameAddress() {
+    public boolean localServerUsesSameAddress() {
         return prefs.getBoolean(LOCAL_SERVER_USES_SAME_ADDRESS, true);
+    }
+
+    public void setLocalServerUsesSameAddress(boolean b) {
+        editor.putBoolean(LOCAL_SERVER_USES_SAME_ADDRESS, b).apply();
     }
 
     public String getDomoticzLocalUsername() {
@@ -229,6 +236,14 @@ public class SharedPrefUtil {
 
     public Set<String> getLocalSsid() {
         return prefs.getStringSet(LOCAL_SERVER_SSID, null);
+    }
+
+    public void setLocalSsid(List<String> ssids) {
+        Set<String> set = new HashSet<>();
+        for (String ssid : ssids) {
+            set.add(ssid);
+        }
+        editor.putStringSet(LOCAL_SERVER_SSID, set).apply();
     }
 
 

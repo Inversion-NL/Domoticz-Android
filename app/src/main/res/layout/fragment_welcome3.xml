@@ -22,9 +22,11 @@
             android:text="@string/welcome_server_settings_title" />
 
         <com.marvinlabs.widget.floatinglabel.edittext.FloatingLabelEditText
-            android:id="@+id/server_input"
+            android:id="@+id/remote_server_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:flw_labelTextColor="@color/default_text_color_light"
+            app:flw_inputWidgetTextColor="@color/default_text_color_light"
             app:flw_labelTextSize="@dimen/text_size_medium"
             app:flw_inputWidgetTextSize="@dimen/text_size_large"
             app:flw_labelText="@string/welcome_server_address"
@@ -34,63 +36,63 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp">
-
-            <TextView
-                android:id="@+id/protocol_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/welcome_server_protocol"
-                android:textStyle="bold"
-                android:layout_weight="1" />
-
-            <TextView
-                android:id="@+id/port_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textStyle="bold"
-                android:layout_weight="1" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginTop="15dp" >
 
-            <Spinner
-                android:id="@+id/protocol_spinner"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:spinnerMode="dropdown"
-                android:layout_weight="1" />
-
-            <com.marvinlabs.widget.floatinglabel.edittext.FloatingLabelEditText
-                android:id="@+id/port_input"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:inputType="numberSigned"
-                app:flw_labelTextSize="@dimen/text_size_medium"
-                app:flw_inputWidgetTextSize="@dimen/text_size_large"
-                app:flw_labelText="@string/welcome_server_port"/>
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/remote_protocol_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/default_text_color_light"
+                    android:text="@string/welcome_server_protocol"
+                    android:layout_marginTop="5dp"/>
+
+                <Spinner
+                    android:id="@+id/remote_protocol_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:spinnerMode="dropdown"
+                    android:paddingTop="3dp"/>
+            </LinearLayout>
+
+        <com.marvinlabs.widget.floatinglabel.edittext.FloatingLabelEditText
+            android:id="@+id/remote_port_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="numberSigned"
+            app:flw_labelTextColor="@color/default_text_color_light"
+            app:flw_inputWidgetTextColor="@color/default_text_color_light"
+            app:flw_labelTextSize="@dimen/text_size_medium"
+            app:flw_inputWidgetTextSize="@dimen/text_size_large"
+            app:flw_labelText="@string/welcome_server_port"/>
 
         </LinearLayout>
 
         <com.marvinlabs.widget.floatinglabel.edittext.FloatingLabelEditText
-            android:id="@+id/username_input"
+            android:id="@+id/remote_username_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minWidth="175dp"
+            android:minWidth="@dimen/width_min_welcomePage3_username_input"
+            app:flw_labelTextColor="@color/default_text_color_light"
+            app:flw_inputWidgetTextColor="@color/default_text_color_light"
+            app:flw_labelTextSize="@dimen/text_size_medium"
+            app:flw_inputWidgetTextSize="@dimen/text_size_large"
             app:flw_labelText="@string/welcome_server_username"
             android:inputType="textNoSuggestions"/>
 
         <com.marvinlabs.widget.floatinglabel.edittext.FloatingLabelEditText
-            android:id="@+id/password_input"
+            android:id="@+id/remote_password_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
+            app:flw_labelTextColor="@color/default_text_color_light"
+            app:flw_inputWidgetTextColor="@color/default_text_color_light"
             app:flw_labelTextSize="@dimen/text_size_medium"
             app:flw_inputWidgetTextSize="@dimen/text_size_large"
             app:flw_labelText="@string/welcome_server_password"
@@ -100,8 +102,8 @@
             android:id="@+id/startScreen_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/default_text_color_light"
             android:text="@string/welcome_server_startScreen"
-            android:textStyle="bold"
             android:layout_marginTop="15dp" />
 
         <Spinner
@@ -114,9 +116,9 @@
             android:id="@+id/local_server_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/default_text_color_light"
             android:text="@string/local_server_used_switch_summary"
-            android:layout_marginTop="15dp"
-            android:textStyle="bold" />
+            android:layout_marginTop="15dp"/>
 
         <Switch
             android:id="@+id/localServer_switch"
@@ -132,41 +134,16 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp">
 
-            <TextView
-                android:id="@+id/local_server_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/welcome_server_address"
-                android:textStyle="bold" />
-
-            <EditText
+            <com.marvinlabs.widget.floatinglabel.edittext.FloatingLabelEditText
                 android:id="@+id/local_server_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:flw_labelTextColor="@color/default_text_color_light"
+                app:flw_inputWidgetTextColor="@color/default_text_color_light"
+                app:flw_labelTextSize="@dimen/text_size_medium"
+                app:flw_inputWidgetTextSize="@dimen/text_size_large"
+                app:flw_labelText="@string/welcome_server_address"
                 android:inputType="textNoSuggestions"/>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp">
-
-                <TextView
-                    android:id="@+id/local_protocol_title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/welcome_server_protocol"
-                    android:textStyle="bold"
-                    android:layout_weight="1" />
-
-                <TextView
-                    android:id="@+id/local_port_title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/welcome_server_port"
-                    android:textStyle="bold"
-                    android:layout_weight="1" />
-            </LinearLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -174,51 +151,71 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp" >
 
-                <Spinner
-                    android:id="@+id/local_protocol_spinner"
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:spinnerMode="dropdown"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                <EditText
+                    <TextView
+                        android:id="@+id/local_protocol_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/default_text_color_light"
+                        android:text="@string/welcome_server_protocol"
+                        android:paddingTop="5dp" />
+
+                    <Spinner
+                        android:id="@+id/local_protocol_spinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="5dp"/>
+                </LinearLayout>
+
+                <com.marvinlabs.widget.floatinglabel.edittext.FloatingLabelEditText
                     android:id="@+id/local_port_input"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:inputType="numberSigned"/>
-
+                    android:inputType="numberSigned"
+                    app:flw_labelTextColor="@color/default_text_color_light"
+                    app:flw_inputWidgetTextColor="@color/default_text_color_light"
+                    app:flw_labelTextSize="@dimen/text_size_medium"
+                    app:flw_inputWidgetTextSize="@dimen/text_size_large"
+                    app:flw_labelText="@string/welcome_server_port"/>
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/local_username_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/welcome_server_username"
-                android:textStyle="bold"
-                android:layout_marginTop="15dp" />
-
-            <EditText
+            <com.marvinlabs.widget.floatinglabel.edittext.FloatingLabelEditText
                 android:id="@+id/local_username_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minWidth="175dp"
+                android:layout_marginTop="15dp"
+                android:minWidth="@dimen/width_min_welcomePage3_username_input"
+                app:flw_labelTextColor="@color/default_text_color_light"
+                app:flw_inputWidgetTextColor="@color/default_text_color_light"
+                app:flw_labelTextSize="@dimen/text_size_medium"
+                app:flw_inputWidgetTextSize="@dimen/text_size_large"
+                app:flw_labelText="@string/welcome_server_username"
                 android:inputType="textNoSuggestions"/>
 
-            <TextView
-                android:id="@+id/local_password_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/welcome_server_password"
-                android:textStyle="bold"
-                android:layout_marginTop="15dp" />
-
-            <EditText
+            <com.marvinlabs.widget.floatinglabel.edittext.FloatingLabelEditText
                 android:id="@+id/local_password_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                app:flw_labelTextColor="@color/default_text_color_light"
+                app:flw_inputWidgetTextColor="@color/default_text_color_light"
+                app:flw_labelTextSize="@dimen/text_size_medium"
+                app:flw_inputWidgetTextSize="@dimen/text_size_large"
+                app:flw_labelText="@string/welcome_server_password"
                 android:inputType="textPassword"
                 android:ems="10"/>
+
+            <nl.inversion.domoticz.app.MultiSelectionSpinner
+                android:id="@+id/local_wifi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            </nl.inversion.domoticz.app.MultiSelectionSpinner>
 
         </LinearLayout>
     </LinearLayout>

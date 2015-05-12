@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Material design colors -->
-    <!--   your app branding color for the app bar -->
-    <color name="primary">@color/material_indigo_500</color>
-    <!--   darker variant for the status bar and contextual app bars -->
+    <color name="primary">@color/material_indigo_600</color>
     <color name="primary_dark">@color/material_indigo_700</color>
-    <!--   theme UI controls like checkboxes and text fields -->
     <color name="accent">@color/material_indigo_200</color>
 
     <color name="welcome1_background">@color/black</color>
@@ -13,14 +10,13 @@
     <color name="welcome3_background">@color/default_background_color_light</color>
     <color name="welcome4_background">@color/default_background_color_light</color>
 
-    <color name="default_text_color_light">#FFFFFFFF</color>
-    <color name="default_text_color_dark">#FF000000</color>
-    <color name="default_background_color_light">#fff3f3f3</color>
+    <color name="default_text_color_light">#575757</color>
+    <color name="default_background_color_light">@android:color/background_light</color>
 
     <color name="black">#ff000000</color>
     <color name="white">#ffffffff</color>
-    <color name="darker_gray">#ff444444</color>
-    <color name="light_gray">#ffcccccc</color>
+    <color name="darker_gray">@android:color/darker_gray</color>
+    <color name="light_gray">@android:color/secondary_text_dark</color>
 
 
     <color name="material_teal_200">#80CBC4</color>

@@ -5,6 +5,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import nl.inversion.domoticz.R;
@@ -20,6 +23,13 @@ public class WelcomePage1 extends Fragment{
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_welcome1, container, false);
 
+        int mShortAnimationDuration = getResources().getInteger(
+                android.R.integer.config_shortAnimTime);
+
+        ImageView myImageView= (ImageView) v.findViewById(R.id.logo_domoticz);
+        Animation myFadeInAnimation = AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in);
+        myFadeInAnimation.setDuration(mShortAnimationDuration);
+        myImageView.startAnimation(myFadeInAnimation);
 
         return v;
     }

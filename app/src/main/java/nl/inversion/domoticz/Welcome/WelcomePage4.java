@@ -98,6 +98,9 @@ public class WelcomePage4 extends Fragment {
         tempText = tempText + getString(R.string.welcome_msg_correctOnPreviousPage);
         disableFinishButton();
         setResultText(tempText);
+
+        SharedPrefUtil mSharedPrefs = new SharedPrefUtil(getActivity());
+        mSharedPrefs.setWelcomeWizardSuccess(false);
         tempText = "";
     }
 

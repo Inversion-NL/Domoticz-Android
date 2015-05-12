@@ -153,7 +153,7 @@ public class Domoticz {
 
         boolean local = false;
 
-        if (!mSharedPrefUtil.serverUsesSameAddress()) {
+        if (!mSharedPrefUtil.localServerUsesSameAddress()) {
             Set<String> localSsid = mSharedPrefUtil.getLocalSsid();
 
             if (mPhoneConnectionUtil.isWifiConnected() && localSsid != null) {

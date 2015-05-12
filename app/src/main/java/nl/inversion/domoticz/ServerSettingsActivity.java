@@ -112,11 +112,11 @@ public class ServerSettingsActivity extends ActionBarActivity {
 
     private void getLayoutReferences() {
 
-        server_input = (EditText) findViewById(R.id.server_input);
-        port_input = (EditText) findViewById(R.id.port_input);
-        username_input  = (EditText) findViewById(R.id.username_input);
-        password_input  = (EditText) findViewById(R.id.password_input);
-        protocol_spinner = (Spinner) findViewById(R.id.protocol_spinner);
+        server_input = (EditText) findViewById(R.id.remote_server_input);
+        port_input = (EditText) findViewById(R.id.remote_port_input);
+        username_input  = (EditText) findViewById(R.id.remote_username_input);
+        password_input  = (EditText) findViewById(R.id.remote_password_input);
+        protocol_spinner = (Spinner) findViewById(R.id.remote_protocol_spinner);
         startScreen_spinner = (Spinner) findViewById(R.id.startScreen_spinner);
         localServer_switch = (Switch) findViewById(R.id.localServer_switch);
 

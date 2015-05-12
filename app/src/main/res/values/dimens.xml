@@ -11,6 +11,7 @@
     <dimen name="text_size_welcomePage2_swipeInfo">12sp</dimen>
 
     <dimen name="text_size_welcomePage3_serverSettings_title">30sp</dimen>
+    <dimen name="width_min_welcomePage3_username_input">175dp</dimen>
 
     <dimen name="text_size_large">20sp</dimen>
     <dimen name="text_size_medium">18sp</dimen>
