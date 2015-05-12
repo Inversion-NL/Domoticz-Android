@@ -240,7 +240,12 @@ public class Domoticz {
 
             } else if (volleyError instanceof TimeoutError || volleyError instanceof NoConnectionError) {
                 Log.e(TAG, "Timeout or no connection");
-                String detail = volleyError.getCause().getMessage();
+                String detail = "";
+
+                if (volleyError.getCause() != null) detail = volleyError.getCause().getMessage();
+                else {
+                    detail = volleyError.toString();
+                }
                 errorMessage = mContext.getString(R.string.error_timeout) + "\n" + detail;
 
             } else if (volleyError instanceof ServerError) {
