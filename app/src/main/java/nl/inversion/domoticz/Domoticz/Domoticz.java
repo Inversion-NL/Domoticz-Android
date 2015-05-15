@@ -33,6 +33,7 @@ import nl.inversion.domoticz.Utils.PhoneConnectionUtil;
 import nl.inversion.domoticz.Utils.RequestUtil;
 import nl.inversion.domoticz.Utils.UsefulBits;
 import nl.inversion.domoticz.Utils.SharedPrefUtil;
+import nl.inversion.domoticz.Utils.VolleyUtil;
 
 @SuppressWarnings("unused")
 public class Domoticz {
@@ -230,42 +231,14 @@ public class Domoticz {
 
     public String getErrorMessage(Exception error) {
 
-        String errorMessage = "Unhandled error";
+        String errorMessage;
 
         if (error instanceof VolleyError) {
 
+            VolleyUtil mVolleyUtil = new VolleyUtil(mContext);
             VolleyError volleyError = (VolleyError) error;
 
-            if(volleyError instanceof AuthFailureError) {
-                Log.e(TAG, "Authentication failure");
-                errorMessage = mContext.getString(R.string.error_authentication);
-
-            } else if (volleyError instanceof TimeoutError || volleyError instanceof NoConnectionError) {
-                Log.e(TAG, "Timeout or no connection");
-                String detail;
-
-                if (volleyError.getCause() != null) detail = volleyError.getCause().getMessage();
-                else {
-                    detail = volleyError.toString();
-                }
-                errorMessage = mContext.getString(R.string.error_timeout) + "\n" + detail;
-
-            } else if (volleyError instanceof ServerError) {
-                Log.e(TAG, "Server error");
-                errorMessage = mContext.getString(R.string.error_server);
-
-            } else if (volleyError instanceof NetworkError) {
-                Log.e(TAG, "Network error");
-
-                NetworkResponse networkResponse = volleyError.networkResponse;
-                if (networkResponse != null) {
-                    Log.e("Status code", String.valueOf(networkResponse.statusCode));
-                    errorMessage = String.format(mContext.getString(R.string.error_network), networkResponse.statusCode);
-                }
-            } else if (volleyError instanceof ParseError) {
-                Log.e(TAG, "Parse failure");
-                errorMessage = mContext.getString(R.string.error_parse);
-            }
+            errorMessage = mVolleyUtil.getVolleyErrorMessage(volleyError);
         } else {
             errorMessage = error.getMessage();
         }
