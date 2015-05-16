@@ -186,6 +186,10 @@ public class RequestUtil {
         return headerMap;
     }
 
+    /**
+     * Local error handling
+     * @param volleyError
+     */
     private static void errorHandling(VolleyError volleyError) {
         Log.e(TAG, "RequestUtil volley error");
         if (volleyError.getMessage() != null) Log.e(TAG, volleyError.getMessage());

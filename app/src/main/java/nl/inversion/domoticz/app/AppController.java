@@ -9,6 +9,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.RetryPolicy;
 import com.android.volley.toolbox.Volley;
 
+@SuppressWarnings("unused")
 public class AppController extends Application {
 
     public static final String TAG = AppController.class.getSimpleName();
