@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="10dp">
+    android:padding="5dp"
+    android:longClickable="true">
 
     <TextView
         android:id="@+id/switch_name"
@@ -14,27 +15,28 @@
         android:text="Switch name"/>
 
     <TextView
-        android:id="@+id/switch_lastSeen"
-        android:layout_below="@id/switch_name"
+        android:id="@+id/switch_battery_level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/switch_row_lastSeen"
-        android:text="@string/last_seen"/>
+        style="@style/switch_row_extraInfo"
+        android:text="@string/battery_level"
+        android:layout_below="@+id/switch_name"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/switch_signal_level"
+        android:layout_below="@id/switch_battery_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/switch_row_extraInfo"
+        android:text="@string/signal_level"/>
 
     <Switch
         android:id="@+id/switch_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true" />
-
-    <TextView
-        android:id="@+id/switch_signal_level"
-        android:layout_below="@id/switch_lastSeen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/switch_row_extraInfo"
-        android:text="@string/signal_level"/>
 
 </RelativeLayout>

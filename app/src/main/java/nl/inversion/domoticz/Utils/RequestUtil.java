@@ -80,19 +80,19 @@ public class RequestUtil {
                 new JsonObjectRequest(Request.Method.GET,
                         url, new Response.Listener<JSONObject>() {
 
-                @Override
-                public void onResponse(JSONObject response) {
+                    @Override
+                    public void onResponse(JSONObject response) {
 
-                    String jsonString;
+                        String jsonString;
 
-                            try {
-                                jsonString = response.getString(Domoticz.JSON_FIELD_RESULT);
-                                if (parser != null)
-                                    parser.parseResult(jsonString);
-                            } catch (JSONException e) {
-                                if (parser != null)
-                                    parser.onError(e);
-                            }
+                        try {
+                            jsonString = response.getString(Domoticz.JSON_FIELD_RESULT);
+                            if (parser != null)
+                                parser.parseResult(jsonString);
+                        } catch (JSONException e) {
+                            if (parser != null)
+                                parser.onError(e);
+                        }
                     }
                 }, new Response.ErrorListener() {
 
@@ -188,7 +188,7 @@ public class RequestUtil {
 
     /**
      * Local error handling
-     * @param volleyError
+     * @param volleyError Volley error holding the error
      */
     private static void errorHandling(VolleyError volleyError) {
         Log.e(TAG, "RequestUtil volley error");

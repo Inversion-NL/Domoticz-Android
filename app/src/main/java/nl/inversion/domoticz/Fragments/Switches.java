@@ -37,12 +37,6 @@ public class Switches extends Fragment {
     private TextView debugText;
     private boolean debug;
 
-    public static Fragment newInstance(Context context) {
-        Switches f = new Switches();
-
-        return f;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_switches, null);
@@ -160,7 +154,6 @@ public class Switches extends Fragment {
                                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View switchRow_onOff = layoutInflater.inflate(R.layout.switch_row_on_off, null);
 
-                String lastUpdate = mExtendedStatusInfo.getLastUpdate();
                 int signalLevel = mExtendedStatusInfo.getSignalLevel();
                 final boolean status = mExtendedStatusInfo.getStatusBoolean();
 
@@ -176,13 +169,10 @@ public class Switches extends Fragment {
 
 
                 TextView switch_name = (TextView) switchRow_onOff.findViewById(R.id.switch_name);
-                TextView switch_last_seen =
-                        (TextView) switchRow_onOff.findViewById(R.id.switch_lastSeen);
                 TextView switch_level =
                         (TextView) switchRow_onOff.findViewById(R.id.switch_signal_level);
 
                 switch_name.setText(name);
-                switch_last_seen.setText(lastUpdate);
                 switch_level.setText(getText(R.string.signal_level) + ": " + signalLevel);
 
                 container.addView(switchRow_onOff);
@@ -194,7 +184,7 @@ public class Switches extends Fragment {
                                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View switchRow_blinds = layoutInflater.inflate(R.layout.switch_row_blinds, null);
 
-                String lastUpdate = mExtendedStatusInfo.getLastUpdate();
+                int batteryLevel = mExtendedStatusInfo.getBatteryLevel();
                 String status = mExtendedStatusInfo.getStatus();
 
                 ImageButton buttonUp = (ImageButton) switchRow_blinds.findViewById(R.id.switch_button_up);
@@ -224,14 +214,15 @@ public class Switches extends Fragment {
                     }
                 });
 
-                TextView switch_name = (TextView) switchRow_blinds.findViewById(R.id.switch_name);
-                TextView switch_last_seen =
-                        (TextView) switchRow_blinds.findViewById(R.id.switch_lastSeen);
+                TextView switch_name =
+                        (TextView) switchRow_blinds.findViewById(R.id.switch_name);
+                TextView switch_battery_level =
+                        (TextView) switchRow_blinds.findViewById(R.id.switch_signal_level);
                 TextView switch_status =
                         (TextView) switchRow_blinds.findViewById(R.id.switch_status);
 
                 switch_name.setText(name);
-                switch_last_seen.setText(lastUpdate);
+                switch_battery_level.setText(getText(R.string.battery_level) + ": " + String.valueOf(batteryLevel));
                 switch_status.setText(getText(R.string.status) + ": " + status);
 
                 container.addView(switchRow_blinds);

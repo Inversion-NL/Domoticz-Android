@@ -15,7 +15,6 @@
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:orientation="vertical">
         </LinearLayout>
 
@@ -27,7 +26,7 @@
                 android:id="@+id/debugTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/debug_textview_title"
+                style="@style/debug_title"
                 android:text="@string/debug_textview_title"/>
 
             <TextView

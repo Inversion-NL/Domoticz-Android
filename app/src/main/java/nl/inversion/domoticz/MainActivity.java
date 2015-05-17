@@ -16,7 +16,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import nl.inversion.domoticz.Domoticz.Domoticz;
 import nl.inversion.domoticz.Utils.SharedPrefUtil;
 import nl.inversion.domoticz.Welcome.WelcomeViewActivity;
 
@@ -35,14 +34,9 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         mSharedPrefs = new SharedPrefUtil(this);
 
+        //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
 
         if (mSharedPrefs.isFirstStart()) {
             Intent welcomeWizard = new Intent(this, WelcomeViewActivity.class);
@@ -60,6 +54,7 @@ public class MainActivity extends ActionBarActivity {
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
         }
+
     }
 
     private void addFragment() {
@@ -152,16 +147,13 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
 
+    @SuppressWarnings("SimplifiableIfStatement")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-
-            case R.id.action_welcome:
-                startActivity(new Intent(this, WelcomeViewActivity.class));
                 return true;
         }
 

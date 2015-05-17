@@ -6,27 +6,27 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import nl.inversion.domoticz.Adapters.UtilityAdapter;
 import nl.inversion.domoticz.Containers.UtilitiesInfo;
 import nl.inversion.domoticz.Domoticz.Domoticz;
 import nl.inversion.domoticz.Interfaces.setCommandReceiver;
 import nl.inversion.domoticz.Interfaces.UtilitiesReceiver;
-import nl.inversion.domoticz.Interfaces.ThermostatButtonClickListener;
+import nl.inversion.domoticz.Interfaces.thermostatClickListener;
 import nl.inversion.domoticz.R;
 
-public class Utilities extends Fragment implements ThermostatButtonClickListener {
+public class Utilities extends Fragment implements thermostatClickListener {
 
     private static final String TAG = Utilities.class.getSimpleName();
 
@@ -72,8 +72,18 @@ public class Utilities extends Fragment implements ThermostatButtonClickListener
         progressDialog.setCancelable(false);
 
         if (debug) {
+            LinearLayout debugLayout = (LinearLayout) getView().findViewById(R.id.debugLayout);
+            debugLayout.setVisibility(View.VISIBLE);
+
             debugText = (TextView) getView().findViewById(R.id.debugText);
-            debugText.setVisibility(View.VISIBLE);
+            debugText.setMovementMethod(new ScrollingMovementMethod());
+            debugText.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    Toast.makeText(mActivity, "Text copied to clipboard", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            });
         }
         getData();
 
@@ -83,7 +93,7 @@ public class Utilities extends Fragment implements ThermostatButtonClickListener
 
         showProgressDialog();
 
-        final ThermostatButtonClickListener listener = this;
+        final thermostatClickListener listener = this;
 
         mDomoticz.getUtilities(new UtilitiesReceiver() {
 
@@ -110,7 +120,7 @@ public class Utilities extends Fragment implements ThermostatButtonClickListener
     }
 
     @Override
-    public void onThermostatClick(int idx, int action, long newSetPoint) {
+    public void onClick(int idx, int action, long newSetPoint) {
 
         clickedIdx = idx;
         thermostatSetPointValue = newSetPoint;
@@ -118,17 +128,17 @@ public class Utilities extends Fragment implements ThermostatButtonClickListener
         Log.d(TAG, "onThermostatClick");
 
         int jsonUrl = Domoticz.JSON_SET_URL_TEMP;
-        int jsonAction = mDomoticz.JSON_ACTION_MIN;
+        int jsonAction = Domoticz.JSON_ACTION_MIN;
 
         switch (action) {
             case Domoticz.THERMOSTAT_ACTION_MIN:
                 Log.d(TAG, "Set idx " + idx + " to min");
-                jsonAction = mDomoticz.JSON_ACTION_MIN;
+                jsonAction = Domoticz.JSON_ACTION_MIN;
                 break;
 
             case Domoticz.THERMOSTAT_ACTION_PLUS:
                 Log.d(TAG, "Set idx " + idx + " to plus");
-                jsonAction = mDomoticz.JSON_ACTION_PLUS;
+                jsonAction = Domoticz.JSON_ACTION_PLUS;
                 break;
 
         }
@@ -219,7 +229,7 @@ public class Utilities extends Fragment implements ThermostatButtonClickListener
 
         if (debug) {
             String temp = debugText.getText().toString();
-            debugText.setText(temp + "\n\n" + error.getCause().getMessage());
+            debugText.setText(temp +  mDomoticz.getErrorMessage(error));
         } else {
             mDomoticz.errorToast(error);
         }

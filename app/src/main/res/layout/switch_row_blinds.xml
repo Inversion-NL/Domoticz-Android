@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingBottom="10dp">
+    android:padding="5dp"
+    android:longClickable="true">
 
 
     <LinearLayout
@@ -28,11 +29,12 @@
             android:text="@string/status"/>
 
         <TextView
-            android:id="@+id/switch_lastSeen"
+            android:id="@+id/switch_signal_level"
+            android:layout_below="@id/switch_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/switch_row_lastSeen"
-            android:text="@string/last_seen"/>
+            style="@style/switch_row_extraInfo"
+            android:text="@string/signal_level"/>
     </LinearLayout>
 
     <LinearLayout

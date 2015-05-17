@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 import nl.inversion.domoticz.Containers.UtilitiesInfo;
 import nl.inversion.domoticz.Domoticz.Domoticz;
-import nl.inversion.domoticz.Interfaces.ThermostatButtonClickListener;
+import nl.inversion.domoticz.Interfaces.thermostatClickListener;
 import nl.inversion.domoticz.R;
 
 // Example used: http://www.ezzylearning.com/tutorial/customizing-android-listview-items-with-custom-arrayadapter
@@ -22,10 +22,12 @@ public class UtilityAdapter extends ArrayAdapter<UtilitiesInfo> {
 
     Context context;
     ArrayList<UtilitiesInfo> data = null;
-    private final ThermostatButtonClickListener listener;
+    private final thermostatClickListener listener;
 
 
-    public UtilityAdapter(Context context, ArrayList<UtilitiesInfo> data, ThermostatButtonClickListener listener) {
+    public UtilityAdapter(Context context,
+                          ArrayList<UtilitiesInfo> data,
+                          thermostatClickListener listener) {
         super(context, 0, data);
 
         this.context = context;
@@ -37,14 +39,14 @@ public class UtilityAdapter extends ArrayAdapter<UtilitiesInfo> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
         ViewHolder holder;
-        int layoutResourceId = 0;
+        int layoutResourceId;
 
         UtilitiesInfo mUtilitiesInfo = data.get(position);
 
         if (row == null) {
             holder = new ViewHolder();
 
-            if (mUtilitiesInfo.getType().equalsIgnoreCase(Domoticz.UTILITIES_TYPE_THERMOSTAT)) {
+            if (Domoticz.UTILITIES_TYPE_THERMOSTAT.equalsIgnoreCase(mUtilitiesInfo.getType())) {
 
                 layoutResourceId = R.layout.utilities_row_thermostat;
 
@@ -80,8 +82,7 @@ public class UtilityAdapter extends ArrayAdapter<UtilitiesInfo> {
                     }
                 });
             }
-
-            row.setTag(holder);
+            if (row != null) row.setTag(holder);
 
         } else holder = (ViewHolder) row.getTag();
 
@@ -89,7 +90,7 @@ public class UtilityAdapter extends ArrayAdapter<UtilitiesInfo> {
     }
 
     public void handleThermostatClick(int idx, int action, long newSetPoint) {
-            listener.onThermostatClick(idx, action, newSetPoint);
+            listener.onClick(idx, action, newSetPoint);
     }
 
     static class ViewHolder {
@@ -99,5 +100,4 @@ public class UtilityAdapter extends ArrayAdapter<UtilitiesInfo> {
         ImageButton buttonPlus;
         ImageButton buttonMinus;
     }
-
 }

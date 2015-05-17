@@ -4,6 +4,8 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:dialogTheme">@style/MyDialogTheme</item>
+        <item name="android:alertDialogTheme">@style/MyDialogTheme</item>
     </style>
 
     <!--        Welcome     -->
@@ -47,16 +49,6 @@
 
     <!--        Switches        -->
 
-    <style name="switch_title">
-        <item name="android:layout_centerHorizontal">true</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:paddingBottom">10dp</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">20sp</item>
-    </style>
-
     <style name="switch_row_name" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
@@ -72,7 +64,6 @@
     <style name="switch_row_extraInfo" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:layout_marginBottom">2dp</item>
     </style>
 
     <!--        Utilities        -->
@@ -90,20 +81,38 @@
     </style>
 
 
+    <!--        List view        -->
+    <style name="listView">
+        <item name="android:scrollbarStyle">outsideOverlay</item>
+    </style>
+
+
     <!--        Debugging        -->
 
     <style name="debug_layout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">vertical</item>
-        <item name="android:layout_marginTop">25dp</item>
+        <item name="android:layout_marginBottom">15dp</item>
         <item name="android:visibility">gone</item>
     </style>
 
-    <style name="debug_textview_title" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">26sp</item>
+    <style name="debug_title">
+        <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_marginBottom">2dp</item>
+    </style>
+
+    <style name="debug_text">
+        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:maxLines">5</item>
+        <item name="android:scrollbars">vertical</item>
+    </style>
+
+    <style name="MyDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowCloseOnTouchOutside">false</item>
     </style>
 
 </resources>

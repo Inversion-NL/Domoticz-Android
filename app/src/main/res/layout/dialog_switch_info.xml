@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    style="@style/AlertDialog.AppCompat.Light">
+
+    <TextView
+        android:id="@+id/switch_name"
+        android:text="Switch"
+        android:paddingTop="@dimen/abc_dialog_padding_material"
+        android:paddingLeft="@dimen/abc_dialog_padding_material"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:textSize="@dimen/text_size_large"
+        android:textStyle="bold"/>
+
+    <LinearLayout
+        android:id="@+id/titles"
+        android:paddingLeft="@dimen/abc_dialog_padding_material"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/switch_name"
+        android:paddingRight="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/IDX_title"
+            android:text="IDX"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp"/>
+
+        <TextView
+            android:id="@+id/LastUpdate_title"
+            android:text="Last update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp"/>
+
+        <TextView
+            android:id="@+id/SignalLevel_title"
+            android:text="Signal level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp"/>
+
+        <TextView
+            android:id="@+id/BatteryLevel_title"
+            android:text="Battery level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/switch_name"
+        android:layout_toRightOf="@id/titles">
+
+        <TextView
+            android:id="@+id/IDX_name"
+            android:text="33"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp"/>
+
+        <TextView
+            android:id="@+id/LastUpdate_name"
+            android:text="1-1-2015 01:01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp"/>
+
+        <TextView
+            android:id="@+id/SignalLevel_name"
+            android:text="1-1-2015 01:01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp"/>
+
+        <TextView
+            android:id="@+id/BatteryLevel_name"
+            android:text="1-1-2015 01:01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp"/>
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/btnDone"
+        android:paddingBottom="@dimen/abc_button_padding_horizontal_material"
+        android:paddingRight="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/text"
+        android:text="@android:string/ok"
+        style="@style/Base.Widget.AppCompat.Button.ButtonBar.AlertDialog"/>
+
+</RelativeLayout>

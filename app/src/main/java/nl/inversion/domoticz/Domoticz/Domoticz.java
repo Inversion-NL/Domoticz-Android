@@ -16,7 +16,9 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -98,6 +100,8 @@ public class Domoticz {
     public static final int BLINDS_ACTION_UP = 1;
     public static final int BLINDS_ACTION_STOP = 2;
     public static final int BLINDS_ACTION_DOWN = 3;
+    public static final int SWITCH_ACTION_ON = 10;
+    public static final int SWITCH_ACTION_OFF = 11;
 
     public static final int THERMOSTAT_ACTION_PLUS = 11;
     public static final int THERMOSTAT_ACTION_MIN = 12;
@@ -150,6 +154,18 @@ public class Domoticz {
         mSharedPrefUtil = new SharedPrefUtil(mContext);
         mPhoneConnectionUtil = new PhoneConnectionUtil(mContext);
         debug = mSharedPrefUtil.isDebugEnabled();
+    }
+
+    public List<Integer> getSupportedSwitches() {
+
+        List<Integer> switchesSupported = new ArrayList<>();
+        switchesSupported.add(Domoticz.SWITCH_TYPE_ON_OFF);
+        //switchesSupported.add(Domoticz.SWITCH_TYPE_CONTACT);
+        switchesSupported.add(Domoticz.SWITCH_TYPE_BLINDS);
+        //switchesSupported.add(Domoticz.SWITCH_TYPE_SMOKE_DETECTOR);
+        //switchesSupported.add(Domoticz.SWITCH_TYPE_PUSH_ON_BUTTON);
+
+        return switchesSupported;
     }
 
     public boolean isUserOnLocalWifi() {
@@ -223,8 +239,7 @@ public class Domoticz {
         if (debug) {
             cause = error.toString();
         } else {
-            if (error.getCause() != null) cause = error.getCause().getMessage();
-            else cause = error.toString();
+            cause = getErrorMessage(error);
         }
         Toast.makeText(mContext, cause, Toast.LENGTH_LONG).show();
     }
