@@ -84,7 +84,8 @@ public class WelcomePage3 extends Fragment {
         spinner = (MultiSelectionSpinner) v.findViewById(R.id.local_wifi);
 
         startScreen_spinner = (Spinner) v.findViewById(R.id.startScreen_spinner);
-        final LinearLayout local_server_settings = (LinearLayout) v.findViewById(R.id.local_server_settings);
+        final LinearLayout local_server_settings = (LinearLayout)
+                v.findViewById(R.id.local_server_settings);
         localServer_switch = (Switch) v.findViewById(R.id.localServer_switch);
         localServer_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -153,7 +154,8 @@ public class WelcomePage3 extends Fragment {
         remote_protocol_spinner.setSelection(getPrefsDomoticzRemoteSecureIndex());
         remote_protocol_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> adapterView,
+                                       View view, int position, long id) {
                 remoteProtocolSelectedPosition = position;
             }
 
@@ -166,7 +168,8 @@ public class WelcomePage3 extends Fragment {
         local_protocol_spinner.setSelection(getPrefsDomoticzLocalSecureIndex());
         local_protocol_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> adapterView,
+                                       View view, int position, long id) {
                 localProtocolSelectedPosition = position;
             }
 
@@ -185,7 +188,8 @@ public class WelcomePage3 extends Fragment {
         startScreen_spinner.setSelection(mSharedPrefs.getStartupScreenIndex());
         startScreen_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> adapterView,
+                                       View view, int position, long id) {
                 startScreenSelectedPosition = position;
             }
 
@@ -196,11 +200,16 @@ public class WelcomePage3 extends Fragment {
 
     private void writePreferenceValues() {
 
-        mSharedPrefs.setDomoticzRemoteUsername(remote_username_input.getInputWidgetText().toString());
-        mSharedPrefs.setDomoticzRemotePassword(remote_password_input.getInputWidgetText().toString());
-        mSharedPrefs.setDomoticzRemoteUrl(remote_server_input.getInputWidgetText().toString());
-        mSharedPrefs.setDomoticzRemotePort(remote_port_input.getInputWidgetText().toString());
-        mSharedPrefs.setDomoticzRemoteSecure(getSpinnerDomoticzRemoteSecureBoolean());
+        mSharedPrefs.setDomoticzRemoteUsername(
+                remote_username_input.getInputWidgetText().toString());
+        mSharedPrefs.setDomoticzRemotePassword(
+                remote_password_input.getInputWidgetText().toString());
+        mSharedPrefs.setDomoticzRemoteUrl(
+                remote_server_input.getInputWidgetText().toString());
+        mSharedPrefs.setDomoticzRemotePort(
+                remote_port_input.getInputWidgetText().toString());
+        mSharedPrefs.setDomoticzRemoteSecure(
+                getSpinnerDomoticzRemoteSecureBoolean());
 
         mSharedPrefs.setStartupScreenIndex(startScreenSelectedPosition);
 
@@ -209,11 +218,16 @@ public class WelcomePage3 extends Fragment {
             mSharedPrefs.setLocalSameAddressAsRemote();
             mSharedPrefs.setLocalServerUsesSameAddress(false);
         } else {
-            mSharedPrefs.setDomoticzLocalUsername(local_username_input.getInputWidgetText().toString());
-            mSharedPrefs.setDomoticzLocalPassword(local_password_input.getInputWidgetText().toString());
-            mSharedPrefs.setDomoticzLocalUrl(local_server_input.getInputWidgetText().toString());
-            mSharedPrefs.setDomoticzLocalPort(local_port_input.getInputWidgetText().toString());
-            mSharedPrefs.setDomoticzLocalSecure(getSpinnerDomoticzLocalSecureBoolean());
+            mSharedPrefs.setDomoticzLocalUsername(
+                    local_username_input.getInputWidgetText().toString());
+            mSharedPrefs.setDomoticzLocalPassword(
+                    local_password_input.getInputWidgetText().toString());
+            mSharedPrefs.setDomoticzLocalUrl(
+                    local_server_input.getInputWidgetText().toString());
+            mSharedPrefs.setDomoticzLocalPort(
+                    local_port_input.getInputWidgetText().toString());
+            mSharedPrefs.setDomoticzLocalSecure(
+                    getSpinnerDomoticzLocalSecureBoolean());
             mSharedPrefs.setLocalServerUsesSameAddress(true);
         }
 
