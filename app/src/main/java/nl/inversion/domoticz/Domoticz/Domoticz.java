@@ -74,6 +74,7 @@ public class Domoticz {
     public static final int JSON_SET_URL_SCENES = 101;
     public static final int JSON_SET_URL_SWITCHES = 102;
     public static final int JSON_SET_URL_TEMP = 103;
+    public static final int JSON_SET_URL_FAVORITE = 104;
 
     public static final int JSON_GET_STATUS = 301;
 
@@ -84,6 +85,8 @@ public class Domoticz {
     public static final int JSON_ACTION_DOWN = 205;
     public static final int JSON_ACTION_MIN = 206;
     public static final int JSON_ACTION_PLUS = 207;
+    public static final int JSON_ACTION_FAVORITE_ON = 208;
+    public static final int JSON_ACTION_FAVORITE_OFF = 209;
 
     public static final String SCENE_TYPE_GROUP = "Group";
     public static final String SCENE_TYPE_SCENE = "Scene";
@@ -103,9 +106,8 @@ public class Domoticz {
     public static final int SWITCH_ACTION_ON = 10;
     public static final int SWITCH_ACTION_OFF = 11;
 
-    public static final int THERMOSTAT_ACTION_PLUS = 11;
-    public static final int THERMOSTAT_ACTION_MIN = 12;
-
+    public static final int THERMOSTAT_ACTION_PLUS = 21;
+    public static final int THERMOSTAT_ACTION_MIN = 22;
 
     public static final String[] ITEMS_UTILITIES = {UTILITIES_TYPE_THERMOSTAT};
 
@@ -113,37 +115,41 @@ public class Domoticz {
     /*
      *  Private variables
      */
-    private static final String ACTION_ON = "On";
-    private static final String ACTION_OFF = "Off";
-    private static final String ACTION_UP = "Up";
-    private static final String ACTION_STOP = "Stop";
-    private static final String ACTION_DOWN = "Down";
-    private static final String ACTION_PLUS = "Plus";
-    private static final String ACTION_MIN = "Min";
+    private static final String ACTION_ON =             "On";
+    private static final String ACTION_OFF =            "Off";
+    private static final String ACTION_UP =             "Up";
+    private static final String ACTION_STOP =           "Stop";
+    private static final String ACTION_DOWN =           "Down";
+    private static final String ACTION_PLUS =           "Plus";
+    private static final String ACTION_MIN =            "Min";
+    private static final String ACTION_FAVORITE_ON =    "1";
+    private static final String ACTION_FAVORITE_OFF =   "0";
 
-    private static final String URL_VERSION = "/json.htm?type=command&param=getversion";
-    private static final String URL_DASHBOARD = "";
-    private static final String URL_SCENES = "/json.htm?type=scenes";
-    private static final String URL_SWITCHES = "/json.htm?type=command&param=getlightswitches";
-    private static final String URL_UTILITIES = "/json.htm?type=devices";
-    private static final String URL_TEMPERATURE = "";
-    private static final String URL_WEATHER = "";
-    private static final String URL_CAMERAS = "";
-    private static final String URL_DEVICES = "/json.htm?type=devices";
+    private static final String URL_VERSION =           "/json.htm?type=command&param=getversion";
+    private static final String URL_DASHBOARD =         "";
+    private static final String URL_SCENES =            "/json.htm?type=scenes";
+    private static final String URL_SWITCHES =          "/json.htm?type=command&param=getlightswitches";
+    private static final String URL_UTILITIES =         Domoticz.URL_DEVICES;
+    private static final String URL_TEMPERATURE =       "";
+    private static final String URL_WEATHER =           "";
+    private static final String URL_CAMERAS =           "";
+    private static final String URL_DEVICES =           "/json.htm?type=devices";
 
-    private static final String URL_DEVICE_STATUS = "/json.htm?type=devices&rid=";
-    private static final String URL_SUNRISE_SUNSET = "/json.htm?type=command&param=getSunRiseSet";
+    private static final String URL_DEVICE_STATUS =     "/json.htm?type=devices&rid=";
+    private static final String URL_SUNRISE_SUNSET =    "/json.htm?type=command&param=getSunRiseSet";
 
-    private static final String URL_SWITCH_DIM_LEVEL = "&switchcmd=Set%20Level&level=";
-    private static final String URL_SWITCH_SCENE = "/json.htm?type=command&param=switchscene&idx=";
-    private static final String URL_SWITCH_SWITCHES = "/json.htm?type=command&param=switchlight&idx=";
-    private static final String URL_SWITCH_CMD = "&switchcmd=";
-    private static final String URL_SWITCH_LEVEL = "&level=0";
-    private static final String URL_TEMP_BASE = "/json.htm?type=command&param=udevice&idx=";
-    private static final String URL_TEMP_VALUE = "&nvalue=0&svalue=";
+    private static final String URL_SWITCH_DIM_LEVEL =  "&switchcmd=Set%20Level&level=";
+    private static final String URL_SWITCH_SCENE =      "/json.htm?type=command&param=switchscene&idx=";
+    private static final String URL_SWITCH_SWITCHES =   "/json.htm?type=command&param=switchlight&idx=";
+    private static final String URL_SWITCH_CMD =        "&switchcmd=";
+    private static final String URL_SWITCH_LEVEL =      "&level=0";
+    private static final String URL_TEMP_BASE =         "/json.htm?type=command&param=udevice&idx=";
+    private static final String URL_TEMP_VALUE =        "&nvalue=0&svalue=";
+    private static final String URL_FAVORITE_BASE =     "/json.htm?type=command&param=makefavorite&idx=";
+    private static final String URL_FAVORITE_VALUE =    "&isfavorite=";
 
     private static final String URL_PROTOCOL_INSECURE = "http://";
-    private static final String URL_PROTOCOL_SECURE = "https://";
+    private static final String URL_PROTOCOL_SECURE =   "https://";
 
     Context mContext;
     private final SharedPrefUtil mSharedPrefUtil;
@@ -394,6 +400,13 @@ public class Domoticz {
                 actionUrl = String.valueOf(value);
                 break;
 
+            case JSON_ACTION_FAVORITE_ON:
+                actionUrl = ACTION_FAVORITE_ON;
+                break;
+
+            case JSON_ACTION_FAVORITE_OFF:
+                actionUrl = ACTION_FAVORITE_OFF;
+                break;
         }
 
         switch (jsonSetUrl) {
@@ -417,6 +430,12 @@ public class Domoticz {
                         + String.valueOf(idx)
                         + URL_TEMP_VALUE + actionUrl;
                 break;
+
+            case JSON_SET_URL_FAVORITE:
+                url = URL_FAVORITE_BASE;
+                jsonUrl = url
+                        + String.valueOf(idx)
+                        + URL_FAVORITE_VALUE + actionUrl;
         }
 
         String fullString = buildUrl.append(protocol)
@@ -497,9 +516,14 @@ public class Domoticz {
                 getUserCredentials(USERNAME), getUserCredentials(PASSWORD), url);
     }
 
-    public void setAction(int idx, int jsonUrl, int jsonAction,
-                          long value, setCommandReceiver receiver) {
+    public void setAction(int idx,
+                          int jsonUrl,
+                          int jsonAction,
+                          long value,
+                          setCommandReceiver receiver) {
+
         setCommandParser parser = new setCommandParser(receiver);
+
         String url = null;
         switch (jsonUrl) {
             case JSON_SET_URL_SCENES:
@@ -512,6 +536,10 @@ public class Domoticz {
 
             case JSON_SET_URL_TEMP:
                 url = constructSetUrl(JSON_SET_URL_TEMP, idx, jsonAction, value);
+                break;
+
+            case JSON_SET_URL_FAVORITE:
+                url = constructSetUrl(JSON_SET_URL_FAVORITE, idx, jsonAction, value);
 
         }
 

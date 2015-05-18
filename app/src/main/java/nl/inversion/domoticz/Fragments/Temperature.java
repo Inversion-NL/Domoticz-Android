@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.method.ScrollingMovementMethod;
@@ -32,7 +31,8 @@ import nl.inversion.domoticz.Interfaces.SwitchesReceiver;
 import nl.inversion.domoticz.R;
 import nl.inversion.domoticz.Utils.switchInfoDialog;
 
-public class Temperature extends Fragment implements switchesClickListener {
+public class Temperature extends Fragment implements switchesClickListener,
+        switchInfoDialog.InfoDialogSwitchChangeListener {
 
     private static final String TAG = Temperature.class.getSimpleName();
     private ProgressDialog progressDialog;
@@ -43,6 +43,9 @@ public class Temperature extends Fragment implements switchesClickListener {
     private Context mActivity;
     private ListView switchesListView;
     private int currentSwitch = 1;
+
+    private boolean infoDialogIsFavoriteSwitch;
+    private boolean infoDialogIsFavoriteSwitchIsChanged = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
@@ -132,6 +135,8 @@ public class Temperature extends Fragment implements switchesClickListener {
         }
     }
 
+    // add dynamic listview
+    // https://github.com/nhaarman/ListViewAnimations
     private void createListView(ArrayList<ExtendedStatusInfo> switches) {
 
         final ArrayList<ExtendedStatusInfo> supportedSwitches = new ArrayList<>();
@@ -152,21 +157,57 @@ public class Temperature extends Fragment implements switchesClickListener {
         switchesListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int index, long id) {
-                ExtendedStatusInfo mSwitch = supportedSwitches.get(index);
-
-                FragmentManager fragmentManager = getFragmentManager();
-                switchInfoDialog infoDialog = new switchInfoDialog();
-                infoDialog.setSwitchName(mSwitch.getName());
-                infoDialog.setIdx(String.valueOf(mSwitch.getIdx()));
-                infoDialog.setLastUpdate(mSwitch.getLastUpdate());
-                infoDialog.setSignalLevel(String.valueOf(mSwitch.getSignalLevel()));
-                infoDialog.setBatteryLevel(String.valueOf(mSwitch.getBatteryLevel()));
-                infoDialog.show(fragmentManager, "tag");
+                showInfoDialog(supportedSwitches.get(index));
                 return false;
             }
         });
 
         hideProgressDialog();
+    }
+
+    private void showInfoDialog(final ExtendedStatusInfo mSwitch) {
+
+        switchInfoDialog infoDialog = new switchInfoDialog(
+                getActivity(),
+                mSwitch,
+                R.layout.dialog_switch_info, this);
+        infoDialog.setIdx(String.valueOf(mSwitch.getIdx()));
+        infoDialog.setLastUpdate(mSwitch.getLastUpdate());
+        infoDialog.setSignalLevel(String.valueOf(mSwitch.getSignalLevel()));
+        infoDialog.setBatteryLevel(String.valueOf(mSwitch.getBatteryLevel()));
+        infoDialog.setIsFavorite(mSwitch.getFavoriteBoolean());
+        infoDialog.show();
+        infoDialog.onDismissListener(new switchInfoDialog.InfoDialogDismissListener() {
+            @Override
+            public void onDismiss() {
+                changeFavorite(mSwitch, infoDialogIsFavoriteSwitch);
+            }
+        });
+    }
+
+    private void changeFavorite(ExtendedStatusInfo mSwitch, boolean infoDialogIsFavoriteSwitch) {
+        if (infoDialogIsFavoriteSwitchIsChanged) {
+            mSwitch.setFavoriteBoolean(infoDialogIsFavoriteSwitch);
+            int jsonAction;
+            int jsonUrl = Domoticz.JSON_SET_URL_FAVORITE;
+
+            if (infoDialogIsFavoriteSwitch) jsonAction = Domoticz.JSON_ACTION_FAVORITE_ON;
+            else jsonAction = Domoticz.JSON_ACTION_FAVORITE_OFF;
+
+            mDomoticz.setAction(mSwitch.getIdx(), jsonUrl, jsonAction, 0, new setCommandReceiver() {
+                @Override
+                public void onReceiveResult(String result) {
+                    successHandling(result);
+                }
+
+                @Override
+                public void onError(Exception error) {
+                    // Domoticz always gives an error: ignore
+                    errorHandling(error);
+                }
+            });
+            infoDialogIsFavoriteSwitchIsChanged = false;
+        }
     }
 
     @Override
@@ -279,5 +320,11 @@ public class Temperature extends Fragment implements switchesClickListener {
 
     private ActionBar getActionBar() {
         return ((ActionBarActivity) getActivity()).getSupportActionBar();
+    }
+
+    @Override
+    public void onInfoDialogSwitchChange(int id, boolean isChecked) {
+        infoDialogIsFavoriteSwitchIsChanged = true;
+        infoDialogIsFavoriteSwitch = isChecked;
     }
 }

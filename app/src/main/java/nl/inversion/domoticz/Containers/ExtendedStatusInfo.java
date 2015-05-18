@@ -69,6 +69,12 @@ public class ExtendedStatusInfo {
         return favorite;
     }
 
+    public boolean getFavoriteBoolean() {
+        boolean favorite = false;
+        if (this.favorite == 1) favorite = true;
+        return favorite;
+    }
+
     public String getType() {
         return type;
     }
@@ -105,5 +111,22 @@ public class ExtendedStatusInfo {
 
     public int getIdx() {
         return idx;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setFavorite(int favorite) {
+        this.favorite = favorite;
+    }
+
+    public void setFavoriteBoolean(boolean favorite){
+        if (favorite) this.favorite = 1;
+        else this.favorite = 0;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

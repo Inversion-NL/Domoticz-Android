@@ -1,29 +1,40 @@
 package nl.inversion.domoticz.Utils;
 
-import android.support.v4.app.DialogFragment;
-import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
+import nl.inversion.domoticz.Containers.ExtendedStatusInfo;
 import nl.inversion.domoticz.R;
 
-public class switchInfoDialog extends DialogFragment {
+public class switchInfoDialog implements DialogInterface.OnDismissListener {
 
-    private String switchName;
+    private final InfoDialogSwitchChangeListener infoDialogSwitchChangeListener;
+    private InfoDialogDismissListener infoDialogDismissListener;
+    private ExtendedStatusInfo mSwitch;
     private String idx;
     private String lastUpdate;
     private String signalLevel;
     private String batteryLevel;
-    private Button btnDone;
+    private final MaterialDialog.Builder mdb;
+    private boolean isFavorite;
 
-    public switchInfoDialog() {
-    }
-
-    public void setSwitchName(String switchName){
-        this.switchName = switchName;
+    public switchInfoDialog(Context mContext,
+                            ExtendedStatusInfo mSwitch,
+                            int layout,
+                            InfoDialogSwitchChangeListener infoDialogSwitchChangeListener) {
+        this.mSwitch = mSwitch;
+        this.infoDialogSwitchChangeListener = infoDialogSwitchChangeListener;
+        mdb = new MaterialDialog.Builder(mContext);
+        boolean wrapInScrollView = true;
+        mdb.customView(layout, wrapInScrollView)
+           .positiveText(android.R.string.ok);
+        mdb.dismissListener(this);
     }
 
     public void setIdx(String idx) {
@@ -42,13 +53,16 @@ public class switchInfoDialog extends DialogFragment {
         this.batteryLevel = batteryLevel;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public void setIsFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
+    }
 
-        View view = inflater.inflate(R.layout.dialog_switch_info, container);
+    public void show() {
 
-        TextView switchName = (TextView) view.findViewById(R.id.switch_name);
-        switchName.setText(this.switchName);
+        mdb.title(mSwitch.getName());
+
+        MaterialDialog md = mdb.build();
+        View view = md.getCustomView();
 
         TextView IDX_name = (TextView) view.findViewById(R.id.IDX_name);
         IDX_name.setText(idx);
@@ -62,15 +76,33 @@ public class switchInfoDialog extends DialogFragment {
         TextView BatteryLevel_name = (TextView) view.findViewById(R.id.BatteryLevel_name);
         BatteryLevel_name.setText(batteryLevel);
 
-        btnDone = (Button) view.findViewById(R.id.btnDone);
-        btnDone.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                dismiss();
+        Switch favorite_switch = (Switch) view.findViewById(R.id.favorite_switch);
+        favorite_switch.setChecked(isFavorite);
+        favorite_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                infoDialogSwitchChangeListener.onInfoDialogSwitchChange(
+                        compoundButton.getId(), isChecked);
             }
         });
 
-        getDialog().onBackPressed();
-        return view;
+        md.show();
     }
 
+    @Override
+    public void onDismiss(DialogInterface dialogInterface) {
+        if (infoDialogDismissListener != null )infoDialogDismissListener.onDismiss();
+    }
+
+    public void onDismissListener(InfoDialogDismissListener infoDialogDismissListener) {
+        this.infoDialogDismissListener = infoDialogDismissListener;
+    }
+
+    public interface InfoDialogSwitchChangeListener {
+        void onInfoDialogSwitchChange(int id, boolean isChecked);
+    }
+    
+    public interface InfoDialogDismissListener {
+        void onDismiss();
+    }
 }
