@@ -38,10 +38,7 @@ public class Temperature extends Fragment implements switchesClickListener,
     private ProgressDialog progressDialog;
     private Domoticz mDomoticz;
     private TextView debugText;
-    private boolean debug;
-    private SwitchesAdapter adapter;
     private Context mActivity;
-    private ListView switchesListView;
     private int currentSwitch = 1;
 
     private boolean infoDialogIsFavoriteSwitch;
@@ -67,7 +64,7 @@ public class Temperature extends Fragment implements switchesClickListener,
         super.onActivityCreated(savedInstanceState);
 
         mDomoticz = new Domoticz(getActivity());
-        debug = Domoticz.debug;
+        boolean debug = Domoticz.debug;
 
         // Initialize the progress dialog
         progressDialog = new ProgressDialog(this.getActivity());
@@ -135,7 +132,7 @@ public class Temperature extends Fragment implements switchesClickListener,
         }
     }
 
-    // add dynamic listview
+    // add dynamic list view
     // https://github.com/nhaarman/ListViewAnimations
     private void createListView(ArrayList<ExtendedStatusInfo> switches) {
 
@@ -151,8 +148,8 @@ public class Temperature extends Fragment implements switchesClickListener,
 
         final switchesClickListener listener = this;
 
-        adapter = new SwitchesAdapter(mActivity, supportedSwitches, listener);
-        switchesListView = (ListView) getView().findViewById(R.id.temperatureListView);
+        SwitchesAdapter adapter = new SwitchesAdapter(mActivity, supportedSwitches, listener);
+        ListView switchesListView = (ListView) getView().findViewById(R.id.temperatureListView);
         switchesListView.setAdapter(adapter);
         switchesListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -290,15 +287,10 @@ public class Temperature extends Fragment implements switchesClickListener,
 
     /**
      * Handles the success messages
-     * @param result String result to handle
+     * @param result Result text to handle
      */
     private void successHandling(String result) {
-
-        Log.d(TAG, "Result: " + result);
-        if (debug) {
-            String temp = debugText.getText().toString();
-            debugText.setText(temp + "\n\n" + result);
-        }
+        mDomoticz.successHandling(result, debugText);
     }
 
     /**
@@ -307,24 +299,16 @@ public class Temperature extends Fragment implements switchesClickListener,
      */
     private void errorHandling(Exception error) {
         hideProgressDialog();
-
-        error.printStackTrace();
-
-        if (debug) {
-            String temp = debugText.getText().toString();
-            debugText.setText(temp + mDomoticz.getErrorMessage(error));
-        } else {
-            mDomoticz.errorToast(error);
-        }
-    }
-
-    private ActionBar getActionBar() {
-        return ((ActionBarActivity) getActivity()).getSupportActionBar();
+        mDomoticz.errorHandling(error, debugText);
     }
 
     @Override
     public void onInfoDialogSwitchChange(int id, boolean isChecked) {
         infoDialogIsFavoriteSwitchIsChanged = true;
         infoDialogIsFavoriteSwitch = isChecked;
+    }
+
+    private ActionBar getActionBar() {
+        return ((ActionBarActivity) getActivity()).getSupportActionBar();
     }
 }

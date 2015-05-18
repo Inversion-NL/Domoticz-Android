@@ -20,7 +20,7 @@
             <intent
                 android:action="android.intent.action.VIEW"
                 android:targetPackage="nl.inversion.domoticz"
-                android:targetClass="nl.inversion.domoticz.ServerSettingsActivity"
+                android:targetClass="nl.inversion.domoticz.newServerSettingsActivity"
                 />
         </Preference>
     </PreferenceCategory>

@@ -204,35 +204,19 @@ public class Utilities extends Fragment implements thermostatClickListener {
 
     /**
      * Handles the success messages
-     *
-     * @param result String result to handle
+     * @param result Result text to handle
      */
     private void successHandling(String result) {
-        hideProgressDialog();
-
-        Log.d(TAG, result);
-        if (debug) {
-            String temp = debugText.getText().toString();
-            debugText.setText(temp + "\n\n" + result);
-        }
+        mDomoticz.successHandling(result, debugText);
     }
 
     /**
      * Handles the error messages
-     *
      * @param error Exception
      */
     private void errorHandling(Exception error) {
         hideProgressDialog();
-
-        error.printStackTrace();
-
-        if (debug) {
-            String temp = debugText.getText().toString();
-            debugText.setText(temp +  mDomoticz.getErrorMessage(error));
-        } else {
-            mDomoticz.errorToast(error);
-        }
+        mDomoticz.errorHandling(error, debugText);
     }
 
     private ActionBar getActionBar() {

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -266,6 +267,40 @@ public class Domoticz {
 
         return errorMessage;
     }
+
+    /**
+     * Handles the success messages
+     *
+     * @param result Result text to handle
+     * @param debugText Text view to set
+     */
+    public void successHandling(String result, TextView debugText) {
+
+        Log.d(TAG, "Result: " + result);
+        if (debug) {
+            String temp = debugText.getText().toString();
+            debugText.setText(temp + "\n\n" + result);
+        }
+    }
+
+    /**
+     * Handles the error messages
+     * @param error Exception
+     */
+    public void errorHandling(Exception error, TextView debugText) {
+        error.printStackTrace();
+
+        if (debug) {
+            String temp = debugText.getText().toString();
+            debugText.setText(temp + getErrorMessage(error));
+        } else {
+            errorToast(error);
+        }
+    }
+
+    /*
+     * Domoticz API get and set commands
+     */
 
     private String getJsonGetUrl(int jsonGetUrl) {
 
