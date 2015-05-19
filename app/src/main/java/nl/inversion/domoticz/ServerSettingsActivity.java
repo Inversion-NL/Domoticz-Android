@@ -8,7 +8,7 @@ import android.view.MenuItem;
 
 import nl.inversion.domoticz.Welcome.WelcomePage3;
 
-public class newServerSettingsActivity extends ActionBarActivity {
+public class ServerSettingsActivity extends ActionBarActivity {
 
     private static final int WELCOME_WIZARD = 1;
     private static final int SETTINGS = 2;

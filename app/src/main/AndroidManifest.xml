@@ -32,7 +32,7 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".newServerSettingsActivity"
+            android:name=".ServerSettingsActivity"
             android:label="@string/title_activity_server_settings"
             android:parentActivityName=".SettingsActivity" >
             <meta-data
