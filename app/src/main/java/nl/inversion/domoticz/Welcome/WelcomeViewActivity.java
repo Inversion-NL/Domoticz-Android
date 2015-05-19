@@ -23,6 +23,9 @@ import nl.inversion.domoticz.R;
 
 public class WelcomeViewActivity extends FragmentActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
 
+    private static final int WELCOME_WIZARD = 1;
+    private static final int SETTINGS = 2;
+
     private WelcomePageAdapter mAdapter;
     private ViewPager mPager;
     private final List<Fragment> fList = new ArrayList<>();
@@ -105,7 +108,7 @@ public class WelcomeViewActivity extends FragmentActivity implements View.OnClic
 
         fList.add(WelcomePage1.newInstance());
         fList.add(WelcomePage2.newInstance());
-        fList.add(WelcomePage3.newInstance());
+        fList.add(WelcomePage3.newInstance(WELCOME_WIZARD));
         fList.add(WelcomePage4.newInstance());
 
         return fList;

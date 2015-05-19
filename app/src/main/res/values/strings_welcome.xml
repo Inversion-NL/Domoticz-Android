@@ -21,6 +21,7 @@
     <string name="welcome_msg_serverVersion">Domoticz version</string>
     <string name="welcome_msg_pleaseGoToPreviousPage">Please go back to the previous page and correct yout settings</string>
     <string name="welcome_msg_numberOfDevices">%1$d devices found</string>
+    <string name="welcome_msg_no_ssid_found">No wifi SSID\'s found</string>
     <string name="welcome_server_settings_title">Server settings</string>
     <string name="welcome_server_startScreen">Start screen</string>
     <string name="welcome_server_local_ssid">Local server wifi</string>
@@ -43,4 +44,9 @@
     <string name="welcome_local_server_port">Local port</string>
     <string name="welcome_local_server_username">Local username (leave empty if not used)</string>
     <string name="welcome_local_server_password">Local password (leave empty if not used)</string>
+
+    <string-array name="remote_server_protocols">
+        <item>HTTP</item>
+        <item>HTTPS</item>
+    </string-array>
 </resources>

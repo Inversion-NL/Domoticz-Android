@@ -11,6 +11,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.marvinlabs.widget.floatinglabel.edittext.FloatingLabelEditText;
 
@@ -25,26 +26,39 @@ import nl.inversion.domoticz.app.MultiSelectionSpinner;
 
 public class WelcomePage3 extends Fragment {
 
-    SharedPrefUtil mSharedPrefs;
+    private SharedPrefUtil mSharedPrefs;
+    private static final String INSTANCE = "INSTANCE";
+    private static final int WELCOME_WIZARD = 1;
+    private static final int SETTINGS = 2;
 
-    FloatingLabelEditText remote_server_input, remote_port_input,
+    private FloatingLabelEditText remote_server_input, remote_port_input,
             remote_username_input, remote_password_input,
             local_server_input, local_password_input,
             local_username_input, local_port_input;
-    Spinner remote_protocol_spinner, local_protocol_spinner, startScreen_spinner;
-    Switch localServer_switch;
-    int remoteProtocolSelectedPosition, localProtocolSelectedPosition, startScreenSelectedPosition;
+    private Spinner remote_protocol_spinner, local_protocol_spinner, startScreen_spinner;
+    private Switch localServer_switch;
+    private int remoteProtocolSelectedPosition, localProtocolSelectedPosition, startScreenSelectedPosition;
     private View v;
-    boolean lostUserVisibility = false;
-    MultiSelectionSpinner spinner;
+    private boolean lostUserVisibility = false;
+    private MultiSelectionSpinner local_wifi_spinner;
+    private int callingInstance;
 
-    public static WelcomePage3 newInstance() {
-        return new WelcomePage3();
+    public static WelcomePage3 newInstance(int instance) {
+        WelcomePage3 f = new WelcomePage3();
+
+        Bundle bdl = new Bundle(1);
+        bdl.putInt(INSTANCE, instance);
+        f.setArguments(bdl);
+
+        return f;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        callingInstance = getArguments().getInt(INSTANCE);
+
         v = inflater.inflate(R.layout.fragment_welcome3, container, false);
 
         mSharedPrefs = new SharedPrefUtil(getActivity());
@@ -81,9 +95,16 @@ public class WelcomePage3 extends Fragment {
         local_username_input = (FloatingLabelEditText) v.findViewById(R.id.local_username_input);
         local_password_input = (FloatingLabelEditText) v.findViewById(R.id.local_password_input);
         local_protocol_spinner = (Spinner) v.findViewById(R.id.local_protocol_spinner);
-        spinner = (MultiSelectionSpinner) v.findViewById(R.id.local_wifi);
+        local_wifi_spinner = (MultiSelectionSpinner) v.findViewById(R.id.local_wifi);
 
         startScreen_spinner = (Spinner) v.findViewById(R.id.startScreen_spinner);
+        if (callingInstance == SETTINGS) {
+            // Hide these settings if being called by settings (instead of welcome wizard)
+            startScreen_spinner.setVisibility(View.GONE);
+            v.findViewById(R.id.startScreen_title).setVisibility(View.GONE);
+            v.findViewById(R.id.server_settings_title).setVisibility(View.GONE);
+        }
+
         final LinearLayout local_server_settings = (LinearLayout)
                 v.findViewById(R.id.local_server_settings);
         localServer_switch = (Switch) v.findViewById(R.id.localServer_switch);
@@ -111,6 +132,13 @@ public class WelcomePage3 extends Fragment {
         local_server_input.setInputWidgetText(mSharedPrefs.getDomoticzLocalUrl());
         local_port_input.setInputWidgetText(mSharedPrefs.getDomoticzLocalPort());
 
+        setProtocol_spinner();
+        setStartScreen_spinner();
+        setSsid_spinner();
+    }
+
+    private void setSsid_spinner() {
+
         Set<String> ssidFromPrefs = mSharedPrefs.getLocalSsid();
         ArrayList<String> ssidsListFromPrefs = new ArrayList<>();
         ArrayList<String> ssids = new ArrayList<>();
@@ -129,19 +157,15 @@ public class WelcomePage3 extends Fragment {
         CharSequence[] ssidEntries = mPhoneConnectionUtil.startSsidScanAsCharSequence();
 
         if (ssidEntries.length < 1) {
-            ssids.add(getString(R.string.msg_no_ssid_found)); // no wifi ssid nearby found!
+            ssids.add(getString(R.string.welcome_msg_no_ssid_found)); // no wifi ssid nearby found!
         } else {
             for (CharSequence ssid : ssidEntries) {
                 if (!ssids.contains(ssid)) ssids.add(ssid.toString());
             }
         }
 
-        spinner.setItems(ssids);
-        spinner.setSelection(ssidsListFromPrefs);
-
-        setProtocol_spinner();
-        setStartScreen_spinner();
-
+        local_wifi_spinner.setItems(ssids);
+        local_wifi_spinner.setSelection(ssidsListFromPrefs);
     }
 
     private void setProtocol_spinner() {
@@ -231,7 +255,7 @@ public class WelcomePage3 extends Fragment {
             mSharedPrefs.setLocalServerUsesSameAddress(true);
         }
 
-        mSharedPrefs.setLocalSsid(spinner.getSelectedStrings());
+        mSharedPrefs.setLocalSsid(local_wifi_spinner.getSelectedStrings());
 
     }
 

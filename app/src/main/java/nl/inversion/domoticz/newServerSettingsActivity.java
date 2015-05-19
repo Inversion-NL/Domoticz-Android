@@ -1,14 +1,17 @@
 package nl.inversion.domoticz;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 
-import nl.inversion.domoticz.Fragments.Preference;
 import nl.inversion.domoticz.Welcome.WelcomePage3;
 
 public class newServerSettingsActivity extends ActionBarActivity {
+
+    private static final int WELCOME_WIZARD = 1;
+    private static final int SETTINGS = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,8 +19,10 @@ public class newServerSettingsActivity extends ActionBarActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getFragmentManager().beginTransaction().replace(android.R.id.content,
-                new WelcomePage3()).commit();
+        Fragment serverSettings = WelcomePage3.newInstance(SETTINGS);
+        getFragmentManager().beginTransaction()
+                            .replace(android.R.id.content, serverSettings)
+                            .commit();
     }
 
     @Override

@@ -47,27 +47,6 @@ public class Preference extends PreferenceFragment {
         version.setSummary(appVersion);
     }
 
-    private void setLocalServerSsid() {
-        Set<String> ssids = mSharedPrefs.getLocalSsid();
-
-        PhoneConnectionUtil mPhoneConnectionUtil = new PhoneConnectionUtil(getActivity());
-        MultiSelectListPreference localServerSsid =
-                (MultiSelectListPreference) findPreference("local_server_ssid");
-        // Setting summary at runtime because setting it in XML crashes the app in API 15,
-        // in API 22 is all good
-        localServerSsid.setSummary(R.string.local_server_local_wifi_ssid_list_summary);
-
-        CharSequence[] ssidEntries = mPhoneConnectionUtil.startSsidScanAsCharSequence();
-
-        if (ssidEntries.length < 1) {
-            ssidEntries = new CharSequence[1];
-            ssidEntries[0] = getString(R.string.msg_no_ssid_found); // no wifi ssid nearby found!
-        }
-
-        localServerSsid.setEntries(ssidEntries);
-        localServerSsid.setEntryValues(ssidEntries);
-    }
-
     private void setStartUpScreenDefaultValue() {
 
         int defaultValue = mSharedPrefs.getStartupScreenIndex();

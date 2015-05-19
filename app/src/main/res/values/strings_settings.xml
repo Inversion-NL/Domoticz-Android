@@ -16,49 +16,6 @@
     <string name="server_settings">Server connection settings</string>;
     <string name="title_activity_server_settings">Server settings</string>
 
-    <!--        Remote server settings       -->
-    <string name="remote_server_settings_label">Remote server settings</string>
-    <string name="remote_server_username">Username</string>
-    <string name="remote_server_password">Password</string>
-    <string name="remote_server_url_title">Domoticz address</string>
-    <string name="remote_server_url_summary">Enter the URL without http:// and the trailing /</string>
-    <string name="remote_server_port">Domoticz port</string>
-    <string name="remote_server_secure_title">Secure?</string>
-    <string name="remote_server_secure_summary_on">Connect secure over https</string>
-    <string name="remote_server_secure_summary_off">Connect insecure over http</string>
-    <string name="remote_server_authentication_method">Authentication method</string>
-    <string name="remote_server_authentication_method_summary_on">Login form</string>
-    <string name="remote_server_authentication_method_summary_off">Basic auth</string>
-    <string-array name="remote_server_protocols">
-        <item>HTTP</item>
-        <item>HTTPS</item>
-    </string-array>
-
-    <!--        Local server settings       -->
-    <string name="local_server_settings_label">Local server settings</string>
-    <string name="local_server_used_switch_title">Different server address</string>
-    <string name="local_server_used_switch_summary">Use different address for local connection</string>
-    <string name="local_server_username">Username</string>
-    <string name="local_server_password">Password</string>
-    <string name="local_server_url_title">Domoticz address</string>
-    <string name="local_server_url_summary">Enter the URL without http:// and the trailing /</string>
-    <string name="local_server_port">Domoticz port</string>
-    <string name="local_server_secure_title">Secure?</string>
-    <string name="local_server_secure_summary_on">Connect secure over https</string>
-    <string name="local_server_secure_summary_off">Connect insecure over http</string>
-    <string name="local_server_authentication_method">Authentication method</string>
-    <string name="local_server_authentication_method_summary_on">Login form</string>
-    <string name="local_server_authentication_method_summary_off">Basic auth</string>
-    <string name="local_server_local_wifi_ssid_title">Local wifi SSID\'s</string>
-    <string name="local_server_local_wifi_ssid_list_summary">SSID\'s of your local wifi network</string>
-    <string name="msg_no_ssid_found">No wifi SSID\'s found</string>
-    <string-array name="ssid_list_entries">
-        <item>No SSID\'s found</item>
-    </string-array>
-    <string-array name="ssid_list_values">
-        <item>-1</item>
-    </string-array>
-
     <!--        Information category       -->
     <string name="info_version">Version</string>
 
