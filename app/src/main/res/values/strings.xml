@@ -27,4 +27,6 @@
 
     <string name="debug_textview_title">Debugging info</string>
 
+    <string name="msg_copiedToClipboard">Text copied to clipboard</string>
+
 </resources>

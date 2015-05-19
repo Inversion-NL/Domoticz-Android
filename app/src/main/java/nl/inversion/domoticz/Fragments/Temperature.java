@@ -80,7 +80,7 @@ public class Temperature extends Fragment implements switchesClickListener,
             debugText.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    Toast.makeText(mActivity, "Text copied to clipboard", Toast.LENGTH_SHORT).show();
+                    mDomoticz.debugTextToClipboard(debugText);
                     return false;
                 }
             });
@@ -90,6 +90,7 @@ public class Temperature extends Fragment implements switchesClickListener,
 
     private void getData() {
 
+        /*
         showProgressDialog();
 
         mDomoticz.getSwitches(new SwitchesReceiver() {
@@ -103,6 +104,7 @@ public class Temperature extends Fragment implements switchesClickListener,
                 errorHandling(error);
             }
         });
+        */
     }
 
     private void processSwitches(ArrayList<SwitchInfo> switchInfos) {
@@ -149,7 +151,7 @@ public class Temperature extends Fragment implements switchesClickListener,
         final switchesClickListener listener = this;
 
         SwitchesAdapter adapter = new SwitchesAdapter(mActivity, supportedSwitches, listener);
-        ListView switchesListView = (ListView) getView().findViewById(R.id.temperatureListView);
+        ListView switchesListView = (ListView) getView().findViewById(R.id.listView);
         switchesListView.setAdapter(adapter);
         switchesListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override

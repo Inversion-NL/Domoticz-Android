@@ -1,6 +1,8 @@
 package nl.inversion.domoticz.Domoticz;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -279,7 +281,8 @@ public class Domoticz {
         Log.d(TAG, "Result: " + result);
         if (debug) {
             String temp = debugText.getText().toString();
-            debugText.setText(temp + "\n\n" + result);
+            if (temp.isEmpty()) debugText.setText(result);
+            else debugText.setText(temp + "\n\n" + result);
         }
     }
 
@@ -296,6 +299,16 @@ public class Domoticz {
         } else {
             errorToast(error);
         }
+    }
+
+    public void debugTextToClipboard(TextView debugText) {
+        String message = debugText.getText().toString();
+
+        ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("Domoticz debug data", message);
+        clipboard.setPrimaryClip(clip);
+
+        Toast.makeText(mContext, R.string.msg_copiedToClipboard, Toast.LENGTH_SHORT).show();
     }
 
     /*

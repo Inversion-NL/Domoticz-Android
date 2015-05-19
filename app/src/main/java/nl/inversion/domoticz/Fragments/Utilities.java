@@ -80,7 +80,7 @@ public class Utilities extends Fragment implements thermostatClickListener {
             debugText.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    Toast.makeText(mActivity, "Text copied to clipboard", Toast.LENGTH_SHORT).show();
+                    mDomoticz.debugTextToClipboard(debugText);
                     return false;
                 }
             });

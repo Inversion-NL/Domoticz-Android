@@ -1,41 +1,48 @@
 package nl.inversion.domoticz.Fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.ImageButton;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.Switch;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import nl.inversion.domoticz.Adapters.SwitchesAdapter;
 import nl.inversion.domoticz.Containers.ExtendedStatusInfo;
 import nl.inversion.domoticz.Containers.SwitchInfo;
 import nl.inversion.domoticz.Domoticz.Domoticz;
 import nl.inversion.domoticz.Interfaces.setCommandReceiver;
 import nl.inversion.domoticz.Interfaces.StatusReceiver;
 import nl.inversion.domoticz.Interfaces.SwitchesReceiver;
+import nl.inversion.domoticz.Interfaces.switchesClickListener;
 import nl.inversion.domoticz.R;
+import nl.inversion.domoticz.Utils.switchInfoDialog;
 
-public class Switches extends Fragment {
+public class Switches extends Fragment implements switchesClickListener,
+        switchInfoDialog.InfoDialogSwitchChangeListener {
 
-    private static final String TAG = Switches.class.getSimpleName();
+    private static final String TAG = Temperature.class.getSimpleName();
     private ProgressDialog progressDialog;
     private Domoticz mDomoticz;
-    private int numberOfSwitches, currentSwitch;
-    LinearLayout container;
     private TextView debugText;
-    private boolean debug;
+    private Context mActivity;
+    private int currentSwitch = 1;
+
+    private boolean infoDialogIsFavoriteSwitch;
+    private boolean infoDialogIsFavoriteSwitchIsChanged = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
@@ -47,13 +54,17 @@ public class Switches extends Fragment {
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = activity;
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         mDomoticz = new Domoticz(getActivity());
-        debug = Domoticz.debug;
-
-        container = (LinearLayout) getView().findViewById(R.id.container);
+        boolean debug = Domoticz.debug;
 
         // Initialize the progress dialog
         progressDialog = new ProgressDialog(this.getActivity());
@@ -65,24 +76,18 @@ public class Switches extends Fragment {
             debugLayout.setVisibility(View.VISIBLE);
 
             debugText = (TextView) getView().findViewById(R.id.debugText);
+            debugText.setMovementMethod(new ScrollingMovementMethod());
+            debugText.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    mDomoticz.debugTextToClipboard(debugText);
+                    return false;
+                }
+            });
         }
-        cleanScreen();
         getData();
     }
 
-    /**
-     * Clears the container layout and, if in debugging, the debug text
-     */
-    private void cleanScreen() {
-        if (debug) {
-            debugText.setText("");
-        }
-        container.removeAllViews();
-    }
-
-    /**
-     * Gets the data through the switches receiver with a call back on receive or error
-     */
     private void getData() {
 
         showProgressDialog();
@@ -90,179 +95,132 @@ public class Switches extends Fragment {
         mDomoticz.getSwitches(new SwitchesReceiver() {
             @Override
             public void onReceiveSwitches(ArrayList<SwitchInfo> switches) {
+                processSwitches(switches);
+            }
 
-                successHandling(switches.toString());
+            @Override
+            public void onError(Exception error) {
+                errorHandling(error);
+            }
+        });
+    }
 
-                numberOfSwitches = switches.size();
-                for (SwitchInfo mSwitch : switches) {
-                    getExtendedInfo(mSwitch);
+    private void processSwitches(ArrayList<SwitchInfo> switchInfos) {
+
+        final ArrayList<ExtendedStatusInfo> extendedStatusSwitches = new ArrayList<>();
+        final int totalNumberOfSwitches = switchInfos.size();
+
+        for (SwitchInfo switchInfo : switchInfos) {
+            successHandling(switchInfo.toString());
+            int idx = switchInfo.getIdx();
+
+            mDomoticz.getStatus(idx, new StatusReceiver() {
+                @Override
+                public void onReceiveStatus(ExtendedStatusInfo extendedStatusInfo) {
+                    extendedStatusSwitches.add(extendedStatusInfo);     // Add to array
+                    if (currentSwitch == totalNumberOfSwitches) {
+                        createListView(extendedStatusSwitches);         // All extended info is in
+                    }
+                    else currentSwitch++;                               // Not there yet
                 }
-            }
 
-            @Override
-            public void onError(Exception error) {
-                errorHandling(error);
-            }
-        });
+                @Override
+                public void onError(Exception error) {
+                    errorHandling(error);
+                }
+            });
+        }
     }
 
-    /**
-     * Gets the extended info with a callback onReceive which creates the row
-     * @param mSwitch
-     */
-    private void getExtendedInfo(SwitchInfo mSwitch) {
+    // add dynamic list view
+    // https://github.com/nhaarman/ListViewAnimations
+    private void createListView(ArrayList<ExtendedStatusInfo> switches) {
 
-        int idx = mSwitch.getIdx();
+        final ArrayList<ExtendedStatusInfo> supportedSwitches = new ArrayList<>();
 
-        mDomoticz.getStatus(idx, new StatusReceiver() {
-            @Override
-            public void onReceiveStatus(ExtendedStatusInfo mExtendedStatusInfo) {
-                successHandling(mExtendedStatusInfo.toString());
-                createRow(mExtendedStatusInfo);
-            }
+        for (ExtendedStatusInfo mExtendedStatusInfo : switches) {
+            String name = mExtendedStatusInfo.getName();
 
-            @Override
-            public void onError(Exception error) {
-                errorHandling(error);
-            }
-        });
-
-    }
-
-    /**
-     * Creates a row dynamically based on the data of the scene
-     * @param mExtendedStatusInfo containing the information
-     */
-    private void createRow(ExtendedStatusInfo mExtendedStatusInfo) {
-
-        int switchTypeVal = mExtendedStatusInfo.getSwitchTypeVal();
-        String name = mExtendedStatusInfo.getName();
-
-        if (!name.startsWith(Domoticz.SWITCH_HIDDEN_CHARACTER)) {
-
-            if (debug) {
-                String temp = debugText.getText().toString();
-                temp = temp + "\n\n";
-                temp = temp + mExtendedStatusInfo.getJsonObject().toString();
-                debugText.setText(temp);
-            }
-
-            if (switchTypeVal == mDomoticz.SWITCH_TYPE_ON_OFF) {
-
-                LayoutInflater layoutInflater =
-                        (LayoutInflater) getActivity()
-                                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View switchRow_onOff = layoutInflater.inflate(R.layout.switch_row_on_off, null);
-
-                int signalLevel = mExtendedStatusInfo.getSignalLevel();
-                final boolean status = mExtendedStatusInfo.getStatusBoolean();
-
-                Switch mSwitch = (Switch) switchRow_onOff.findViewById(R.id.switch_button);
-                mSwitch.setId(mExtendedStatusInfo.getIdx());
-                mSwitch.setChecked(status);
-                mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                        handleSwitchClick(compoundButton.getId(), checked);
-                    }
-                });
-
-
-                TextView switch_name = (TextView) switchRow_onOff.findViewById(R.id.switch_name);
-                TextView switch_level =
-                        (TextView) switchRow_onOff.findViewById(R.id.switch_signal_level);
-
-                switch_name.setText(name);
-                switch_level.setText(getText(R.string.signal_level) + ": " + signalLevel);
-
-                container.addView(switchRow_onOff);
-
-            } else if (switchTypeVal == mDomoticz.SWITCH_TYPE_BLINDS) {
-
-                LayoutInflater layoutInflater =
-                        (LayoutInflater) getActivity()
-                                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View switchRow_blinds = layoutInflater.inflate(R.layout.switch_row_blinds, null);
-
-                int batteryLevel = mExtendedStatusInfo.getBatteryLevel();
-                String status = mExtendedStatusInfo.getStatus();
-
-                ImageButton buttonUp = (ImageButton) switchRow_blinds.findViewById(R.id.switch_button_up);
-                buttonUp.setId(mExtendedStatusInfo.getIdx());
-                buttonUp.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        handleBlindsClick(view.getId(), Domoticz.BLINDS_ACTION_UP);
-                    }
-                });
-
-                ImageButton buttonStop = (ImageButton) switchRow_blinds.findViewById(R.id.switch_button_stop);
-                buttonStop.setId(mExtendedStatusInfo.getIdx());
-                buttonStop.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        handleBlindsClick(view.getId(), Domoticz.BLINDS_ACTION_STOP);
-                    }
-                });
-
-                ImageButton buttonDown = (ImageButton) switchRow_blinds.findViewById(R.id.switch_button_down);
-                buttonDown.setId(mExtendedStatusInfo.getIdx());
-                buttonDown.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        handleBlindsClick(view.getId(), Domoticz.BLINDS_ACTION_DOWN);
-                    }
-                });
-
-                TextView switch_name =
-                        (TextView) switchRow_blinds.findViewById(R.id.switch_name);
-                TextView switch_battery_level =
-                        (TextView) switchRow_blinds.findViewById(R.id.switch_signal_level);
-                TextView switch_status =
-                        (TextView) switchRow_blinds.findViewById(R.id.switch_status);
-
-                switch_name.setText(name);
-                switch_battery_level.setText(getText(R.string.battery_level) + ": " + String.valueOf(batteryLevel));
-                switch_status.setText(getText(R.string.status) + ": " + status);
-
-                container.addView(switchRow_blinds);
+            if (!name.startsWith(Domoticz.SWITCH_HIDDEN_CHARACTER) && mDomoticz.getSupportedSwitches().contains(mExtendedStatusInfo.getSwitchTypeVal())) {
+                supportedSwitches.add(mExtendedStatusInfo);
             }
         }
 
-        // Calculate if this is the last switch were working on
-        // If so: hide progress dialog
-        if (currentSwitch+1 == numberOfSwitches) hideProgressDialog();
-        else currentSwitch++;
+        final switchesClickListener listener = this;
 
+        SwitchesAdapter adapter = new SwitchesAdapter(mActivity, supportedSwitches, listener);
+        ListView switchesListView = (ListView) getView().findViewById(R.id.listView);
+        switchesListView.setAdapter(adapter);
+        switchesListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int index, long id) {
+                showInfoDialog(supportedSwitches.get(index));
+                return false;
+            }
+        });
+
+        hideProgressDialog();
     }
 
-    private void handleBlindsClick(int idx, int action) {
-        Log.d(TAG, "handleBlindsClick");
+    private void showInfoDialog(final ExtendedStatusInfo mSwitch) {
 
+        switchInfoDialog infoDialog = new switchInfoDialog(
+                getActivity(),
+                mSwitch,
+                R.layout.dialog_switch_info, this);
+        infoDialog.setIdx(String.valueOf(mSwitch.getIdx()));
+        infoDialog.setLastUpdate(mSwitch.getLastUpdate());
+        infoDialog.setSignalLevel(String.valueOf(mSwitch.getSignalLevel()));
+        infoDialog.setBatteryLevel(String.valueOf(mSwitch.getBatteryLevel()));
+        infoDialog.setIsFavorite(mSwitch.getFavoriteBoolean());
+        infoDialog.show();
+        infoDialog.onDismissListener(new switchInfoDialog.InfoDialogDismissListener() {
+            @Override
+            public void onDismiss() {
+                changeFavorite(mSwitch, infoDialogIsFavoriteSwitch);
+            }
+        });
+    }
+
+    private void changeFavorite(ExtendedStatusInfo mSwitch, boolean infoDialogIsFavoriteSwitch) {
+        if (infoDialogIsFavoriteSwitchIsChanged) {
+            mSwitch.setFavoriteBoolean(infoDialogIsFavoriteSwitch);
+            int jsonAction;
+            int jsonUrl = Domoticz.JSON_SET_URL_FAVORITE;
+
+            if (infoDialogIsFavoriteSwitch) jsonAction = Domoticz.JSON_ACTION_FAVORITE_ON;
+            else jsonAction = Domoticz.JSON_ACTION_FAVORITE_OFF;
+
+            mDomoticz.setAction(mSwitch.getIdx(), jsonUrl, jsonAction, 0, new setCommandReceiver() {
+                @Override
+                public void onReceiveResult(String result) {
+                    successHandling(result);
+                }
+
+                @Override
+                public void onError(Exception error) {
+                    // Domoticz always gives an error: ignore
+                    errorHandling(error);
+                }
+            });
+            infoDialogIsFavoriteSwitchIsChanged = false;
+        }
+    }
+
+    @Override
+    public void onSwitchClick(int idx, boolean checked) {
+        Log.d(TAG, "handleSwitchClick");
+        Log.d(TAG, "Set idx " + idx + " to " + checked);
+
+        int jsonAction;
         int jsonUrl = Domoticz.JSON_SET_URL_SWITCHES;
-        int jsonAction = mDomoticz.JSON_ACTION_UP;
 
-        switch (action) {
-            case Domoticz.BLINDS_ACTION_UP:
-                Log.d(TAG, "Set idx " + idx + " to up");
-                jsonAction = mDomoticz.JSON_ACTION_UP;
-                break;
-
-            case Domoticz.BLINDS_ACTION_STOP:
-                Log.d(TAG, "Set idx " + idx + " to stop");
-                jsonAction = mDomoticz.JSON_ACTION_STOP;
-                break;
-
-            case Domoticz.BLINDS_ACTION_DOWN:
-                Log.d(TAG, "Set idx " + idx + " to down");
-                jsonAction = mDomoticz.JSON_ACTION_DOWN;
-                break;
-        }
+        if (checked) jsonAction = Domoticz.JSON_ACTION_ON;
+        else jsonAction = Domoticz.JSON_ACTION_OFF;
 
         mDomoticz.setAction(idx, jsonUrl, jsonAction, 0, new setCommandReceiver() {
             @Override
             public void onReceiveResult(String result) {
-                Toast.makeText(getActivity(), R.string.action_success, Toast.LENGTH_LONG).show();
                 successHandling(result);
             }
 
@@ -273,24 +231,34 @@ public class Switches extends Fragment {
         });
     }
 
-    /**
-     * Handles the clicks of the dynamically created rows
-     * @param idx idx code of the button (Domoticz)
-     * @param checked is the button currently checked?
-     */
-    private void handleSwitchClick(int idx, boolean checked) {
-        Log.d(TAG, "handleSwitchClick");
-        Log.d(TAG, "Set idx " + idx + " to " + checked);
+    @Override
+    public void onBlindClick(int idx, int action) {
+        Log.d(TAG, "handleBlindsClick");
 
-        int jsonAction;
         int jsonUrl = Domoticz.JSON_SET_URL_SWITCHES;
+        int jsonAction = Domoticz.JSON_ACTION_UP;
 
-        if (checked) jsonAction = mDomoticz.JSON_ACTION_ON;
-        else jsonAction = mDomoticz.JSON_ACTION_OFF;
+        switch (action) {
+            case Domoticz.BLINDS_ACTION_UP:
+                Log.d(TAG, "Set idx " + idx + " to up");
+                jsonAction = Domoticz.JSON_ACTION_UP;
+                break;
+
+            case Domoticz.BLINDS_ACTION_STOP:
+                Log.d(TAG, "Set idx " + idx + " to stop");
+                jsonAction = Domoticz.JSON_ACTION_STOP;
+                break;
+
+            case Domoticz.BLINDS_ACTION_DOWN:
+                Log.d(TAG, "Set idx " + idx + " to down");
+                jsonAction = Domoticz.JSON_ACTION_DOWN;
+                break;
+        }
 
         mDomoticz.setAction(idx, jsonUrl, jsonAction, 0, new setCommandReceiver() {
             @Override
             public void onReceiveResult(String result) {
+                Toast.makeText(getActivity(), R.string.action_success, Toast.LENGTH_LONG).show();
                 successHandling(result);
             }
 
@@ -319,15 +287,10 @@ public class Switches extends Fragment {
 
     /**
      * Handles the success messages
-     * @param result String result to handle
+     * @param result Result text to handle
      */
     private void successHandling(String result) {
-
-        Log.d(TAG, "Result: " + result);
-        if (debug) {
-            String temp = debugText.getText().toString();
-            debugText.setText(temp + "\n\n" + result);
-        }
+        mDomoticz.successHandling(result, debugText);
     }
 
     /**
@@ -336,15 +299,13 @@ public class Switches extends Fragment {
      */
     private void errorHandling(Exception error) {
         hideProgressDialog();
+        mDomoticz.errorHandling(error, debugText);
+    }
 
-        error.printStackTrace();
-
-        if (debug) {
-            String temp = debugText.getText().toString();
-            debugText.setText(temp  + "\n\n" + error.getCause().getMessage());
-        } else {
-            mDomoticz.errorToast(error);
-        }
+    @Override
+    public void onInfoDialogSwitchChange(int id, boolean isChecked) {
+        infoDialogIsFavoriteSwitchIsChanged = true;
+        infoDialogIsFavoriteSwitch = isChecked;
     }
 
     private ActionBar getActionBar() {
