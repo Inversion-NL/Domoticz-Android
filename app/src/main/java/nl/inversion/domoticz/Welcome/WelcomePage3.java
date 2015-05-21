@@ -11,7 +11,6 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import com.marvinlabs.widget.floatinglabel.edittext.FloatingLabelEditText;
 
@@ -26,11 +25,10 @@ import nl.inversion.domoticz.app.MultiSelectionSpinner;
 
 public class WelcomePage3 extends Fragment {
 
-    private SharedPrefUtil mSharedPrefs;
     private static final String INSTANCE = "INSTANCE";
     private static final int WELCOME_WIZARD = 1;
     private static final int SETTINGS = 2;
-
+    private SharedPrefUtil mSharedPrefs;
     private FloatingLabelEditText remote_server_input, remote_port_input,
             remote_username_input, remote_password_input,
             local_server_input, local_password_input,
@@ -98,6 +96,7 @@ public class WelcomePage3 extends Fragment {
         local_wifi_spinner = (MultiSelectionSpinner) v.findViewById(R.id.local_wifi);
 
         startScreen_spinner = (Spinner) v.findViewById(R.id.startScreen_spinner);
+
         if (callingInstance == SETTINGS) {
             // Hide these settings if being called by settings (instead of welcome wizard)
             startScreen_spinner.setVisibility(View.GONE);
