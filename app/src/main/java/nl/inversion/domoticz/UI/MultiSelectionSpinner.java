@@ -1,8 +1,4 @@
-package nl.inversion.domoticz.app;
-
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+package nl.inversion.domoticz.UI;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -13,26 +9,42 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
+
 @SuppressWarnings("unused")
-public class MultiSelectionSpinner extends Spinner implements
-        OnMultiChoiceClickListener {
+public class MultiSelectionSpinner extends Spinner implements OnMultiChoiceClickListener {
     String[] _items = null;
     boolean[] mSelection = null;
 
     ArrayAdapter<String> simple_adapter;
 
+    /**
+     * A spinner in which multiple items can be selected.
+     * The last item in the list is used as a hint!
+     *
+     * @param context Context
+     */
     public MultiSelectionSpinner(Context context) {
         super(context);
 
-        simple_adapter = new ArrayAdapter<String>(context,
+        simple_adapter = new ArrayAdapter<>(context,
                 android.R.layout.simple_spinner_item);
         super.setAdapter(simple_adapter);
     }
 
+    /**
+     * A spinner in which multiple items can be selected.
+     * The last item in the list is used as a hint!
+     * @param context Context
+     * @param attrs AttributeSet of
+     */
     public MultiSelectionSpinner(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        simple_adapter = new ArrayAdapter<String>(context,
+        simple_adapter = new ArrayAdapter<>(context,
                 android.R.layout.simple_spinner_item);
         super.setAdapter(simple_adapter);
     }
@@ -63,6 +75,13 @@ public class MultiSelectionSpinner extends Spinner implements
                 "setAdapter is not supported by MultiSelectSpinner.");
     }
 
+    @Override
+    public int getCount() {
+        // Decrease the count by one so the last item can be used as a hint
+        int count = super.getCount();
+        return count > 0 ? count - 1 : count;
+    }
+
     public void setItems(String[] items) {
         _items = items;
         mSelection = new boolean[_items.length];
@@ -80,6 +99,7 @@ public class MultiSelectionSpinner extends Spinner implements
     }
 
     public void setSelection(String[] selection) {
+        if (mSelection == null) throw new IllegalArgumentException("No items in adapter");
         for (String cell : selection) {
             for (int j = 0; j < _items.length; ++j) {
                 if (_items[j].equals(cell)) {
@@ -90,6 +110,7 @@ public class MultiSelectionSpinner extends Spinner implements
     }
 
     public void setSelection(List<String> selection) {
+        if (mSelection == null) throw new IllegalArgumentException("No items in adapter");
         for (int i = 0; i < mSelection.length; i++) {
             mSelection[i] = false;
         }
@@ -105,6 +126,7 @@ public class MultiSelectionSpinner extends Spinner implements
     }
 
     public void setSelection(int index) {
+        if (mSelection == null) throw new IllegalArgumentException("No items in adapter");
         for (int i = 0; i < mSelection.length; i++) {
             mSelection[i] = false;
         }
@@ -118,11 +140,11 @@ public class MultiSelectionSpinner extends Spinner implements
         simple_adapter.add(buildSelectedItemString());
     }
 
-    public void setSelection(int[] selectedIndicies) {
+    public void setSelection(int[] selectedIndices) {
         for (int i = 0; i < mSelection.length; i++) {
             mSelection[i] = false;
         }
-        for (int index : selectedIndicies) {
+        for (int index : selectedIndices) {
             if (index >= 0 && index < mSelection.length) {
                 mSelection[index] = true;
             } else {
@@ -144,8 +166,8 @@ public class MultiSelectionSpinner extends Spinner implements
         return selection;
     }
 
-    public List<Integer> getSelectedIndicies() {
-        List<Integer> selection = new LinkedList<Integer>();
+    public List<Integer> getSelectedIndices() {
+        List<Integer> selection = new LinkedList<>();
         for (int i = 0; i < _items.length; ++i) {
             if (mSelection[i]) {
                 selection.add(i);

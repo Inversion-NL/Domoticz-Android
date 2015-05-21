@@ -24,12 +24,11 @@ import nl.inversion.domoticz.Adapters.SwitchesAdapter;
 import nl.inversion.domoticz.Containers.ExtendedStatusInfo;
 import nl.inversion.domoticz.Containers.SwitchInfo;
 import nl.inversion.domoticz.Domoticz.Domoticz;
+import nl.inversion.domoticz.Interfaces.StatusReceiver;
 import nl.inversion.domoticz.Interfaces.setCommandReceiver;
 import nl.inversion.domoticz.Interfaces.switchesClickListener;
-import nl.inversion.domoticz.Interfaces.StatusReceiver;
-import nl.inversion.domoticz.Interfaces.SwitchesReceiver;
 import nl.inversion.domoticz.R;
-import nl.inversion.domoticz.Utils.switchInfoDialog;
+import nl.inversion.domoticz.UI.switchInfoDialog;
 
 public class Temperature extends Fragment implements switchesClickListener,
         switchInfoDialog.InfoDialogSwitchChangeListener {

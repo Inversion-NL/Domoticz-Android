@@ -1,4 +1,4 @@
-package nl.inversion.domoticz.Utils;
+package nl.inversion.domoticz.UI;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,13 +15,13 @@ import nl.inversion.domoticz.R;
 public class switchInfoDialog implements DialogInterface.OnDismissListener {
 
     private final InfoDialogSwitchChangeListener infoDialogSwitchChangeListener;
+    private final MaterialDialog.Builder mdb;
     private InfoDialogDismissListener infoDialogDismissListener;
     private ExtendedStatusInfo mSwitch;
     private String idx;
     private String lastUpdate;
     private String signalLevel;
     private String batteryLevel;
-    private final MaterialDialog.Builder mdb;
     private boolean isFavorite;
 
     public switchInfoDialog(Context mContext,

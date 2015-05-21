@@ -19,9 +19,9 @@ import java.util.Set;
 
 import nl.inversion.domoticz.Domoticz.Domoticz;
 import nl.inversion.domoticz.R;
+import nl.inversion.domoticz.UI.MultiSelectionSpinner;
 import nl.inversion.domoticz.Utils.PhoneConnectionUtil;
 import nl.inversion.domoticz.Utils.SharedPrefUtil;
-import nl.inversion.domoticz.app.MultiSelectionSpinner;
 
 public class WelcomePage3 extends Fragment {
 
@@ -139,32 +139,39 @@ public class WelcomePage3 extends Fragment {
     private void setSsid_spinner() {
 
         Set<String> ssidFromPrefs = mSharedPrefs.getLocalSsid();
-        ArrayList<String> ssidsListFromPrefs = new ArrayList<>();
+        ArrayList<String> ssidListFromPrefs = new ArrayList<>();
         ArrayList<String> ssids = new ArrayList<>();
 
         if (ssidFromPrefs != null) {
             if (ssidFromPrefs.size() > 0) {
                 for (String wifi : ssidFromPrefs) {
                     ssids.add(wifi);
-                    ssidsListFromPrefs.add(wifi);
+                    ssidListFromPrefs.add(wifi);
                 }
             }
         }
 
-
         PhoneConnectionUtil mPhoneConnectionUtil = new PhoneConnectionUtil(getActivity());
-        CharSequence[] ssidEntries = mPhoneConnectionUtil.startSsidScanAsCharSequence();
+        CharSequence[] ssidFound = mPhoneConnectionUtil.startSsidScanAsCharSequence();
 
-        if (ssidEntries.length < 1) {
-            ssids.add(getString(R.string.welcome_msg_no_ssid_found)); // no wifi ssid nearby found!
+        if (ssidFound.length < 1) {
+            // No wifi ssid nearby found!
+            local_wifi_spinner.setEnabled(false);                       // Disable spinner
+            ssids.add(getString(R.string.welcome_msg_no_ssid_found));
+            // Set selection to the 'no ssids found' message to inform user
+            local_wifi_spinner.setItems(ssids);
+            local_wifi_spinner.setSelection(0);
         } else {
-            for (CharSequence ssid : ssidEntries) {
-                if (!ssids.contains(ssid)) ssids.add(ssid.toString());
+            for (CharSequence ssid : ssidFound) {
+                if (!ssids.contains(ssid)) ssids.add(ssid.toString());  // Prevent double SSID's
             }
+
+            local_wifi_spinner.setItems(ssids);
+            // Set SSID's from shared preferences to selected
+            local_wifi_spinner.setSelection(ssidListFromPrefs);
         }
 
-        local_wifi_spinner.setItems(ssids);
-        local_wifi_spinner.setSelection(ssidsListFromPrefs);
+
     }
 
     private void setProtocol_spinner() {
