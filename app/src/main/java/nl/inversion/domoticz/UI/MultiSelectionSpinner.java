@@ -18,8 +18,9 @@ import java.util.List;
 public class MultiSelectionSpinner extends Spinner implements OnMultiChoiceClickListener {
     String[] _items = null;
     boolean[] mSelection = null;
-
+    String title;
     ArrayAdapter<String> simple_adapter;
+    private Context mContext;
 
     /**
      * A spinner in which multiple items can be selected.
@@ -44,6 +45,8 @@ public class MultiSelectionSpinner extends Spinner implements OnMultiChoiceClick
     public MultiSelectionSpinner(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        this.mContext = context;
+
         simple_adapter = new ArrayAdapter<>(context,
                 android.R.layout.simple_spinner_item);
         super.setAdapter(simple_adapter);
@@ -65,6 +68,7 @@ public class MultiSelectionSpinner extends Spinner implements OnMultiChoiceClick
     public boolean performClick() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMultiChoiceItems(_items, mSelection, this);
+        builder.setTitle(title);
         builder.show();
         return true;
     }
@@ -73,13 +77,6 @@ public class MultiSelectionSpinner extends Spinner implements OnMultiChoiceClick
     public void setAdapter(SpinnerAdapter adapter) {
         throw new RuntimeException(
                 "setAdapter is not supported by MultiSelectSpinner.");
-    }
-
-    @Override
-    public int getCount() {
-        // Decrease the count by one so the last item can be used as a hint
-        int count = super.getCount();
-        return count > 0 ? count - 1 : count;
     }
 
     public void setItems(String[] items) {
@@ -154,6 +151,14 @@ public class MultiSelectionSpinner extends Spinner implements OnMultiChoiceClick
         }
         simple_adapter.clear();
         simple_adapter.add(buildSelectedItemString());
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setTitle(int title) {
+        this.title = mContext.getString(title);
     }
 
     public List<String> getSelectedStrings() {

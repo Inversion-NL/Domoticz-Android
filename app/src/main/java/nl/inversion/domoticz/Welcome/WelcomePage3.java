@@ -37,7 +37,7 @@ public class WelcomePage3 extends Fragment {
     private Switch localServer_switch;
     private int remoteProtocolSelectedPosition, localProtocolSelectedPosition, startScreenSelectedPosition;
     private View v;
-    private boolean lostUserVisibility = false;
+    private boolean hasBeenVisibleToUser = false;
     private MultiSelectionSpinner local_wifi_spinner;
     private int callingInstance;
 
@@ -72,12 +72,8 @@ public class WelcomePage3 extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
 
         if (!isVisibleToUser) {
-            if (lostUserVisibility) {
-                writePreferenceValues();
-            }
-        } else {
-            lostUserVisibility = true;
-        }
+            if (hasBeenVisibleToUser) writePreferenceValues();
+        } else hasBeenVisibleToUser = true;
     }
 
     private void getLayoutReferences() {
@@ -165,7 +161,7 @@ public class WelcomePage3 extends Fragment {
             for (CharSequence ssid : ssidFound) {
                 if (!ssids.contains(ssid)) ssids.add(ssid.toString());  // Prevent double SSID's
             }
-
+            local_wifi_spinner.setTitle(R.string.welcome_ssid_spinner_prompt);
             local_wifi_spinner.setItems(ssids);
             // Set SSID's from shared preferences to selected
             local_wifi_spinner.setSelection(ssidListFromPrefs);
@@ -240,8 +236,8 @@ public class WelcomePage3 extends Fragment {
                 remote_port_input.getInputWidgetText().toString());
         mSharedPrefs.setDomoticzRemoteSecure(
                 getSpinnerDomoticzRemoteSecureBoolean());
-
-        mSharedPrefs.setStartupScreenIndex(startScreenSelectedPosition);
+        if (callingInstance == WELCOME_WIZARD)
+            mSharedPrefs.setStartupScreenIndex(startScreenSelectedPosition);
 
         Switch useSameAddress = (Switch) v.findViewById(R.id.localServer_switch);
         if (!useSameAddress.isChecked()) {
@@ -307,5 +303,11 @@ public class WelcomePage3 extends Fragment {
             i++;
         }
         return i;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (callingInstance == SETTINGS) writePreferenceValues();   // Only when used by settings
     }
 }

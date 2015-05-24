@@ -16,16 +16,10 @@ public class SharedPrefUtil {
 
     public static final String PREF_STARTUP_SCREEN = "startup_screen";
     public static final String PREF_DEBUGGING = "debugging";
-    Context mContext;
-    SharedPreferences prefs;
-    SharedPreferences.Editor editor;
-
     private static final String PREF_FIRST_START = "isFirstStart";
     private static final String PREF_WELCOME_SUCCESS = "welcomeSuccess";
-
     private static final String http = "http://";
     private static final String https = "https://";
-
     private static final String REMOTE_SERVER_USERNAME = "remote_server_username";
     private static final String REMOTE_SERVER_PASSWORD = "remote_server_password";
     private static final String REMOTE_SERVER_URL = "remote_server_url";
@@ -33,7 +27,6 @@ public class SharedPrefUtil {
     private static final String REMOTE_SERVER_SECURE = "remote_server_secure";
     private static final String REMOTE_SERVER_AUTHENTICATION_METHOD =
             "remote_server_authentication_method";
-
     private static final String IS_LOCAL_SERVER_ADDRESS_DIFFERENT = "local_server_different_address";
     private static final String LOCAL_SERVER_USERNAME = "local_server_username";
     private static final String LOCAL_SERVER_PASSWORD = "local_server_password";
@@ -43,6 +36,9 @@ public class SharedPrefUtil {
     private static final String LOCAL_SERVER_AUTHENTICATION_METHOD =
             "local_server_authentication_method";
     private static final String LOCAL_SERVER_SSID = "local_server_ssid";
+    Context mContext;
+    SharedPreferences prefs;
+    SharedPreferences.Editor editor;
 
     public SharedPrefUtil(Context mContext) {
         this.mContext = mContext;
@@ -74,7 +70,8 @@ public class SharedPrefUtil {
         String startupScreenSelectedValue = prefs.getString(PREF_STARTUP_SCREEN, null);
         if (startupScreenSelectedValue == null) return 0;
         else {
-            String[] startupScreenValues = mContext.getResources().getStringArray(R.array.drawer_actions);
+            String[] startupScreenValues =
+                    mContext.getResources().getStringArray(R.array.drawer_actions);
             int i = 0;
 
             for (String screen : startupScreenValues) {
@@ -89,7 +86,8 @@ public class SharedPrefUtil {
 
     public void setStartupScreenIndex(int position) {
 
-        String[] startupScreenValues = mContext.getResources().getStringArray(R.array.drawer_actions);
+        String[] startupScreenValues =
+                mContext.getResources().getStringArray(R.array.drawer_actions);
         String startupScreenValue;
 
         try {
