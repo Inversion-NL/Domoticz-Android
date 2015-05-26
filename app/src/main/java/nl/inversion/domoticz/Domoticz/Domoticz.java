@@ -10,13 +10,6 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkError;
-import com.android.volley.NetworkResponse;
-import com.android.volley.NoConnectionError;
-import com.android.volley.ParseError;
-import com.android.volley.ServerError;
-import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 
 import java.util.ArrayList;
@@ -26,31 +19,25 @@ import java.util.Map;
 import java.util.Set;
 
 import nl.inversion.domoticz.Interfaces.DevicesReceiver;
-import nl.inversion.domoticz.Interfaces.VersionReceiver;
-import nl.inversion.domoticz.Interfaces.setCommandReceiver;
 import nl.inversion.domoticz.Interfaces.ScenesReceiver;
 import nl.inversion.domoticz.Interfaces.StatusReceiver;
 import nl.inversion.domoticz.Interfaces.SwitchesReceiver;
 import nl.inversion.domoticz.Interfaces.UtilitiesReceiver;
+import nl.inversion.domoticz.Interfaces.VersionReceiver;
+import nl.inversion.domoticz.Interfaces.setCommandReceiver;
 import nl.inversion.domoticz.R;
 import nl.inversion.domoticz.SettingsActivity;
 import nl.inversion.domoticz.Utils.PhoneConnectionUtil;
 import nl.inversion.domoticz.Utils.RequestUtil;
-import nl.inversion.domoticz.Utils.UsefulBits;
 import nl.inversion.domoticz.Utils.SharedPrefUtil;
+import nl.inversion.domoticz.Utils.UsefulBits;
 import nl.inversion.domoticz.Utils.VolleyUtil;
 
 @SuppressWarnings("unused")
 public class Domoticz {
 
-    /*
-     *  Log tag
-     */
-    private static final String TAG = Domoticz.class.getSimpleName();
     public static final String AUTH_METHOD_LOGIN_FORM = "Login form";
     public static final String AUTH_METHOD_BASIC_AUTHENTICATION = "Basic authentication";
-    public static boolean debug;
-
     /*
      *  Public variables
      */
@@ -58,11 +45,9 @@ public class Domoticz {
     public static final String PROTOCOL_INSECURE = "HTTP";
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
-
     public static final String JSON_FIELD_RESULT = "result";
     public static final String JSON_FIELD_STATUS = "status";
     public static final String JSON_FIELD_VERSION = "version";
-
     public static final int JSON_REQUEST_URL_DASHBOARD = 1;
     public static final int JSON_REQUEST_URL_SCENES = 2;
     public static final int JSON_REQUEST_URL_SWITCHES = 3;
@@ -73,14 +58,11 @@ public class Domoticz {
     public static final int JSON_REQUEST_URL_SUNRISE_SUNSET = 8;
     public static final int JSON_REQUEST_URL_VERSION = 9;
     public static final int JSON_REQUEST_URL_DEVICES = 10;
-
     public static final int JSON_SET_URL_SCENES = 101;
     public static final int JSON_SET_URL_SWITCHES = 102;
     public static final int JSON_SET_URL_TEMP = 103;
     public static final int JSON_SET_URL_FAVORITE = 104;
-
     public static final int JSON_GET_STATUS = 301;
-
     public static final int JSON_ACTION_ON = 201;
     public static final int JSON_ACTION_OFF = 202;
     public static final int JSON_ACTION_UP = 203;
@@ -90,31 +72,27 @@ public class Domoticz {
     public static final int JSON_ACTION_PLUS = 207;
     public static final int JSON_ACTION_FAVORITE_ON = 208;
     public static final int JSON_ACTION_FAVORITE_OFF = 209;
-
     public static final String SCENE_TYPE_GROUP = "Group";
     public static final String SCENE_TYPE_SCENE = "Scene";
     public static final String UTILITIES_TYPE_THERMOSTAT = "Thermostat";
-
     public static final int SWITCH_TYPE_ON_OFF = 0;
     public static final int SWITCH_TYPE_CONTACT = 2;
     public static final int SWITCH_TYPE_BLINDS = 3;
     public static final int SWITCH_TYPE_SMOKE_DETECTOR = 5;
     public static final int SWITCH_TYPE_PUSH_ON_BUTTON = 9;
-
     public static final String SWITCH_HIDDEN_CHARACTER = "$";
-
     public static final int BLINDS_ACTION_UP = 1;
     public static final int BLINDS_ACTION_STOP = 2;
     public static final int BLINDS_ACTION_DOWN = 3;
     public static final int SWITCH_ACTION_ON = 10;
     public static final int SWITCH_ACTION_OFF = 11;
-
     public static final int THERMOSTAT_ACTION_PLUS = 21;
     public static final int THERMOSTAT_ACTION_MIN = 22;
-
     public static final String[] ITEMS_UTILITIES = {UTILITIES_TYPE_THERMOSTAT};
-
-
+    /*
+     *  Log tag
+     */
+    private static final String TAG = Domoticz.class.getSimpleName();
     /*
      *  Private variables
      */
@@ -127,20 +105,17 @@ public class Domoticz {
     private static final String ACTION_MIN =            "Min";
     private static final String ACTION_FAVORITE_ON =    "1";
     private static final String ACTION_FAVORITE_OFF =   "0";
-
     private static final String URL_VERSION =           "/json.htm?type=command&param=getversion";
     private static final String URL_DASHBOARD =         "";
     private static final String URL_SCENES =            "/json.htm?type=scenes";
     private static final String URL_SWITCHES =          "/json.htm?type=command&param=getlightswitches";
-    private static final String URL_UTILITIES =         Domoticz.URL_DEVICES;
     private static final String URL_TEMPERATURE =       "";
     private static final String URL_WEATHER =           "";
     private static final String URL_CAMERAS =           "";
     private static final String URL_DEVICES =           "/json.htm?type=devices";
-
+    private static final String URL_UTILITIES = Domoticz.URL_DEVICES;
     private static final String URL_DEVICE_STATUS =     "/json.htm?type=devices&rid=";
     private static final String URL_SUNRISE_SUNSET =    "/json.htm?type=command&param=getSunRiseSet";
-
     private static final String URL_SWITCH_DIM_LEVEL =  "&switchcmd=Set%20Level&level=";
     private static final String URL_SWITCH_SCENE =      "/json.htm?type=command&param=switchscene&idx=";
     private static final String URL_SWITCH_SWITCHES =   "/json.htm?type=command&param=switchlight&idx=";
@@ -150,13 +125,12 @@ public class Domoticz {
     private static final String URL_TEMP_VALUE =        "&nvalue=0&svalue=";
     private static final String URL_FAVORITE_BASE =     "/json.htm?type=command&param=makefavorite&idx=";
     private static final String URL_FAVORITE_VALUE =    "&isfavorite=";
-
     private static final String URL_PROTOCOL_INSECURE = "http://";
     private static final String URL_PROTOCOL_SECURE =   "https://";
-
-    Context mContext;
+    public static boolean debug;
     private final SharedPrefUtil mSharedPrefUtil;
     private final PhoneConnectionUtil mPhoneConnectionUtil;
+    Context mContext;
 
     public Domoticz(Context mContext) {
         this.mContext = mContext;
@@ -165,16 +139,8 @@ public class Domoticz {
         debug = mSharedPrefUtil.isDebugEnabled();
     }
 
-    public List<Integer> getSupportedSwitches() {
-
-        List<Integer> switchesSupported = new ArrayList<>();
-        switchesSupported.add(Domoticz.SWITCH_TYPE_ON_OFF);
-        //switchesSupported.add(Domoticz.SWITCH_TYPE_CONTACT);
-        switchesSupported.add(Domoticz.SWITCH_TYPE_BLINDS);
-        //switchesSupported.add(Domoticz.SWITCH_TYPE_SMOKE_DETECTOR);
-        //switchesSupported.add(Domoticz.SWITCH_TYPE_PUSH_ON_BUTTON);
-
-        return switchesSupported;
+    public boolean isDebugEnabled() {
+        return mSharedPrefUtil.isDebugEnabled();
     }
 
     public boolean isUserOnLocalWifi() {
@@ -270,35 +236,16 @@ public class Domoticz {
         return errorMessage;
     }
 
-    /**
-     * Handles the success messages
-     *
-     * @param result Result text to handle
-     * @param debugText Text view to set
-     */
-    public void successHandling(String result, TextView debugText) {
+    public List<Integer> getSupportedSwitches() {
 
-        Log.d(TAG, "Result: " + result);
-        if (debug) {
-            String temp = debugText.getText().toString();
-            if (temp.isEmpty()) debugText.setText(result);
-            else debugText.setText(temp + "\n\n" + result);
-        }
-    }
+        List<Integer> switchesSupported = new ArrayList<>();
+        switchesSupported.add(Domoticz.SWITCH_TYPE_ON_OFF);
+        //switchesSupported.add(Domoticz.SWITCH_TYPE_CONTACT);
+        switchesSupported.add(Domoticz.SWITCH_TYPE_BLINDS);
+        //switchesSupported.add(Domoticz.SWITCH_TYPE_SMOKE_DETECTOR);
+        //switchesSupported.add(Domoticz.SWITCH_TYPE_PUSH_ON_BUTTON);
 
-    /**
-     * Handles the error messages
-     * @param error Exception
-     */
-    public void errorHandling(Exception error, TextView debugText) {
-        error.printStackTrace();
-
-        if (debug) {
-            String temp = debugText.getText().toString();
-            debugText.setText(temp + getErrorMessage(error));
-        } else {
-            errorToast(error);
-        }
+        return switchesSupported;
     }
 
     public void debugTextToClipboard(TextView debugText) {

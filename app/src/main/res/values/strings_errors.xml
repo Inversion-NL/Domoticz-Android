@@ -6,5 +6,6 @@
     <string name="error_server">Server error</string>
     <string name="error_network">Network error, status code %1$d</string>
     <string name="error_parse">Parse error</string>
+    <string name="error_notConnected">Error: not connected to any network</string>
 
 </resources>

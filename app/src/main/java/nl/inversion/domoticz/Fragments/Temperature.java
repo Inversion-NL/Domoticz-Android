@@ -3,19 +3,10 @@ package nl.inversion.domoticz.Fragments;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -24,19 +15,21 @@ import nl.inversion.domoticz.Adapters.SwitchesAdapter;
 import nl.inversion.domoticz.Containers.ExtendedStatusInfo;
 import nl.inversion.domoticz.Containers.SwitchInfo;
 import nl.inversion.domoticz.Domoticz.Domoticz;
+import nl.inversion.domoticz.Interfaces.DomoticzFragmentListener;
 import nl.inversion.domoticz.Interfaces.StatusReceiver;
 import nl.inversion.domoticz.Interfaces.setCommandReceiver;
 import nl.inversion.domoticz.Interfaces.switchesClickListener;
 import nl.inversion.domoticz.R;
 import nl.inversion.domoticz.UI.switchInfoDialog;
+import nl.inversion.domoticz.app.DomoticzFragment;
 
-public class Temperature extends Fragment implements switchesClickListener,
+public class Temperature extends DomoticzFragment implements DomoticzFragmentListener,
+        switchesClickListener,
         switchInfoDialog.InfoDialogSwitchChangeListener {
 
     private static final String TAG = Temperature.class.getSimpleName();
     private ProgressDialog progressDialog;
     private Domoticz mDomoticz;
-    private TextView debugText;
     private Context mActivity;
     private int currentSwitch = 1;
 
@@ -44,50 +37,16 @@ public class Temperature extends Fragment implements switchesClickListener,
     private boolean infoDialogIsFavoriteSwitchIsChanged = false;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_temperature, null);
-
-        getActionBar().setTitle(R.string.title_temperature);
-
-        return root;
-    }
-
-    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mActivity = activity;
+        getActionBar().setTitle(R.string.title_temperature);
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onConnectionOk() {
 
-        mDomoticz = new Domoticz(getActivity());
-        boolean debug = Domoticz.debug;
-
-        // Initialize the progress dialog
-        progressDialog = new ProgressDialog(this.getActivity());
-        progressDialog.setMessage(getString(R.string.msg_please_wait));
-        progressDialog.setCancelable(false);
-
-        if (debug) {
-            LinearLayout debugLayout = (LinearLayout) getView().findViewById(R.id.debugLayout);
-            debugLayout.setVisibility(View.VISIBLE);
-
-            debugText = (TextView) getView().findViewById(R.id.debugText);
-            debugText.setMovementMethod(new ScrollingMovementMethod());
-            debugText.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    mDomoticz.debugTextToClipboard(debugText);
-                    return false;
-                }
-            });
-        }
-        getData();
-    }
-
-    private void getData() {
+        mDomoticz = new Domoticz(mActivity);
 
         /*
         showProgressDialog();
@@ -133,8 +92,6 @@ public class Temperature extends Fragment implements switchesClickListener,
         }
     }
 
-    // add dynamic list view
-    // https://github.com/nhaarman/ListViewAnimations
     private void createListView(ArrayList<ExtendedStatusInfo> switches) {
 
         final ArrayList<ExtendedStatusInfo> supportedSwitches = new ArrayList<>();
@@ -270,10 +227,26 @@ public class Temperature extends Fragment implements switchesClickListener,
         });
     }
 
+    @Override
+    public void onInfoDialogSwitchChange(int id, boolean isChecked) {
+        infoDialogIsFavoriteSwitchIsChanged = true;
+        infoDialogIsFavoriteSwitch = isChecked;
+    }
+
+    /**
+     * Initializes the progress dialog
+     */
+    private void initProgressDialog() {
+        progressDialog = new ProgressDialog(this.getActivity());
+        progressDialog.setMessage(getString(R.string.msg_please_wait));
+        progressDialog.setCancelable(false);
+    }
+
     /**
      * Shows the progress dialog if isn't already showing
      */
     private void showProgressDialog() {
+        if (progressDialog == null) initProgressDialog();
         if (!progressDialog.isShowing())
             progressDialog.show();
     }
@@ -286,30 +259,9 @@ public class Temperature extends Fragment implements switchesClickListener,
             progressDialog.dismiss();
     }
 
-    /**
-     * Handles the success messages
-     * @param result Result text to handle
-     */
-    private void successHandling(String result) {
-        mDomoticz.successHandling(result, debugText);
-    }
-
-    /**
-     * Handles the error messages
-     * @param error Exception
-     */
-    private void errorHandling(Exception error) {
-        hideProgressDialog();
-        mDomoticz.errorHandling(error, debugText);
-    }
-
     @Override
-    public void onInfoDialogSwitchChange(int id, boolean isChecked) {
-        infoDialogIsFavoriteSwitchIsChanged = true;
-        infoDialogIsFavoriteSwitch = isChecked;
-    }
-
-    private ActionBar getActionBar() {
-        return ((ActionBarActivity) getActivity()).getSupportActionBar();
+    public void errorHandling(Exception error) {
+        super.errorHandling(error);
+        hideProgressDialog();
     }
 }

@@ -12,8 +12,8 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class PhoneConnectionUtil {
 
-    Context mContext;
     final WifiManager wifiManager;
+    Context mContext;
     ConnectivityManager connManager;
     NetworkInfo networkWifiInfo;
     NetworkInfo networkCellInfo;
@@ -71,5 +71,12 @@ public class PhoneConnectionUtil {
             }
         }
         return ssid;
+    }
+
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
