@@ -40,7 +40,9 @@ public class MainActivity extends ActionBarActivity {
 
         if (mSharedPrefs.isFirstStart()) {
             Intent welcomeWizard = new Intent(this, WelcomeViewActivity.class);
-            welcomeWizard.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            welcomeWizard.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                    Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(welcomeWizard);
             mSharedPrefs.setFirstStart(false);
         } else {
@@ -49,7 +51,9 @@ public class MainActivity extends ActionBarActivity {
                 addFragment();
             } else {
                 Intent welcomeWizard = new Intent(this, WelcomeViewActivity.class);
-                welcomeWizard.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                welcomeWizard.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                        Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(welcomeWizard);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
@@ -77,7 +81,8 @@ public class MainActivity extends ActionBarActivity {
         String[] drawerActions = getResources().getStringArray(R.array.drawer_actions);
         fragments = getResources().getStringArray(R.array.drawer_fragments);
 
-        ArrayAdapter<String> mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, drawerActions);
+        ArrayAdapter<String> mAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1, drawerActions);
         mDrawerList.setAdapter(mAdapter);
 
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -85,7 +90,8 @@ public class MainActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
                     FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-                    tx.replace(R.id.main, Fragment.instantiate(MainActivity.this, fragments[position]));
+                    tx.replace(R.id.main, Fragment.instantiate(MainActivity.this,
+                            fragments[position]));
                     tx.commit();
                 } catch (Exception e) {
                     Log.e(TAG, "Fragment error");

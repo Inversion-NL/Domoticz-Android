@@ -56,7 +56,7 @@ public class Utilities extends DomoticzFragment implements DomoticzFragmentListe
                 Utilities.this.mUtilitiesInfos = mUtilitiesInfos;
 
                 adapter = new UtilityAdapter(mActivity, mUtilitiesInfos, listener);
-                utilitiesListView = (ListView) getView().findViewById(R.id.utilitiesListView);
+                utilitiesListView = (ListView) getView().findViewById(R.id.listView);
                 utilitiesListView.setAdapter(adapter);
 
                 hideProgressDialog();

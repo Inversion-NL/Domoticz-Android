@@ -178,8 +178,5 @@ public class DomoticzFragment extends Fragment {
 
     public void Logger(String tag, String text) {
         Log.d(tag, text);
-        if (debug) {
-            addDebugText(text);
-        }
     }
 }
