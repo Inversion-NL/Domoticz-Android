@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -23,11 +24,11 @@ import nl.inversion.domoticz.R;
 
 public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
 
-    private switchesClickListener listener;
     Context context;
     ArrayList<ExtendedStatusInfo> data = null;
-    private View row;
     ViewHolder holder;
+    private switchesClickListener listener;
+    private View row;
     private int layoutResourceId;
     private ViewGroup parent;
 
@@ -69,6 +70,10 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
                 setBlindsRowData(mExtendedStatusInfo);
                 break;
 
+            case Domoticz.SWITCH_TYPE_DIMMER:
+                setDimmerRowData(mExtendedStatusInfo);
+                break;
+
             default:
                 throw new NullPointerException("No supported switch type defined in the adapter");
         }
@@ -79,6 +84,8 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
         layoutResourceId = R.layout.switch_row_on_off;
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         row = inflater.inflate(layoutResourceId, parent, false);
+
+        holder.isProtected = mExtendedStatusInfo.isProtected();
 
         holder.switch_name = (TextView) row.findViewById(R.id.switch_name);
         holder.switch_name.setText(mExtendedStatusInfo.getName());
@@ -94,6 +101,7 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
         holder.switch_battery_level.setText(text);
 
         holder.onOffSwitch = (Switch) row.findViewById(R.id.switch_button);
+        if (holder.isProtected) holder.onOffSwitch.setEnabled(false);
         holder.onOffSwitch.setId(mExtendedStatusInfo.getIdx());
         holder.onOffSwitch.setChecked(mExtendedStatusInfo.getStatusBoolean());
         holder.onOffSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -110,6 +118,8 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         row = inflater.inflate(layoutResourceId, parent, false);
 
+        holder.isProtected = mExtendedStatusInfo.isProtected();
+
         holder.switch_name = (TextView) row.findViewById(R.id.switch_name);
         holder.switch_name.setText(mExtendedStatusInfo.getName());
 
@@ -123,6 +133,7 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
         holder.switch_battery_level.setText(text);
 
         holder.buttonUp = (ImageButton) row.findViewById(R.id.switch_button_up);
+        if (holder.isProtected) holder.buttonUp.setEnabled(false);
         holder.buttonUp.setId(mExtendedStatusInfo.getIdx());
         holder.buttonUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,6 +143,7 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
         });
 
         holder.buttonStop = (ImageButton) row.findViewById(R.id.switch_button_stop);
+        if (holder.isProtected) holder.buttonStop.setEnabled(false);
         holder.buttonStop.setId(mExtendedStatusInfo.getIdx());
         holder.buttonStop.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,11 +153,59 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
         });
 
         holder.buttonDown = (ImageButton) row.findViewById(R.id.switch_button_down);
+        if (holder.isProtected) holder.buttonDown.setEnabled(false);
         holder.buttonDown.setId(mExtendedStatusInfo.getIdx());
         holder.buttonDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 handleBlindsClick(view.getId(), Domoticz.BLINDS_ACTION_DOWN);
+            }
+        });
+    }
+
+    private void setDimmerRowData(final ExtendedStatusInfo mExtendedStatusInfo) {
+
+        layoutResourceId = R.layout.switch_row_dimmer;
+        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+        row = inflater.inflate(layoutResourceId, parent, false);
+
+        holder.isProtected = mExtendedStatusInfo.isProtected();
+
+        holder.switch_name = (TextView) row.findViewById(R.id.switch_name);
+        holder.switch_name.setText(mExtendedStatusInfo.getName());
+
+        holder.signal_level = (TextView) row.findViewById(R.id.switch_signal_level);
+        String text = context.getText(R.string.signal_level) +
+                ": " + String.valueOf(mExtendedStatusInfo.getSignalLevel());
+        holder.signal_level.setText(text);
+
+        holder.switch_battery_level = (TextView) row.findViewById(R.id.switch_battery_level);
+        text = context.getString(R.string.battery_level) +
+                ": " + String.valueOf(mExtendedStatusInfo.getBatteryLevel());
+        holder.switch_battery_level.setText(text);
+
+        holder.switch_dimmer_level = (TextView) row.findViewById(R.id.switch_dimmer_level);
+        holder.switch_dimmer_level.setText(String.valueOf(mExtendedStatusInfo.getLevel()));
+
+        holder.dimmer = (SeekBar) row.findViewById(R.id.switch_dimmer);
+        if (holder.isProtected) holder.dimmer.setEnabled(false);
+        holder.dimmer.setProgress(mExtendedStatusInfo.getLevel());
+        holder.dimmer.setMax(mExtendedStatusInfo.getMaxDimLevel() - 1);
+        holder.dimmer.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                TextView switch_dimmer_level = (TextView) seekBar.getRootView()
+                        .findViewById(R.id.switch_dimmer_level);
+                switch_dimmer_level.setText(String.valueOf(progress + 1));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                handleDimmerChange(mExtendedStatusInfo.getIdx(), seekBar.getProgress() + 1);
             }
         });
     }
@@ -158,9 +218,15 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
         listener.onBlindClick(idx, action);
     }
 
+    private void handleDimmerChange(final int idx, final int value) {
+        listener.onDimmerChange(idx, value);
+    }
+
     static class ViewHolder {
-        TextView switch_name, signal_level, switch_status, switch_battery_level;
+        TextView switch_name, signal_level, switch_status, switch_battery_level, switch_dimmer_level;
         Switch onOffSwitch;
         ImageButton buttonUp, buttonDown, buttonStop;
+        Boolean isProtected;
+        SeekBar dimmer;
     }
 }

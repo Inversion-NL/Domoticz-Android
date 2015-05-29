@@ -9,7 +9,10 @@ public class ExtendedStatusInfo {
     JSONObject jsonObject;
 
     String name;
+    String hardwareName;
+    boolean isProtected;
     int level;
+    int maxDimLevel;
     int favorite;
     String type;
     String status;
@@ -24,12 +27,15 @@ public class ExtendedStatusInfo {
         this.jsonObject = row;
 
         name = row.getString("Name");
+        hardwareName = row.getString("HardwareName");
+        isProtected = row.getBoolean("Protected");
         level = row.getInt("LevelInt");
         favorite = row.getInt("Favorite");
         type = row.getString("Type");
         status = row.getString("Status");
         batteryLevel = row.getInt("BatteryLevel");
         signalLevel = row.getInt("SignalLevel");
+        maxDimLevel = row.getInt("MaxDimLevel");
         switchType = row.getString("SwitchType");
         switchTypeVal = row.getInt("SwitchTypeVal");
         lastUpdate = row.getString("LastUpdate");
@@ -39,7 +45,9 @@ public class ExtendedStatusInfo {
     @Override
     public String toString() {
         return "ExtendedStatusInfo{" +
-                "name='" + name + '\'' +
+                "jsonObject=" + jsonObject +
+                ", name='" + name + '\'' +
+                ", hardwareName='" + hardwareName + '\'' +
                 ", level=" + level +
                 ", favorite=" + favorite +
                 ", type='" + type + '\'' +
@@ -61,12 +69,40 @@ public class ExtendedStatusInfo {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getHardwareName() {
+        return hardwareName;
+    }
+
+    public void setHardwareName(String hardwareName) {
+        this.hardwareName = hardwareName;
+    }
+
+    public boolean isProtected() {
+        return isProtected;
+    }
+
+    public int getMaxDimLevel() {
+        return maxDimLevel;
+    }
+
     public int getLevel() {
         return level;
     }
 
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
     public int getFavorite() {
         return favorite;
+    }
+
+    public void setFavorite(int favorite) {
+        this.favorite = favorite;
     }
 
     public boolean getFavoriteBoolean() {
@@ -75,12 +111,21 @@ public class ExtendedStatusInfo {
         return favorite;
     }
 
+    public void setFavoriteBoolean(boolean favorite) {
+        if (favorite) this.favorite = 1;
+        else this.favorite = 0;
+    }
+
     public String getType() {
         return type;
     }
 
     public String getStatus() {
         return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public boolean getStatusBoolean() {
@@ -113,20 +158,7 @@ public class ExtendedStatusInfo {
         return idx;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setFavorite(int favorite) {
-        this.favorite = favorite;
-    }
-
-    public void setFavoriteBoolean(boolean favorite){
-        if (favorite) this.favorite = 1;
-        else this.favorite = 0;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    public void setIsProtected(boolean isProtected) {
+        this.isProtected = isProtected;
     }
 }

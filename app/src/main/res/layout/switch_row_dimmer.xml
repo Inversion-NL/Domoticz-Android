@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:longClickable="true"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/switch_name"
+        style="@style/switch_row_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="Switch name" />
+
+    <TextView
+        android:id="@+id/switch_battery_level"
+        style="@style/switch_row_extraInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/switch_name"
+        android:text="@string/battery_level" />
+
+    <TextView
+        android:id="@+id/switch_signal_level"
+        style="@style/switch_row_extraInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/switch_battery_level"
+        android:text="@string/signal_level" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_toEndOf="@id/switch_battery_level"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/switch_dimmer_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="6dp"
+            android:text="50" />
+
+        <SeekBar
+            android:id="@+id/switch_dimmer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="-10dp" />
+
+    </LinearLayout>
+</RelativeLayout>

@@ -121,7 +121,6 @@ public class Utilities extends DomoticzFragment implements DomoticzFragmentListe
             }
         }
         notifyDataSetChanged();
-
     }
 
     /**

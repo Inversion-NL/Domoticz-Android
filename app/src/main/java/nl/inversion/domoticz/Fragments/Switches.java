@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import nl.inversion.domoticz.Adapters.SwitchesAdapter;
 import nl.inversion.domoticz.Containers.ExtendedStatusInfo;
@@ -29,14 +30,15 @@ public class Switches extends DomoticzFragment implements DomoticzFragmentListen
         switchInfoDialog.InfoDialogSwitchChangeListener {
 
     private static final String TAG = Temperature.class.getSimpleName();
-
+    private final ArrayList<ExtendedStatusInfo> supportedSwitches = new ArrayList<>();
     private ProgressDialog progressDialog;
     private Domoticz mDomoticz;
     private Context mActivity;
     private int currentSwitch = 1;
-
     private boolean infoDialogIsFavoriteSwitch;
     private boolean infoDialogIsFavoriteSwitchIsChanged = false;
+    private SwitchesAdapter adapter;
+    private ListView switchesListView;
 
     @Override
     public void onAttach(Activity activity) {
@@ -94,24 +96,27 @@ public class Switches extends DomoticzFragment implements DomoticzFragmentListen
     // https://github.com/nhaarman/ListViewAnimations
     private void createListView(ArrayList<ExtendedStatusInfo> switches) {
 
-        final ArrayList<ExtendedStatusInfo> supportedSwitches = new ArrayList<>();
+        final List<Integer> appSupportedSwitches = mDomoticz.getSupportedSwitches();
 
         for (ExtendedStatusInfo mExtendedStatusInfo : switches) {
             String name = mExtendedStatusInfo.getName();
+            int switchTypeVal = mExtendedStatusInfo.getSwitchTypeVal();
 
-            if (!name.startsWith(Domoticz.SWITCH_HIDDEN_CHARACTER) && mDomoticz.getSupportedSwitches().contains(mExtendedStatusInfo.getSwitchTypeVal())) {
+            if (!name.startsWith(Domoticz.SWITCH_HIDDEN_CHARACTER) &&
+                    appSupportedSwitches.contains(switchTypeVal)) {
                 supportedSwitches.add(mExtendedStatusInfo);
             }
         }
 
         final switchesClickListener listener = this;
 
-        SwitchesAdapter adapter = new SwitchesAdapter(mActivity, supportedSwitches, listener);
-        ListView switchesListView = (ListView) getView().findViewById(R.id.listView);
+        adapter = new SwitchesAdapter(mActivity, supportedSwitches, listener);
+        switchesListView = (ListView) getView().findViewById(R.id.listView);
         switchesListView.setAdapter(adapter);
         switchesListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int index, long id) {
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view,
+                                           int index, long id) {
                 showInfoDialog(supportedSwitches.get(index));
                 return false;
             }
@@ -225,6 +230,19 @@ public class Switches extends DomoticzFragment implements DomoticzFragmentListen
                 errorHandling(error);
             }
         });
+    }
+
+    @Override
+    public void onDimmerChange(int idx, int value) {
+
+        Toast.makeText(mActivity, "Dimming to level: " + String.valueOf(value), Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Notifies the list view adapter the data has changed and refreshes the list view
+     */
+    private void notifyDataSetChanged() {
+        switchesListView.setAdapter(adapter);
     }
 
     /**

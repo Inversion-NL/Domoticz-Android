@@ -228,6 +228,11 @@ public class Temperature extends DomoticzFragment implements DomoticzFragmentLis
     }
 
     @Override
+    public void onDimmerChange(int idx, int value) {
+
+    }
+
+    @Override
     public void onInfoDialogSwitchChange(int id, boolean isChecked) {
         infoDialogIsFavoriteSwitchIsChanged = true;
         infoDialogIsFavoriteSwitch = isChecked;

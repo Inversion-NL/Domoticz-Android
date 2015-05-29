@@ -6,4 +6,6 @@ public interface switchesClickListener {
 
     void onBlindClick(int idx, int action);
 
+    void onDimmerChange(int idx, int value);
+
 }

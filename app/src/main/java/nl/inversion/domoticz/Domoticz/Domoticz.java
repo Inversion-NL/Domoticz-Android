@@ -79,6 +79,7 @@ public class Domoticz {
     public static final int SWITCH_TYPE_CONTACT = 2;
     public static final int SWITCH_TYPE_BLINDS = 3;
     public static final int SWITCH_TYPE_SMOKE_DETECTOR = 5;
+    public static final int SWITCH_TYPE_DIMMER = 7;
     public static final int SWITCH_TYPE_PUSH_ON_BUTTON = 9;
     public static final String SWITCH_HIDDEN_CHARACTER = "$";
     public static final int BLINDS_ACTION_UP = 1;
@@ -240,7 +241,7 @@ public class Domoticz {
 
         List<Integer> switchesSupported = new ArrayList<>();
         switchesSupported.add(Domoticz.SWITCH_TYPE_ON_OFF);
-        //switchesSupported.add(Domoticz.SWITCH_TYPE_CONTACT);
+        switchesSupported.add(Domoticz.SWITCH_TYPE_DIMMER);
         switchesSupported.add(Domoticz.SWITCH_TYPE_BLINDS);
         //switchesSupported.add(Domoticz.SWITCH_TYPE_SMOKE_DETECTOR);
         //switchesSupported.add(Domoticz.SWITCH_TYPE_PUSH_ON_BUTTON);
