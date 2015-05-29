@@ -16,6 +16,7 @@ public class ExtendedStatusInfo {
     int favorite;
     String type;
     String status;
+    boolean statusBoolean;
     int batteryLevel;
     int signalLevel;
     int switchTypeVal;
@@ -129,9 +130,16 @@ public class ExtendedStatusInfo {
     }
 
     public boolean getStatusBoolean() {
-        boolean statusBoolean = false;
+        boolean statusBoolean = true;
         if (status.equalsIgnoreCase("On")) statusBoolean = true;
+        else if (status.equalsIgnoreCase("Off")) statusBoolean = false;
+        this.statusBoolean = statusBoolean;
         return statusBoolean;
+    }
+
+    public void setStatusBoolean(boolean status) {
+        this.statusBoolean = status;
+        setStatus("On");
     }
 
     public int getBatteryLevel() {

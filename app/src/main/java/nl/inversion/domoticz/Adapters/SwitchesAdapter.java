@@ -31,6 +31,7 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
     private View row;
     private int layoutResourceId;
     private ViewGroup parent;
+    private Switch dimmerSwitch;
 
     public SwitchesAdapter(Context context,
                            ArrayList<ExtendedStatusInfo> data,
@@ -190,6 +191,7 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
         holder.switch_dimmer_level.setText(percentage + "%");
 
         holder.dimmerOnOffSwitch = (Switch) row.findViewById(R.id.switch_dimmer_switch);
+        dimmerSwitch = holder.dimmerOnOffSwitch;
         holder.dimmerOnOffSwitch.setId(mExtendedStatusInfo.getIdx());
         if (holder.isProtected) holder.dimmerOnOffSwitch.setEnabled(false);
         holder.dimmerOnOffSwitch.setChecked(mExtendedStatusInfo.getStatusBoolean());
@@ -197,6 +199,7 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                 handleOnOffSwitchClick(compoundButton.getId(), checked);
+                mExtendedStatusInfo.setStatusBoolean(checked);
             }
         });
 
@@ -220,10 +223,10 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
-                Switch dimmerOnOffSwitch = (Switch) row.findViewById(R.id.switch_dimmer_switch);
-
-                if (seekBar.getProgress() == 0) dimmerOnOffSwitch.setChecked(false);
-                else dimmerOnOffSwitch.setChecked(true);
+                if (seekBar.getProgress() == 0 && dimmerSwitch.isChecked())
+                    dimmerSwitch.setChecked(false);
+                else if (seekBar.getProgress() > 0 && !dimmerSwitch.isChecked())
+                    dimmerSwitch.setChecked(true);
 
                 handleDimmerChange(mExtendedStatusInfo.getIdx(), seekBar.getProgress() + 1);
             }
