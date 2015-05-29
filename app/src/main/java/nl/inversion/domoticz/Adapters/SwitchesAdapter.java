@@ -185,18 +185,32 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
         holder.switch_battery_level.setText(text);
 
         holder.switch_dimmer_level = (TextView) row.findViewById(R.id.switch_dimmer_level);
-        holder.switch_dimmer_level.setText(String.valueOf(mExtendedStatusInfo.getLevel()));
+        String percentage = calculateDimPercentage(
+                mExtendedStatusInfo.getMaxDimLevel(), mExtendedStatusInfo.getLevel());
+        holder.switch_dimmer_level.setText(percentage + "%");
+
+        holder.dimmerOnOffSwitch = (Switch) row.findViewById(R.id.switch_dimmer_switch);
+        holder.dimmerOnOffSwitch.setId(mExtendedStatusInfo.getIdx());
+        if (holder.isProtected) holder.dimmerOnOffSwitch.setEnabled(false);
+        holder.dimmerOnOffSwitch.setChecked(mExtendedStatusInfo.getStatusBoolean());
+        holder.dimmerOnOffSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                handleOnOffSwitchClick(compoundButton.getId(), checked);
+            }
+        });
 
         holder.dimmer = (SeekBar) row.findViewById(R.id.switch_dimmer);
         if (holder.isProtected) holder.dimmer.setEnabled(false);
         holder.dimmer.setProgress(mExtendedStatusInfo.getLevel());
-        holder.dimmer.setMax(mExtendedStatusInfo.getMaxDimLevel() - 1);
+        holder.dimmer.setMax(mExtendedStatusInfo.getMaxDimLevel());
         holder.dimmer.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                String percentage = calculateDimPercentage(seekBar.getMax(), progress);
                 TextView switch_dimmer_level = (TextView) seekBar.getRootView()
                         .findViewById(R.id.switch_dimmer_level);
-                switch_dimmer_level.setText(String.valueOf(progress + 1));
+                switch_dimmer_level.setText(percentage + "%");
             }
 
             @Override
@@ -205,9 +219,20 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+
+                Switch dimmerOnOffSwitch = (Switch) row.findViewById(R.id.switch_dimmer_switch);
+
+                if (seekBar.getProgress() == 0) dimmerOnOffSwitch.setChecked(false);
+                else dimmerOnOffSwitch.setChecked(true);
+
                 handleDimmerChange(mExtendedStatusInfo.getIdx(), seekBar.getProgress() + 1);
             }
         });
+    }
+
+    private String calculateDimPercentage(int maxDimLevel, int level) {
+        float percentage = ((float) level / (float) maxDimLevel) * 100;
+        return String.format("%.0f", percentage);
     }
 
     private void handleOnOffSwitchClick(int idx, boolean action) {
@@ -224,7 +249,7 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
 
     static class ViewHolder {
         TextView switch_name, signal_level, switch_status, switch_battery_level, switch_dimmer_level;
-        Switch onOffSwitch;
+        Switch onOffSwitch, dimmerOnOffSwitch;
         ImageButton buttonUp, buttonDown, buttonStop;
         Boolean isProtected;
         SeekBar dimmer;

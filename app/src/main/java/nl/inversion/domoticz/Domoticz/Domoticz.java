@@ -48,6 +48,7 @@ public class Domoticz {
     public static final String JSON_FIELD_RESULT = "result";
     public static final String JSON_FIELD_STATUS = "status";
     public static final String JSON_FIELD_VERSION = "version";
+
     public static final int JSON_REQUEST_URL_DASHBOARD = 1;
     public static final int JSON_REQUEST_URL_SCENES = 2;
     public static final int JSON_REQUEST_URL_SWITCHES = 3;
@@ -58,11 +59,14 @@ public class Domoticz {
     public static final int JSON_REQUEST_URL_SUNRISE_SUNSET = 8;
     public static final int JSON_REQUEST_URL_VERSION = 9;
     public static final int JSON_REQUEST_URL_DEVICES = 10;
+
     public static final int JSON_SET_URL_SCENES = 101;
     public static final int JSON_SET_URL_SWITCHES = 102;
     public static final int JSON_SET_URL_TEMP = 103;
     public static final int JSON_SET_URL_FAVORITE = 104;
+
     public static final int JSON_GET_STATUS = 301;
+
     public static final int JSON_ACTION_ON = 201;
     public static final int JSON_ACTION_OFF = 202;
     public static final int JSON_ACTION_UP = 203;
@@ -70,11 +74,14 @@ public class Domoticz {
     public static final int JSON_ACTION_DOWN = 205;
     public static final int JSON_ACTION_MIN = 206;
     public static final int JSON_ACTION_PLUS = 207;
+    public static final int JSON_ACTION_DIMLEVEL = 210;
     public static final int JSON_ACTION_FAVORITE_ON = 208;
     public static final int JSON_ACTION_FAVORITE_OFF = 209;
+
     public static final String SCENE_TYPE_GROUP = "Group";
     public static final String SCENE_TYPE_SCENE = "Scene";
     public static final String UTILITIES_TYPE_THERMOSTAT = "Thermostat";
+
     public static final int SWITCH_TYPE_ON_OFF = 0;
     public static final int SWITCH_TYPE_CONTACT = 2;
     public static final int SWITCH_TYPE_BLINDS = 3;
@@ -82,11 +89,13 @@ public class Domoticz {
     public static final int SWITCH_TYPE_DIMMER = 7;
     public static final int SWITCH_TYPE_PUSH_ON_BUTTON = 9;
     public static final String SWITCH_HIDDEN_CHARACTER = "$";
+
     public static final int BLINDS_ACTION_UP = 1;
     public static final int BLINDS_ACTION_STOP = 2;
     public static final int BLINDS_ACTION_DOWN = 3;
     public static final int SWITCH_ACTION_ON = 10;
     public static final int SWITCH_ACTION_OFF = 11;
+    public static final int SWITCH_ACTION_DIMLEVEL = 12;
     public static final int THERMOSTAT_ACTION_PLUS = 21;
     public static final int THERMOSTAT_ACTION_MIN = 22;
     public static final String[] ITEMS_UTILITIES = {UTILITIES_TYPE_THERMOSTAT};
@@ -117,11 +126,11 @@ public class Domoticz {
     private static final String URL_UTILITIES = Domoticz.URL_DEVICES;
     private static final String URL_DEVICE_STATUS =     "/json.htm?type=devices&rid=";
     private static final String URL_SUNRISE_SUNSET =    "/json.htm?type=command&param=getSunRiseSet";
-    private static final String URL_SWITCH_DIM_LEVEL =  "&switchcmd=Set%20Level&level=";
+    private static final String URL_SWITCH_DIM_LEVEL = "Set%20Level&level=";
     private static final String URL_SWITCH_SCENE =      "/json.htm?type=command&param=switchscene&idx=";
     private static final String URL_SWITCH_SWITCHES =   "/json.htm?type=command&param=switchlight&idx=";
     private static final String URL_SWITCH_CMD =        "&switchcmd=";
-    private static final String URL_SWITCH_LEVEL =      "&level=0";
+    private static final String URL_SWITCH_LEVEL = "&level=";
     private static final String URL_TEMP_BASE =         "/json.htm?type=command&param=udevice&idx=";
     private static final String URL_TEMP_VALUE =        "&nvalue=0&svalue=";
     private static final String URL_FAVORITE_BASE =     "/json.htm?type=command&param=makefavorite&idx=";
@@ -403,6 +412,10 @@ public class Domoticz {
             case JSON_ACTION_FAVORITE_OFF:
                 actionUrl = ACTION_FAVORITE_OFF;
                 break;
+
+            case JSON_ACTION_DIMLEVEL:
+                actionUrl = URL_SWITCH_DIM_LEVEL + String.valueOf(value);
+                break;
         }
 
         switch (jsonSetUrl) {
@@ -432,6 +445,7 @@ public class Domoticz {
                 jsonUrl = url
                         + String.valueOf(idx)
                         + URL_FAVORITE_VALUE + actionUrl;
+                break;
         }
 
         String fullString = buildUrl.append(protocol)

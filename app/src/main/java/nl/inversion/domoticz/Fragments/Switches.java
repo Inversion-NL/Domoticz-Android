@@ -235,7 +235,21 @@ public class Switches extends DomoticzFragment implements DomoticzFragmentListen
     @Override
     public void onDimmerChange(int idx, int value) {
 
-        Toast.makeText(mActivity, "Dimming to level: " + String.valueOf(value), Toast.LENGTH_SHORT).show();
+        int jsonUrl = Domoticz.JSON_SET_URL_SWITCHES;
+        int jsonAction = Domoticz.JSON_ACTION_DIMLEVEL;
+
+        mDomoticz.setAction(idx, jsonUrl, jsonAction, value, new setCommandReceiver() {
+            @Override
+            public void onReceiveResult(String result) {
+                Toast.makeText(getActivity(), R.string.action_success, Toast.LENGTH_LONG).show();
+                successHandling(result);
+            }
+
+            @Override
+            public void onError(Exception error) {
+                errorHandling(error);
+            }
+        });
     }
 
     /**
