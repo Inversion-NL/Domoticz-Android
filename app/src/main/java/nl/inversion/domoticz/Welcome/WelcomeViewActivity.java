@@ -1,6 +1,7 @@
 package nl.inversion.domoticz.Welcome;
 
 import android.animation.ArgbEvaluator;
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Build;
@@ -21,30 +22,33 @@ import java.util.List;
 import nl.inversion.domoticz.MainActivity;
 import nl.inversion.domoticz.R;
 
-public class WelcomeViewActivity extends FragmentActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
+public class WelcomeViewActivity extends FragmentActivity
+        implements View.OnClickListener, ViewPager.OnPageChangeListener {
 
     private static final int WELCOME_WIZARD = 1;
+    @SuppressWarnings("unused")
     private static final int SETTINGS = 2;
-
+    private final List<Fragment> fList = new ArrayList<>();
     private WelcomePageAdapter mAdapter;
     private ViewPager mPager;
-    private final List<Fragment> fList = new ArrayList<>();
     private TextView buttonPrev, buttonNext;
     private RelativeLayout navigation;
     private Integer[] background_colors;
     private ArgbEvaluator argbEvaluator = new ArgbEvaluator();
 
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
         /*
-            Setting this makes sure we draw fullscreen, and have a transparent task bar
+        * Setting this makes sure we draw fullscreen, and have a transparent task bar
         */
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window window = getWindow();
-            window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
 
         setUpBackgroundColors();
