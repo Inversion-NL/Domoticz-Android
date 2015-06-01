@@ -1,5 +1,6 @@
 package nl.inversion.domoticz.Utils;
 
+import android.support.annotation.Nullable;
 import android.util.Base64;
 import android.util.Log;
 
@@ -16,14 +17,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import nl.inversion.domoticz.Domoticz.Domoticz;
-import nl.inversion.domoticz.app.AppController;
 import nl.inversion.domoticz.Interfaces.JSONParserInterface;
+import nl.inversion.domoticz.app.AppController;
 
 public class RequestUtil {
 
     private static final String TAG = RequestUtil.class.getSimpleName();
 
-    public static void makeJsonVersionRequest(final JSONParserInterface parser,
+    public static void makeJsonVersionRequest(@Nullable final JSONParserInterface parser,
                                               final String username,
                                               final String password,
                                               String url) {
@@ -71,10 +72,15 @@ public class RequestUtil {
     /**
      * Method to get json object request where json response starts with {
      */
-    public static void makeJsonGetRequest(final JSONParserInterface parser,
+    public static void makeJsonGetRequest(@Nullable final JSONParserInterface parser,
                                           final String username,
                                           final String password,
-                                          String url) {
+                                          String url,
+                                          Boolean secure) {
+
+        if (secure) {
+
+        }
 
         JsonObjectRequest jsonObjReq =
                 new JsonObjectRequest(Request.Method.GET,
@@ -121,7 +127,7 @@ public class RequestUtil {
     /**
      * Method to put a JSON object to a url
      */
-    public static void makeJsonPutRequest(final JSONParserInterface parser,
+    public static void makeJsonPutRequest(@Nullable final JSONParserInterface parser,
                                           final String username,
                                           final String password,
                                           String url) {

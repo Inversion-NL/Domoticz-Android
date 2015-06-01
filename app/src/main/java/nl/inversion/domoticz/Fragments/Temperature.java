@@ -99,7 +99,7 @@ public class Temperature extends DomoticzFragment implements DomoticzFragmentLis
         for (ExtendedStatusInfo mExtendedStatusInfo : switches) {
             String name = mExtendedStatusInfo.getName();
 
-            if (!name.startsWith(Domoticz.SWITCH_HIDDEN_CHARACTER) && mDomoticz.getSupportedSwitches().contains(mExtendedStatusInfo.getSwitchTypeVal())) {
+            if (!name.startsWith(Domoticz.HIDDEN_CHARACTER) && mDomoticz.getSupportedSwitches().contains(mExtendedStatusInfo.getSwitchTypeVal())) {
                 supportedSwitches.add(mExtendedStatusInfo);
             }
         }
@@ -144,10 +144,10 @@ public class Temperature extends DomoticzFragment implements DomoticzFragmentLis
         if (infoDialogIsFavoriteSwitchIsChanged) {
             mSwitch.setFavoriteBoolean(infoDialogIsFavoriteSwitch);
             int jsonAction;
-            int jsonUrl = Domoticz.JSON_SET_URL_FAVORITE;
+            int jsonUrl = Domoticz.JsonSetUrl.FAVORITE;
 
-            if (infoDialogIsFavoriteSwitch) jsonAction = Domoticz.JSON_ACTION_FAVORITE_ON;
-            else jsonAction = Domoticz.JSON_ACTION_FAVORITE_OFF;
+            if (infoDialogIsFavoriteSwitch) jsonAction = Domoticz.JsonAction.FAVORITE_ON;
+            else jsonAction = Domoticz.JsonAction.FAVORITE_OFF;
 
             mDomoticz.setAction(mSwitch.getIdx(), jsonUrl, jsonAction, 0, new setCommandReceiver() {
                 @Override
@@ -171,10 +171,10 @@ public class Temperature extends DomoticzFragment implements DomoticzFragmentLis
         Log.d(TAG, "Set idx " + idx + " to " + checked);
 
         int jsonAction;
-        int jsonUrl = Domoticz.JSON_SET_URL_SWITCHES;
+        int jsonUrl = Domoticz.JsonSetUrl.SWITCHES;
 
-        if (checked) jsonAction = Domoticz.JSON_ACTION_ON;
-        else jsonAction = Domoticz.JSON_ACTION_OFF;
+        if (checked) jsonAction = Domoticz.JsonAction.ON;
+        else jsonAction = Domoticz.JsonAction.OFF;
 
         mDomoticz.setAction(idx, jsonUrl, jsonAction, 0, new setCommandReceiver() {
             @Override
@@ -193,23 +193,23 @@ public class Temperature extends DomoticzFragment implements DomoticzFragmentLis
     public void onBlindClick(int idx, int action) {
         Log.d(TAG, "handleBlindsClick");
 
-        int jsonUrl = Domoticz.JSON_SET_URL_SWITCHES;
-        int jsonAction = Domoticz.JSON_ACTION_UP;
+        int jsonUrl = Domoticz.JsonSetUrl.SWITCHES;
+        int jsonAction = Domoticz.JsonAction.UP;
 
         switch (action) {
             case Domoticz.BLINDS_ACTION_UP:
                 Log.d(TAG, "Set idx " + idx + " to up");
-                jsonAction = Domoticz.JSON_ACTION_UP;
+                jsonAction = Domoticz.JsonAction.UP;
                 break;
 
             case Domoticz.BLINDS_ACTION_STOP:
                 Log.d(TAG, "Set idx " + idx + " to stop");
-                jsonAction = Domoticz.JSON_ACTION_STOP;
+                jsonAction = Domoticz.JsonAction.STOP;
                 break;
 
             case Domoticz.BLINDS_ACTION_DOWN:
                 Log.d(TAG, "Set idx " + idx + " to down");
-                jsonAction = Domoticz.JSON_ACTION_DOWN;
+                jsonAction = Domoticz.JsonAction.DOWN;
                 break;
         }
 

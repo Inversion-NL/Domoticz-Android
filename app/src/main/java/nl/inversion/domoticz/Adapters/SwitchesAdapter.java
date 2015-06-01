@@ -5,7 +5,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
@@ -22,22 +22,22 @@ import nl.inversion.domoticz.R;
 // Example used: http://www.ezzylearning.com/tutorial/customizing-android-listview-items-with-custom-arrayadapter
 // And: http://www.survivingwithandroid.com/2013/02/android-listview-adapter-checkbox-item_7.html
 
-public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
+public class SwitchesAdapter extends BaseAdapter {
 
-    Context context;
-    ArrayList<ExtendedStatusInfo> data = null;
-    ViewHolder holder;
+    private final int ID_TEXTVIEW = 1000;
+    private final int ID_SWITCH = 2000;
+    private Context context;
+    private ArrayList<ExtendedStatusInfo> data = null;
+    private ViewHolder holder;
     private switchesClickListener listener;
-    private View row;
     private int layoutResourceId;
     private ViewGroup parent;
-    private Switch dimmerSwitch;
 
     public SwitchesAdapter(Context context,
                            ArrayList<ExtendedStatusInfo> data,
                            switchesClickListener listener) {
 
-        super(context, 0, data);
+        super();
 
         this.context = context;
         this.data = data;
@@ -45,46 +45,64 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
     }
 
     @Override
+    public int getCount() {
+        return data.size();
+    }
+
+    @Override
+    public Object getItem(int i) {
+        return data.get(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return 0;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        row = convertView;
+        View row = convertView;
         this.parent = parent;
 
         ExtendedStatusInfo extendedStatusInfo = data.get(position);
 
         if (row == null) {
             holder = new ViewHolder();
-            setSwitchRowData(extendedStatusInfo);
+            row = setSwitchRowData(extendedStatusInfo);
             row.setTag(holder);
         } else holder = (ViewHolder) row.getTag();
 
         return row;
     }
 
-    private void setSwitchRowData(ExtendedStatusInfo mExtendedStatusInfo) {
+    private View setSwitchRowData(ExtendedStatusInfo mExtendedStatusInfo) {
+
+        View row;
 
         switch (mExtendedStatusInfo.getSwitchTypeVal()) {
             case Domoticz.SWITCH_TYPE_ON_OFF:
-                setOnOffSwitchRowData(mExtendedStatusInfo);
+                row = setOnOffSwitchRowData(mExtendedStatusInfo);
                 break;
 
             case Domoticz.SWITCH_TYPE_BLINDS:
-                setBlindsRowData(mExtendedStatusInfo);
+                row = setBlindsRowData(mExtendedStatusInfo);
                 break;
 
             case Domoticz.SWITCH_TYPE_DIMMER:
-                setDimmerRowData(mExtendedStatusInfo);
+                row = setDimmerRowData(mExtendedStatusInfo);
                 break;
 
             default:
                 throw new NullPointerException("No supported switch type defined in the adapter");
         }
+        return row;
     }
 
-    private void setOnOffSwitchRowData(ExtendedStatusInfo mExtendedStatusInfo) {
+    private View setOnOffSwitchRowData(ExtendedStatusInfo mExtendedStatusInfo) {
 
         layoutResourceId = R.layout.switch_row_on_off;
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        row = inflater.inflate(layoutResourceId, parent, false);
+        View row = inflater.inflate(layoutResourceId, parent, false);
 
         holder.isProtected = mExtendedStatusInfo.isProtected();
 
@@ -111,13 +129,15 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
                 handleOnOffSwitchClick(compoundButton.getId(), checked);
             }
         });
+
+        return row;
     }
 
-    private void setBlindsRowData(ExtendedStatusInfo mExtendedStatusInfo) {
+    private View setBlindsRowData(ExtendedStatusInfo mExtendedStatusInfo) {
 
         layoutResourceId = R.layout.switch_row_blinds;
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        row = inflater.inflate(layoutResourceId, parent, false);
+        View row = inflater.inflate(layoutResourceId, parent, false);
 
         holder.isProtected = mExtendedStatusInfo.isProtected();
 
@@ -162,13 +182,15 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
                 handleBlindsClick(view.getId(), Domoticz.BLINDS_ACTION_DOWN);
             }
         });
+
+        return row;
     }
 
-    private void setDimmerRowData(final ExtendedStatusInfo mExtendedStatusInfo) {
+    private View setDimmerRowData(final ExtendedStatusInfo mExtendedStatusInfo) {
 
         layoutResourceId = R.layout.switch_row_dimmer;
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        row = inflater.inflate(layoutResourceId, parent, false);
+        View row = inflater.inflate(layoutResourceId, parent, false);
 
         holder.isProtected = mExtendedStatusInfo.isProtected();
 
@@ -186,13 +208,13 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
         holder.switch_battery_level.setText(text);
 
         holder.switch_dimmer_level = (TextView) row.findViewById(R.id.switch_dimmer_level);
+        holder.switch_dimmer_level.setId(mExtendedStatusInfo.getIdx() + ID_TEXTVIEW);
         String percentage = calculateDimPercentage(
                 mExtendedStatusInfo.getMaxDimLevel(), mExtendedStatusInfo.getLevel());
-        holder.switch_dimmer_level.setText(percentage + "%");
+        holder.switch_dimmer_level.setText(percentage);
 
         holder.dimmerOnOffSwitch = (Switch) row.findViewById(R.id.switch_dimmer_switch);
-        dimmerSwitch = holder.dimmerOnOffSwitch;
-        holder.dimmerOnOffSwitch.setId(mExtendedStatusInfo.getIdx());
+        holder.dimmerOnOffSwitch.setId(mExtendedStatusInfo.getIdx() + ID_SWITCH);
         if (holder.isProtected) holder.dimmerOnOffSwitch.setEnabled(false);
         holder.dimmerOnOffSwitch.setChecked(mExtendedStatusInfo.getStatusBoolean());
         holder.dimmerOnOffSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -212,8 +234,8 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 String percentage = calculateDimPercentage(seekBar.getMax(), progress);
                 TextView switch_dimmer_level = (TextView) seekBar.getRootView()
-                        .findViewById(R.id.switch_dimmer_level);
-                switch_dimmer_level.setText(percentage + "%");
+                        .findViewById(mExtendedStatusInfo.getIdx() + ID_TEXTVIEW);
+                switch_dimmer_level.setText(percentage);
             }
 
             @Override
@@ -222,20 +244,24 @@ public class SwitchesAdapter extends ArrayAdapter<ExtendedStatusInfo> {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                int progress = seekBar.getProgress();
+                Switch dimmerOnOffSwitch = (Switch) seekBar.getRootView()
+                        .findViewById(mExtendedStatusInfo.getIdx() + ID_SWITCH);
 
-                if (seekBar.getProgress() == 0 && dimmerSwitch.isChecked())
-                    dimmerSwitch.setChecked(false);
-                else if (seekBar.getProgress() > 0 && !dimmerSwitch.isChecked())
-                    dimmerSwitch.setChecked(true);
-
-                handleDimmerChange(mExtendedStatusInfo.getIdx(), seekBar.getProgress() + 1);
+                if (progress == 0 && dimmerOnOffSwitch.isChecked())
+                    dimmerOnOffSwitch.setChecked(false);
+                else if (progress > 0 && !dimmerOnOffSwitch.isChecked())
+                    dimmerOnOffSwitch.setChecked(true);
+                handleDimmerChange(mExtendedStatusInfo.getIdx(), progress + 1);
+                mExtendedStatusInfo.setLevel(progress);
             }
         });
+        return row;
     }
 
     private String calculateDimPercentage(int maxDimLevel, int level) {
         float percentage = ((float) level / (float) maxDimLevel) * 100;
-        return String.format("%.0f", percentage);
+        return String.format("%.0f", percentage) + "%";
     }
 
     private void handleOnOffSwitchClick(int idx, boolean action) {

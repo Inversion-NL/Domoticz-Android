@@ -20,17 +20,17 @@ import android.widget.ToggleButton;
 import java.util.ArrayList;
 
 import nl.inversion.domoticz.Containers.SceneInfo;
-import nl.inversion.domoticz.Interfaces.setCommandReceiver;
 import nl.inversion.domoticz.Domoticz.Domoticz;
 import nl.inversion.domoticz.Interfaces.ScenesReceiver;
+import nl.inversion.domoticz.Interfaces.setCommandReceiver;
 import nl.inversion.domoticz.R;
 
 public class Scenes extends Fragment {
 
     private static final String TAG = Scenes.class.getSimpleName();
+    LinearLayout container;
     private ProgressDialog progressDialog;
     private Domoticz mDomoticz;
-    LinearLayout container;
     private TextView debugText;
     private boolean debug;
 
@@ -118,7 +118,7 @@ public class Scenes extends Fragment {
             debugText.setText(temp);
         }
 
-        if (mScene.getType().equalsIgnoreCase(Domoticz.SCENE_TYPE_SCENE)) {
+        if (mScene.getType().equalsIgnoreCase(Domoticz.SceneType.SCENE)) {
 
             LayoutInflater layoutInflater =
                     (LayoutInflater) getActivity()
@@ -147,7 +147,7 @@ public class Scenes extends Fragment {
 
             container.addView(sceneRow_switch);
 
-        } else if (mScene.getType().equalsIgnoreCase(Domoticz.SCENE_TYPE_GROUP)) {
+        } else if (mScene.getType().equalsIgnoreCase(Domoticz.SceneType.GROUP)) {
 
             LayoutInflater layoutInflater =
                     (LayoutInflater) getActivity()
@@ -190,10 +190,10 @@ public class Scenes extends Fragment {
         Log.d(TAG, "Set idx " + idx + " to " + checked);
 
         int jsonAction;
-        int jsonUrl = Domoticz.JSON_SET_URL_SCENES;
+        int jsonUrl = Domoticz.JsonSetUrl.SCENES;
 
-        if (checked) jsonAction = mDomoticz.JSON_ACTION_ON;
-        else jsonAction = mDomoticz.JSON_ACTION_OFF;
+        if (checked) jsonAction = Domoticz.JsonAction.ON;
+        else jsonAction = Domoticz.JsonAction.OFF;
 
         mDomoticz.setAction(idx, jsonUrl, jsonAction, 0, new setCommandReceiver() {
             @Override
