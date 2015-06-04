@@ -20,9 +20,9 @@ import nl.inversion.domoticz.R;
 // And: http://www.survivingwithandroid.com/2013/02/android-listview-adapter-checkbox-item_7.html
 public class UtilityAdapter extends ArrayAdapter<UtilitiesInfo> {
 
+    private final thermostatClickListener listener;
     Context context;
     ArrayList<UtilitiesInfo> data = null;
-    private final thermostatClickListener listener;
 
 
     public UtilityAdapter(Context context,
@@ -71,14 +71,14 @@ public class UtilityAdapter extends ArrayAdapter<UtilitiesInfo> {
                     @Override
                     public void onClick(View view) {
                         long newValue = setPoint - 1;
-                        handleThermostatClick(view.getId(), Domoticz.THERMOSTAT_ACTION_MIN, newValue);
+                        handleThermostatClick(view.getId(), Domoticz.Json.Action.MIN, newValue);
                     }
                 });
                 holder.buttonPlus.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         long newValue = setPoint + 1;
-                        handleThermostatClick(view.getId(), Domoticz.THERMOSTAT_ACTION_PLUS, newValue);
+                        handleThermostatClick(view.getId(), Domoticz.Json.Action.PLUS, newValue);
                     }
                 });
             }

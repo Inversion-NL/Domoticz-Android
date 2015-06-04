@@ -101,6 +101,7 @@ public class Switches extends DomoticzFragment implements DomoticzFragmentListen
         for (ExtendedStatusInfo mExtendedStatusInfo : switches) {
             String name = mExtendedStatusInfo.getName();
             int switchTypeVal = mExtendedStatusInfo.getSwitchTypeVal();
+            String switchType = mExtendedStatusInfo.getSwitchType();
 
             if (!name.startsWith(Domoticz.HIDDEN_CHARACTER) &&
                     appSupportedSwitches.contains(switchTypeVal)) {
@@ -149,10 +150,10 @@ public class Switches extends DomoticzFragment implements DomoticzFragmentListen
         if (infoDialogIsFavoriteSwitchIsChanged) {
             mSwitch.setFavoriteBoolean(infoDialogIsFavoriteSwitch);
             int jsonAction;
-            int jsonUrl = Domoticz.JsonSetUrl.FAVORITE;
+            int jsonUrl = Domoticz.Json.Url.Set.FAVORITE;
 
-            if (infoDialogIsFavoriteSwitch) jsonAction = Domoticz.JsonAction.FAVORITE_ON;
-            else jsonAction = Domoticz.JsonAction.FAVORITE_OFF;
+            if (infoDialogIsFavoriteSwitch) jsonAction = Domoticz.Json.Action.FAVORITE_ON;
+            else jsonAction = Domoticz.Json.Action.FAVORITE_OFF;
 
             mDomoticz.setAction(mSwitch.getIdx(), jsonUrl, jsonAction, 0, new setCommandReceiver() {
                 @Override
@@ -176,10 +177,10 @@ public class Switches extends DomoticzFragment implements DomoticzFragmentListen
         Log.d(TAG, "Set idx " + idx + " to " + checked);
 
         int jsonAction;
-        int jsonUrl = Domoticz.JsonSetUrl.SWITCHES;
+        int jsonUrl = Domoticz.Json.Url.Set.SWITCHES;
 
-        if (checked) jsonAction = Domoticz.JsonAction.ON;
-        else jsonAction = Domoticz.JsonAction.OFF;
+        if (checked) jsonAction = Domoticz.Json.Action.ON;
+        else jsonAction = Domoticz.Json.Action.OFF;
 
         mDomoticz.setAction(idx, jsonUrl, jsonAction, 0, new setCommandReceiver() {
             @Override
@@ -195,29 +196,10 @@ public class Switches extends DomoticzFragment implements DomoticzFragmentListen
     }
 
     @Override
-    public void onBlindClick(int idx, int action) {
+    public void onBlindClick(int idx, int jsonAction) {
         Log.d(TAG, "handleBlindsClick");
 
-        int jsonUrl = Domoticz.JsonSetUrl.SWITCHES;
-        int jsonAction = Domoticz.JsonAction.UP;
-
-        switch (action) {
-            case Domoticz.BLINDS_ACTION_UP:
-                Log.d(TAG, "Set idx " + idx + " to up");
-                jsonAction = Domoticz.JsonAction.UP;
-                break;
-
-            case Domoticz.BLINDS_ACTION_STOP:
-                Log.d(TAG, "Set idx " + idx + " to stop");
-                jsonAction = Domoticz.JsonAction.STOP;
-                break;
-
-            case Domoticz.BLINDS_ACTION_DOWN:
-                Log.d(TAG, "Set idx " + idx + " to down");
-                jsonAction = Domoticz.JsonAction.DOWN;
-                break;
-        }
-
+        int jsonUrl = Domoticz.Json.Url.Set.SWITCHES;
         mDomoticz.setAction(idx, jsonUrl, jsonAction, 0, new setCommandReceiver() {
             @Override
             public void onReceiveResult(String result) {
@@ -235,8 +217,8 @@ public class Switches extends DomoticzFragment implements DomoticzFragmentListen
     @Override
     public void onDimmerChange(int idx, int value) {
 
-        int jsonUrl = Domoticz.JsonSetUrl.SWITCHES;
-        int jsonAction = Domoticz.JsonAction.DIMLEVEL;
+        int jsonUrl = Domoticz.Json.Url.Set.SWITCHES;
+        int jsonAction = Domoticz.Json.Action.DIMLEVEL;
 
         mDomoticz.setAction(idx, jsonUrl, jsonAction, value, new setCommandReceiver() {
             @Override

@@ -118,7 +118,7 @@ public class Scenes extends Fragment {
             debugText.setText(temp);
         }
 
-        if (mScene.getType().equalsIgnoreCase(Domoticz.SceneType.SCENE)) {
+        if (mScene.getType().equalsIgnoreCase(Domoticz.Scene.Type.SCENE)) {
 
             LayoutInflater layoutInflater =
                     (LayoutInflater) getActivity()
@@ -147,7 +147,7 @@ public class Scenes extends Fragment {
 
             container.addView(sceneRow_switch);
 
-        } else if (mScene.getType().equalsIgnoreCase(Domoticz.SceneType.GROUP)) {
+        } else if (mScene.getType().equalsIgnoreCase(Domoticz.Scene.Type.GROUP)) {
 
             LayoutInflater layoutInflater =
                     (LayoutInflater) getActivity()
@@ -190,10 +190,10 @@ public class Scenes extends Fragment {
         Log.d(TAG, "Set idx " + idx + " to " + checked);
 
         int jsonAction;
-        int jsonUrl = Domoticz.JsonSetUrl.SCENES;
+        int jsonUrl = Domoticz.Json.Url.Set.SCENES;
 
-        if (checked) jsonAction = Domoticz.JsonAction.ON;
-        else jsonAction = Domoticz.JsonAction.OFF;
+        if (checked) jsonAction = Domoticz.Json.Action.ON;
+        else jsonAction = Domoticz.Json.Action.OFF;
 
         mDomoticz.setAction(idx, jsonUrl, jsonAction, 0, new setCommandReceiver() {
             @Override

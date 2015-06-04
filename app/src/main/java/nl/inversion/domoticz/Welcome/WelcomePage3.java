@@ -263,12 +263,12 @@ public class WelcomePage3 extends Fragment {
 
     private boolean getSpinnerDomoticzRemoteSecureBoolean() {
         String[] protocols = getResources().getStringArray(R.array.remote_server_protocols);
-        return protocols[remoteProtocolSelectedPosition].equalsIgnoreCase(Domoticz.PROTOCOL_SECURE);
+        return protocols[remoteProtocolSelectedPosition].equalsIgnoreCase(Domoticz.Protocol.SECURE);
     }
 
     private boolean getSpinnerDomoticzLocalSecureBoolean() {
         String[] protocols = getResources().getStringArray(R.array.remote_server_protocols);
-        return protocols[localProtocolSelectedPosition].equalsIgnoreCase(Domoticz.PROTOCOL_SECURE);
+        return protocols[localProtocolSelectedPosition].equalsIgnoreCase(Domoticz.Protocol.SECURE);
     }
 
     private int getPrefsDomoticzRemoteSecureIndex() {
@@ -278,8 +278,8 @@ public class WelcomePage3 extends Fragment {
         int i = 0;
         String protocolString;
 
-        if (isSecure) protocolString = Domoticz.PROTOCOL_SECURE;
-        else protocolString = Domoticz.PROTOCOL_INSECURE;
+        if (isSecure) protocolString = Domoticz.Protocol.SECURE;
+        else protocolString = Domoticz.Protocol.INSECURE;
 
         for (String protocol : protocols) {
             if (protocol.equalsIgnoreCase(protocolString)) return i;
@@ -295,8 +295,8 @@ public class WelcomePage3 extends Fragment {
         int i = 0;
         String protocolString;
 
-        if (isSecure) protocolString = Domoticz.PROTOCOL_SECURE;
-        else protocolString = Domoticz.PROTOCOL_INSECURE;
+        if (isSecure) protocolString = Domoticz.Protocol.SECURE;
+        else protocolString = Domoticz.Protocol.INSECURE;
 
         for (String protocol : protocols) {
             if (protocol.equalsIgnoreCase(protocolString)) return i;

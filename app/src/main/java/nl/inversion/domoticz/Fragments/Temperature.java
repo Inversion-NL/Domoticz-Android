@@ -144,10 +144,10 @@ public class Temperature extends DomoticzFragment implements DomoticzFragmentLis
         if (infoDialogIsFavoriteSwitchIsChanged) {
             mSwitch.setFavoriteBoolean(infoDialogIsFavoriteSwitch);
             int jsonAction;
-            int jsonUrl = Domoticz.JsonSetUrl.FAVORITE;
+            int jsonUrl = Domoticz.Json.Url.Set.FAVORITE;
 
-            if (infoDialogIsFavoriteSwitch) jsonAction = Domoticz.JsonAction.FAVORITE_ON;
-            else jsonAction = Domoticz.JsonAction.FAVORITE_OFF;
+            if (infoDialogIsFavoriteSwitch) jsonAction = Domoticz.Json.Action.FAVORITE_ON;
+            else jsonAction = Domoticz.Json.Action.FAVORITE_OFF;
 
             mDomoticz.setAction(mSwitch.getIdx(), jsonUrl, jsonAction, 0, new setCommandReceiver() {
                 @Override
@@ -171,10 +171,10 @@ public class Temperature extends DomoticzFragment implements DomoticzFragmentLis
         Log.d(TAG, "Set idx " + idx + " to " + checked);
 
         int jsonAction;
-        int jsonUrl = Domoticz.JsonSetUrl.SWITCHES;
+        int jsonUrl = Domoticz.Json.Url.Set.SWITCHES;
 
-        if (checked) jsonAction = Domoticz.JsonAction.ON;
-        else jsonAction = Domoticz.JsonAction.OFF;
+        if (checked) jsonAction = Domoticz.Json.Action.ON;
+        else jsonAction = Domoticz.Json.Action.OFF;
 
         mDomoticz.setAction(idx, jsonUrl, jsonAction, 0, new setCommandReceiver() {
             @Override
@@ -193,23 +193,23 @@ public class Temperature extends DomoticzFragment implements DomoticzFragmentLis
     public void onBlindClick(int idx, int action) {
         Log.d(TAG, "handleBlindsClick");
 
-        int jsonUrl = Domoticz.JsonSetUrl.SWITCHES;
-        int jsonAction = Domoticz.JsonAction.UP;
+        int jsonUrl = Domoticz.Json.Url.Set.SWITCHES;
+        int jsonAction = Domoticz.Json.Action.UP;
 
         switch (action) {
-            case Domoticz.BLINDS_ACTION_UP:
+            case Domoticz.Json.Action.UP:
                 Log.d(TAG, "Set idx " + idx + " to up");
-                jsonAction = Domoticz.JsonAction.UP;
+                jsonAction = Domoticz.Json.Action.UP;
                 break;
 
-            case Domoticz.BLINDS_ACTION_STOP:
+            case Domoticz.Json.Action.STOP:
                 Log.d(TAG, "Set idx " + idx + " to stop");
-                jsonAction = Domoticz.JsonAction.STOP;
+                jsonAction = Domoticz.Json.Action.STOP;
                 break;
 
-            case Domoticz.BLINDS_ACTION_DOWN:
+            case Domoticz.Json.Action.DOWN:
                 Log.d(TAG, "Set idx " + idx + " to down");
-                jsonAction = Domoticz.JsonAction.DOWN;
+                jsonAction = Domoticz.Json.Action.DOWN;
                 break;
         }
 

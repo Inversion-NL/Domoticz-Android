@@ -39,7 +39,7 @@ public class RequestUtil {
                         String jsonString;
 
                         try {
-                            jsonString = response.getString(Domoticz.JSON_FIELD_VERSION);
+                            jsonString = response.getString(Domoticz.Json.Field.VERSION);
                             if (parser != null)
                                 parser.parseResult(jsonString);
                         } catch (JSONException e) {
@@ -92,7 +92,7 @@ public class RequestUtil {
                         String jsonString;
 
                         try {
-                            jsonString = response.getString(Domoticz.JSON_FIELD_RESULT);
+                            jsonString = response.getString(Domoticz.Json.Field.RESULT);
                             if (parser != null)
                                 parser.parseResult(jsonString);
                         } catch (JSONException e) {
@@ -142,7 +142,7 @@ public class RequestUtil {
                         String jsonString;
 
                         try {
-                            jsonString = response.getString(Domoticz.JSON_FIELD_STATUS);
+                            jsonString = response.getString(Domoticz.Json.Field.STATUS);
                             if (parser != null)
                                 parser.parseResult(jsonString);
                         } catch (JSONException e) {
