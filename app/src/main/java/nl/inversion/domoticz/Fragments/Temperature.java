@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -146,8 +145,8 @@ public class Temperature extends DomoticzFragment implements DomoticzFragmentLis
             int jsonAction;
             int jsonUrl = Domoticz.Json.Url.Set.FAVORITE;
 
-            if (infoDialogIsFavoriteSwitch) jsonAction = Domoticz.Json.Action.FAVORITE_ON;
-            else jsonAction = Domoticz.Json.Action.FAVORITE_OFF;
+            if (infoDialogIsFavoriteSwitch) jsonAction = Domoticz.Device.Favorite.ON;
+            else jsonAction = Domoticz.Device.Favorite.OFF;
 
             mDomoticz.setAction(mSwitch.getIdx(), jsonUrl, jsonAction, 0, new setCommandReceiver() {
                 @Override
@@ -173,8 +172,8 @@ public class Temperature extends DomoticzFragment implements DomoticzFragmentLis
         int jsonAction;
         int jsonUrl = Domoticz.Json.Url.Set.SWITCHES;
 
-        if (checked) jsonAction = Domoticz.Json.Action.ON;
-        else jsonAction = Domoticz.Json.Action.OFF;
+        if (checked) jsonAction = Domoticz.Device.Switch.Action.ON;
+        else jsonAction = Domoticz.Device.Switch.Action.OFF;
 
         mDomoticz.setAction(idx, jsonUrl, jsonAction, 0, new setCommandReceiver() {
             @Override
@@ -194,29 +193,11 @@ public class Temperature extends DomoticzFragment implements DomoticzFragmentLis
         Log.d(TAG, "handleBlindsClick");
 
         int jsonUrl = Domoticz.Json.Url.Set.SWITCHES;
-        int jsonAction = Domoticz.Json.Action.UP;
-
-        switch (action) {
-            case Domoticz.Json.Action.UP:
-                Log.d(TAG, "Set idx " + idx + " to up");
-                jsonAction = Domoticz.Json.Action.UP;
-                break;
-
-            case Domoticz.Json.Action.STOP:
-                Log.d(TAG, "Set idx " + idx + " to stop");
-                jsonAction = Domoticz.Json.Action.STOP;
-                break;
-
-            case Domoticz.Json.Action.DOWN:
-                Log.d(TAG, "Set idx " + idx + " to down");
-                jsonAction = Domoticz.Json.Action.DOWN;
-                break;
-        }
+        int jsonAction = action;
 
         mDomoticz.setAction(idx, jsonUrl, jsonAction, 0, new setCommandReceiver() {
             @Override
             public void onReceiveResult(String result) {
-                Toast.makeText(getActivity(), R.string.action_success, Toast.LENGTH_LONG).show();
                 successHandling(result);
             }
 

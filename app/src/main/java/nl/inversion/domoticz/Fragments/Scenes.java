@@ -192,8 +192,8 @@ public class Scenes extends Fragment {
         int jsonAction;
         int jsonUrl = Domoticz.Json.Url.Set.SCENES;
 
-        if (checked) jsonAction = Domoticz.Json.Action.ON;
-        else jsonAction = Domoticz.Json.Action.OFF;
+        if (checked) jsonAction = Domoticz.Scene.Action.ON;
+        else jsonAction = Domoticz.Scene.Action.OFF;
 
         mDomoticz.setAction(idx, jsonUrl, jsonAction, 0, new setCommandReceiver() {
             @Override

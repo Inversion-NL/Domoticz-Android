@@ -152,8 +152,8 @@ public class Switches extends DomoticzFragment implements DomoticzFragmentListen
             int jsonAction;
             int jsonUrl = Domoticz.Json.Url.Set.FAVORITE;
 
-            if (infoDialogIsFavoriteSwitch) jsonAction = Domoticz.Json.Action.FAVORITE_ON;
-            else jsonAction = Domoticz.Json.Action.FAVORITE_OFF;
+            if (infoDialogIsFavoriteSwitch) jsonAction = Domoticz.Device.Favorite.ON;
+            else jsonAction = Domoticz.Device.Favorite.OFF;
 
             mDomoticz.setAction(mSwitch.getIdx(), jsonUrl, jsonAction, 0, new setCommandReceiver() {
                 @Override
@@ -179,8 +179,8 @@ public class Switches extends DomoticzFragment implements DomoticzFragmentListen
         int jsonAction;
         int jsonUrl = Domoticz.Json.Url.Set.SWITCHES;
 
-        if (checked) jsonAction = Domoticz.Json.Action.ON;
-        else jsonAction = Domoticz.Json.Action.OFF;
+        if (checked) jsonAction = Domoticz.Device.Switch.Action.ON;
+        else jsonAction = Domoticz.Device.Switch.Action.OFF;
 
         mDomoticz.setAction(idx, jsonUrl, jsonAction, 0, new setCommandReceiver() {
             @Override
@@ -218,7 +218,7 @@ public class Switches extends DomoticzFragment implements DomoticzFragmentListen
     public void onDimmerChange(int idx, int value) {
 
         int jsonUrl = Domoticz.Json.Url.Set.SWITCHES;
-        int jsonAction = Domoticz.Json.Action.DIMLEVEL;
+        int jsonAction = Domoticz.Device.Dimmer.Action.DIM_LEVEL;
 
         mDomoticz.setAction(idx, jsonUrl, jsonAction, value, new setCommandReceiver() {
             @Override

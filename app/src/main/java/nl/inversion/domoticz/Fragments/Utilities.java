@@ -76,20 +76,7 @@ public class Utilities extends DomoticzFragment implements DomoticzFragmentListe
         thermostatSetPointValue = newSetPoint;
 
         int jsonUrl = Domoticz.Json.Url.Set.TEMP;
-        int jsonAction = Domoticz.Json.Action.MIN;
-
-        switch (action) {
-            case Domoticz.Json.Action.MIN:
-                Logger(TAG, "Set idx " + idx + " to min");
-                jsonAction = Domoticz.Json.Action.MIN;
-                break;
-
-            case Domoticz.Json.Action.PLUS:
-                Logger(TAG, "Set idx " + idx + " to plus");
-                jsonAction = Domoticz.Json.Action.PLUS;
-                break;
-
-        }
+        int jsonAction = action;
 
         mDomoticz.setAction(idx, jsonUrl, jsonAction, newSetPoint, new setCommandReceiver() {
             @Override

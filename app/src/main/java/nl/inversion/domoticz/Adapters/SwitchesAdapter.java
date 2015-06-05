@@ -80,15 +80,15 @@ public class SwitchesAdapter extends BaseAdapter {
         View row;
 
         switch (mExtendedStatusInfo.getSwitchTypeVal()) {
-            case Domoticz.Switch.Type.ON_OFF:
+            case Domoticz.Device.Type.ON_OFF:
                 row = setOnOffSwitchRowData(mExtendedStatusInfo);
                 break;
 
-            case Domoticz.Switch.Type.BLINDS:
+            case Domoticz.Device.Type.BLINDS:
                 row = setBlindsRowData(mExtendedStatusInfo);
                 break;
 
-            case Domoticz.Switch.Type.DIMMER:
+            case Domoticz.Device.Type.DIMMER:
                 row = setDimmerRowData(mExtendedStatusInfo);
                 break;
 
@@ -159,7 +159,7 @@ public class SwitchesAdapter extends BaseAdapter {
         holder.buttonUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                handleBlindsClick(view.getId(), Domoticz.Json.Action.UP);
+                handleBlindsClick(view.getId(), Domoticz.Device.Blind.Action.UP);
             }
         });
 
@@ -169,7 +169,7 @@ public class SwitchesAdapter extends BaseAdapter {
         holder.buttonStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                handleBlindsClick(view.getId(), Domoticz.Json.Action.STOP);
+                handleBlindsClick(view.getId(), Domoticz.Device.Blind.Action.STOP);
             }
         });
 
@@ -179,7 +179,7 @@ public class SwitchesAdapter extends BaseAdapter {
         holder.buttonDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                handleBlindsClick(view.getId(), Domoticz.Json.Action.DOWN);
+                handleBlindsClick(view.getId(), Domoticz.Device.Blind.Action.DOWN);
             }
         });
 

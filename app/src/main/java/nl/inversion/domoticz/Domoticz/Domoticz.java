@@ -48,12 +48,16 @@ public class Domoticz {
     public static final String HIDDEN_CHARACTER = "$";
     public static final String[] ITEMS_UTILITIES = {UTILITIES_TYPE_THERMOSTAT};
     /*
-     *  Log tag
-     */
+    *  Log tag
+    */
     private static final String TAG = Domoticz.class.getSimpleName();
-    private static final String URL_DEVICE_STATUS =     "/json.htm?type=devices&rid=";
-    private static final String URL_SUNRISE_SUNSET =    "/json.htm?type=command&param=getSunRiseSet";
+    private static final String URL_DEVICE_STATUS = "/json.htm?type=devices&rid=";
+    private static final String URL_SUNRISE_SUNSET = "/json.htm?type=command&param=getSunRiseSet";
     private static final String URL_SWITCH_DIM_LEVEL = "Set%20Level&level=";
+
+    /*
+     *  Private variables
+     */
     private static final String URL_SWITCH_SCENE =      "/json.htm?type=command&param=switchscene&idx=";
     private static final String URL_SWITCH_SWITCHES =   "/json.htm?type=command&param=switchlight&idx=";
     private static final String URL_SWITCH_CMD =        "&switchcmd=";
@@ -175,9 +179,9 @@ public class Domoticz {
     public List<Integer> getSupportedSwitches() {
 
         List<Integer> switchesSupported = new ArrayList<>();
-        switchesSupported.add(Switch.Type.ON_OFF);
-        switchesSupported.add(Switch.Type.DIMMER);
-        switchesSupported.add(Switch.Type.BLINDS);
+        switchesSupported.add(Device.Type.ON_OFF);
+        switchesSupported.add(Device.Type.DIMMER);
+        switchesSupported.add(Device.Type.BLINDS);
         //switchesSupported.add(Switch.Type.SMOKE_DETECTOR);  // Not yet supported
         //switchesSupported.add(Switch.Type.PUSH_ON_BUTTON);    // Not yet supported
 
@@ -277,7 +281,7 @@ public class Domoticz {
 
     public String constructSetUrl(int jsonSetUrl, int idx, int action, long value) {
 
-        String protocol, baseUrl, url, port, jsonUrl = null, actionUrl = null;
+        String protocol, baseUrl, url, port, jsonUrl = null, actionUrl;
         StringBuilder buildUrl = new StringBuilder();
         SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
 
@@ -299,45 +303,48 @@ public class Domoticz {
         }
 
         switch (action) {
-            case Json.Action.ON:
+            case Device.Switch.Action.ON:
                 actionUrl = Url.Action.ON;
                 break;
 
-            case Json.Action.OFF:
+            case Device.Switch.Action.OFF:
                 actionUrl = Url.Action.OFF;
                 break;
 
-            case Json.Action.UP:
+            case Device.Blind.Action.UP:
                 actionUrl = Url.Action.UP;
                 break;
 
-            case Json.Action.STOP:
+            case Device.Blind.Action.STOP:
                 actionUrl = Url.Action.STOP;
                 break;
 
-            case Json.Action.DOWN:
+            case Device.Blind.Action.DOWN:
                 actionUrl = Url.Action.DOWN;
                 break;
 
-            case Json.Action.MIN:
+            case Device.Thermostat.Action.MIN:
                 actionUrl = String.valueOf(value);
                 break;
 
-            case Json.Action.PLUS:
+            case Device.Thermostat.Action.PLUS:
                 actionUrl = String.valueOf(value);
                 break;
 
-            case Json.Action.FAVORITE_ON:
+            case Device.Favorite.ON:
                 actionUrl = FavoriteAction.ON;
                 break;
 
-            case Json.Action.FAVORITE_OFF:
+            case Device.Favorite.OFF:
                 actionUrl = FavoriteAction.OFF;
                 break;
 
-            case Json.Action.DIMLEVEL:
+            case Device.Dimmer.Action.DIM_LEVEL:
                 actionUrl = URL_SWITCH_DIM_LEVEL + String.valueOf(value);
                 break;
+
+            default:
+                throw new NullPointerException("Action not found in method Domoticz.constructSetUrl");
         }
 
         switch (jsonSetUrl) {
@@ -468,10 +475,6 @@ public class Domoticz {
                 getUserCredentials(USERNAME), getUserCredentials(PASSWORD), url, mSharedPrefUtil.isDomoticzLocalSecure());
     }
 
-    /*
-     * Domoticz API get and set commands
-     */
-
     public void getUtilities(UtilitiesReceiver receiver) {
         UtilitiesParser parser = new UtilitiesParser(receiver);
         String url = constructGetUrl(Json.Url.Request.UTILITIES);
@@ -486,17 +489,40 @@ public class Domoticz {
                 getUserCredentials(USERNAME), getUserCredentials(PASSWORD), url, mSharedPrefUtil.isDomoticzLocalSecure());
     }
 
-    public interface Protocol{
+    public interface Protocol {
         String SECURE = "HTTPS";
         String INSECURE = "HTTP";
     }
 
-    public interface Switch{
-        interface Action{
-            int ON = 10;
-            int OFF = 11;
-            int DIMLEVEL = 12;
+    public interface Device {
+        interface Switch {
+            interface Action {
+                int ON = 10;
+                int OFF = 11;
+            }
         }
+
+        interface Dimmer {
+            interface Action {
+                int DIM_LEVEL = 20;
+            }
+        }
+
+        interface Blind {
+            interface Action {
+                int UP = 30;
+                int STOP = 31;
+                int DOWN = 32;
+            }
+        }
+
+        interface Thermostat {
+            interface Action {
+                int MIN = 50;
+                int PLUS = 51;
+            }
+        }
+
         interface Type {
             int DOORBELL = 1;
             int CONTACT = 2;
@@ -507,15 +533,21 @@ public class Domoticz {
             int PUSH_ON_BUTTON = 9;
             int ON_OFF = 0;
         }
+
+        interface Favorite {
+            int ON = 208;
+            int OFF = 209;
+        }
     }
 
-    public interface Json{
-        interface Field{
+    public interface Json {
+        interface Field {
             String RESULT = "result";
             String STATUS = "status";
             String VERSION = "version";
         }
-        interface Url{
+
+        interface Url {
             interface Request {
                 int DASHBOARD = 1;
                 int SCENES = 2;
@@ -528,6 +560,7 @@ public class Domoticz {
                 int VERSION = 9;
                 int DEVICES = 10;
             }
+
             interface Set {
                 int SCENES = 101;
                 int SWITCHES = 102;
@@ -535,33 +568,28 @@ public class Domoticz {
                 int FAVORITE = 104;
             }
         }
-        interface Action {
-            int ON = 201;
-            int OFF = 202;
-            int UP = 203;
-            int STOP = 204;
-            int DOWN = 205;
-            int MIN = 206;
-            int PLUS = 207;
-            int DIMLEVEL = 210;
-            int FAVORITE_ON = 208;
-            int FAVORITE_OFF = 209;
-        }
-        interface Get{
+
+        interface Get {
             int STATUS = 301;
         }
     }
 
-    public interface Scene{
+    public interface Scene {
         interface Type {
             String GROUP = "Group";
             String SCENE = "Scene";
         }
+
+        interface Action {
+            int ON = 40;
+            int OFF = 41;
+        }
     }
 
     /*
-     *  Private variables
+     * Domoticz API get and set commands
      */
+
     private interface Url{
         interface Action {
             String ON =             "On";
@@ -588,5 +616,8 @@ public class Domoticz {
     private interface FavoriteAction {
         String ON =    "1";
         String OFF =   "0";
+
     }
+
+
 }
