@@ -14,23 +14,23 @@
 
         <TextView
             android:id="@+id/thermostat_name"
+            style="@style/utilities_row_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/utilities_row_name"
             android:text="Utility name"/>
 
         <TextView
             android:id="@+id/thermostat_lastSeen"
+            style="@style/utility_row_lastSeen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/utility_row_lastSeen"
-            android:text="@string/last_seen"/>
+            android:text="@string/last_update" />
 
         <TextView
             android:id="@+id/thermostat_set_point"
+            style="@style/switch_row_extraInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/switch_row_extraInfo"
             android:text="@string/set_point"/>
 
     </LinearLayout>

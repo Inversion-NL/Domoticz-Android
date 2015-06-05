@@ -13,18 +13,18 @@
 
     <TextView
         android:id="@+id/scene_name"
-        android:layout_alignParentTop="true"
+        style="@style/scene_row_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/scene_row_name"
+        android:layout_alignParentTop="true"
         android:text="Scene name"/>
 
     <TextView
         android:id="@+id/switch_lastSeen"
-        android:layout_below="@id/scene_name"
+        style="@style/scene_row_lastSeen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/scene_row_lastSeen"
-        android:text="@string/last_seen"/>
+        android:layout_below="@id/scene_name"
+        android:text="@string/last_update" />
 
 </RelativeLayout>

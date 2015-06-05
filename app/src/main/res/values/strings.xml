@@ -17,7 +17,7 @@
     <string name="button_state_on">On</string>
     <string name="button_state_off">Off</string>
 
-    <string name="last_seen">Last seen</string>
+    <string name="last_update">Last seen</string>
     <string name="level">Level</string>
     <string name="signal_level">Signal level</string>
     <string name="battery_level">Battery level</string>
@@ -28,5 +28,6 @@
     <string name="debug_textview_title">Debugging info</string>
 
     <string name="msg_copiedToClipboard">Text copied to clipboard</string>
+    <string name="favorite">Favorite</string>
 
 </resources>

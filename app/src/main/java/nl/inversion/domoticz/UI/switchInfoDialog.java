@@ -2,14 +2,17 @@ package nl.inversion.domoticz.UI;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import nl.inversion.domoticz.Containers.ExtendedStatusInfo;
+import nl.inversion.domoticz.Domoticz.Domoticz;
 import nl.inversion.domoticz.R;
 
 public class switchInfoDialog implements DialogInterface.OnDismissListener {
@@ -23,11 +26,13 @@ public class switchInfoDialog implements DialogInterface.OnDismissListener {
     private String signalLevel;
     private String batteryLevel;
     private boolean isFavorite;
+    private Context mContext;
 
     public switchInfoDialog(Context mContext,
                             ExtendedStatusInfo mSwitch,
                             int layout,
                             InfoDialogSwitchChangeListener infoDialogSwitchChangeListener) {
+        this.mContext = mContext;
         this.mSwitch = mSwitch;
         this.infoDialogSwitchChangeListener = infoDialogSwitchChangeListener;
         mdb = new MaterialDialog.Builder(mContext);
@@ -64,17 +69,62 @@ public class switchInfoDialog implements DialogInterface.OnDismissListener {
         MaterialDialog md = mdb.build();
         View view = md.getCustomView();
 
-        TextView IDX_name = (TextView) view.findViewById(R.id.IDX_name);
-        IDX_name.setText(idx);
+        TextView IDX_value = (TextView) view.findViewById(R.id.IDX_value);
+        IDX_value.setText(idx);
 
-        TextView LastUpdate_name = (TextView) view.findViewById(R.id.LastUpdate_name);
-        LastUpdate_name.setText(lastUpdate);
+        TextView LastUpdate_value = (TextView) view.findViewById(R.id.LastUpdate_value);
+        LastUpdate_value.setText(lastUpdate);
 
-        TextView SignalLevel_name = (TextView) view.findViewById(R.id.SignalLevel_name);
-        SignalLevel_name.setText(signalLevel);
+        int signalLevelVal;
+        try {
+            signalLevelVal = Integer.valueOf(signalLevel);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            signalLevelVal = 0;
+        }
 
-        TextView BatteryLevel_name = (TextView) view.findViewById(R.id.BatteryLevel_name);
-        BatteryLevel_name.setText(batteryLevel);
+        SeekBar signalLevelIndicator = (SeekBar) view.findViewById(R.id.SignalLevel_indicator);
+        signalLevelIndicator.setVisibility(View.VISIBLE);
+        signalLevelIndicator.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;    // This disables touch
+            }
+        });
+        signalLevelIndicator.setMax(Domoticz.signalLevelMax * 100);
+        ProgressBarAnimation anim =
+                new ProgressBarAnimation(signalLevelIndicator, 5, signalLevelVal * 100);
+        anim.setDuration(1000);
+        signalLevelIndicator.startAnimation(anim);
+
+
+        TextView BatteryLevel_value = (TextView) view.findViewById(R.id.BatteryLevel_value);
+        int batteryLevelVal;
+        try {
+            batteryLevelVal = Integer.valueOf(batteryLevel);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            batteryLevelVal = 255;
+        }
+        if (batteryLevelVal == 255 || batteryLevelVal > Domoticz.batteryLevelMax) {
+            batteryLevel = mContext.getString(R.string.txt_notAvailable);
+            BatteryLevel_value.setText(batteryLevel);
+        } else {
+            BatteryLevel_value.setVisibility(View.GONE);
+            SeekBar batteryLevelIndicator = (SeekBar) view.findViewById(R.id.BatteryLevel_indicator);
+            batteryLevelIndicator.setVisibility(View.VISIBLE);
+            batteryLevelIndicator.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    return true;    // This disables touch
+                }
+            });
+            batteryLevelIndicator.setMax(Domoticz.batteryLevelMax * 100);
+            anim = new ProgressBarAnimation(batteryLevelIndicator, 5, batteryLevelVal * 100);
+            anim.setDuration(1000);
+            batteryLevelIndicator.startAnimation(anim);
+        }
+
 
         Switch favorite_switch = (Switch) view.findViewById(R.id.favorite_switch);
         favorite_switch.setChecked(isFavorite);

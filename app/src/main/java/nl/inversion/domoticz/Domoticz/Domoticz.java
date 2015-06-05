@@ -39,6 +39,9 @@ public class Domoticz {
     /*
      *  Public variables
      */
+    public static final int batteryLevelMax = 100;
+    public static final int signalLevelMax = 12;
+
     public static final String UTILITIES_TYPE_THERMOSTAT = "Thermostat";
     public static final String AUTH_METHOD_LOGIN_FORM = "Login form";
     public static final String AUTH_METHOD_BASIC_AUTHENTICATION = "Basic authentication";
