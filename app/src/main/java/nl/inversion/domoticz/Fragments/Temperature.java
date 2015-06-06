@@ -98,7 +98,7 @@ public class Temperature extends DomoticzFragment implements DomoticzFragmentLis
         for (ExtendedStatusInfo mExtendedStatusInfo : switches) {
             String name = mExtendedStatusInfo.getName();
 
-            if (!name.startsWith(Domoticz.HIDDEN_CHARACTER) && mDomoticz.getSupportedSwitches().contains(mExtendedStatusInfo.getSwitchTypeVal())) {
+            if (!name.startsWith(Domoticz.HIDDEN_CHARACTER) && mDomoticz.getSupportedSwitchesValues().contains(mExtendedStatusInfo.getSwitchTypeVal())) {
                 supportedSwitches.add(mExtendedStatusInfo);
             }
         }

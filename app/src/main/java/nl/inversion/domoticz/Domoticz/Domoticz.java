@@ -179,14 +179,24 @@ public class Domoticz {
         return errorMessage;
     }
 
-    public List<Integer> getSupportedSwitches() {
+    public List<Integer> getSupportedSwitchesValues() {
 
         List<Integer> switchesSupported = new ArrayList<>();
-        switchesSupported.add(Device.Type.ON_OFF);
-        switchesSupported.add(Device.Type.DIMMER);
-        switchesSupported.add(Device.Type.BLINDS);
+        switchesSupported.add(Device.Type.Value.ON_OFF);
+        switchesSupported.add(Device.Type.Value.DIMMER);
+        switchesSupported.add(Device.Type.Value.BLINDS);
         //switchesSupported.add(Switch.Type.SMOKE_DETECTOR);  // Not yet supported
         //switchesSupported.add(Switch.Type.PUSH_ON_BUTTON);    // Not yet supported
+
+        return switchesSupported;
+    }
+
+    public List<String> getSupportedSwitchesNames() {
+
+        List<String> switchesSupported = new ArrayList<>();
+        switchesSupported.add(Device.Type.Name.ON_OFF);
+        switchesSupported.add(Device.Type.Name.DIMMER);
+        switchesSupported.add(Device.Type.Name.BLINDS);
 
         return switchesSupported;
     }
@@ -527,14 +537,29 @@ public class Domoticz {
         }
 
         interface Type {
-            int DOORBELL = 1;
-            int CONTACT = 2;
-            int BLINDS = 3;
-            int SMOKE_DETECTOR = 5;
-            int DIMMER = 7;
-            int MOTION = 8;
-            int PUSH_ON_BUTTON = 9;
-            int ON_OFF = 0;
+            interface Value {
+                int DOORBELL = 1;
+                int CONTACT = 2;
+                int BLINDS = 3;
+                int SMOKE_DETECTOR = 5;
+                int DIMMER = 7;
+                int MOTION = 8;
+                int PUSH_ON_BUTTON = 9;
+                int ON_OFF = 0;
+                int SECURITY = 0;
+            }
+
+            interface Name {
+                String DOORBELL = "Doorbell";
+                String CONTACT = "Contact";
+                String BLINDS = "Blinds";
+                String SMOKE_DETECTOR = "";
+                String DIMMER = "Dimmer";
+                String MOTION = "Motion Sensor";
+                String PUSH_ON_BUTTON = "";
+                String ON_OFF = "On/Off";
+                String SECURITY = "Security";
+            }
         }
 
         interface Favorite {

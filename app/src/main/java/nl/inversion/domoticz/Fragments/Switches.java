@@ -96,7 +96,8 @@ public class Switches extends DomoticzFragment implements DomoticzFragmentListen
     // https://github.com/nhaarman/ListViewAnimations
     private void createListView(ArrayList<ExtendedStatusInfo> switches) {
 
-        final List<Integer> appSupportedSwitches = mDomoticz.getSupportedSwitches();
+        final List<Integer> appSupportedSwitchesValues = mDomoticz.getSupportedSwitchesValues();
+        final List<String> appSupportedSwitchesNames = mDomoticz.getSupportedSwitchesNames();
 
         for (ExtendedStatusInfo mExtendedStatusInfo : switches) {
             String name = mExtendedStatusInfo.getName();
@@ -104,7 +105,8 @@ public class Switches extends DomoticzFragment implements DomoticzFragmentListen
             String switchType = mExtendedStatusInfo.getSwitchType();
 
             if (!name.startsWith(Domoticz.HIDDEN_CHARACTER) &&
-                    appSupportedSwitches.contains(switchTypeVal)) {
+                    appSupportedSwitchesValues.contains(switchTypeVal) &&
+                    appSupportedSwitchesNames.contains(switchType)) {
                 supportedSwitches.add(mExtendedStatusInfo);
             }
         }

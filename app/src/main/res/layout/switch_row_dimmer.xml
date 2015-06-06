@@ -8,10 +8,11 @@
     <TextView
         android:id="@+id/switch_name"
         style="@style/switch_row_name"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:text="Switch name" />
+        android:layout_marginRight="35dp"
+        android:text="Switch" />
 
     <TextView
         android:id="@+id/switch_battery_level"
@@ -21,6 +22,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/switch_name"
+        android:gravity="center_vertical"
         android:text="@string/battery_level" />
 
     <TextView
@@ -35,24 +37,25 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
-        android:layout_toEndOf="@id/switch_battery_level"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/switch_battery_level"
+        android:layout_toRightOf="@+id/switch_battery_level"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/switch_dimmer_level"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="22dp"
             android:layout_gravity="right"
             android:layout_marginRight="6dp"
-            android:text="50" />
+            android:text="55%" />
 
         <SeekBar
             android:id="@+id/switch_dimmer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="-10dp" />
+            android:layout_marginLeft="20dp" />
 
         <Switch
             android:id="@+id/switch_dimmer_switch"

@@ -80,15 +80,15 @@ public class SwitchesAdapter extends BaseAdapter {
         View row;
 
         switch (mExtendedStatusInfo.getSwitchTypeVal()) {
-            case Domoticz.Device.Type.ON_OFF:
+            case Domoticz.Device.Type.Value.ON_OFF:
                 row = setOnOffSwitchRowData(mExtendedStatusInfo);
                 break;
 
-            case Domoticz.Device.Type.BLINDS:
+            case Domoticz.Device.Type.Value.BLINDS:
                 row = setBlindsRowData(mExtendedStatusInfo);
                 break;
 
-            case Domoticz.Device.Type.DIMMER:
+            case Domoticz.Device.Type.Value.DIMMER:
                 row = setDimmerRowData(mExtendedStatusInfo);
                 break;
 
