@@ -95,9 +95,9 @@ public class DomoticzFragment extends Fragment {
      * @param result Result text to handle
      */
     public void successHandling(String result, boolean displayToast) {
-        if (result.equalsIgnoreCase(Domoticz.DOMOTICZ_RESULT_ERROR))
+        if (result.equalsIgnoreCase(Domoticz.Result.ERROR))
             Toast.makeText(getActivity(), R.string.action_failed, Toast.LENGTH_SHORT).show();
-        else if (result.equalsIgnoreCase(Domoticz.DOMOTICZ_RESULT_OK)) {
+        else if (result.equalsIgnoreCase(Domoticz.Result.OK)) {
             if (displayToast)
                 Toast.makeText(getActivity(), R.string.action_success, Toast.LENGTH_SHORT).show();
         } else {

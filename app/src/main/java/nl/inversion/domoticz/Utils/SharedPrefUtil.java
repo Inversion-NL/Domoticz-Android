@@ -152,8 +152,8 @@ public class SharedPrefUtil {
                 prefs.getBoolean(REMOTE_SERVER_AUTHENTICATION_METHOD, true);
         String method;
 
-        if (remoteServerAuthenticationMethodIsLoginForm) method = Domoticz.AUTH_METHOD_LOGIN_FORM;
-        else method = Domoticz.AUTH_METHOD_BASIC_AUTHENTICATION;
+        if (remoteServerAuthenticationMethodIsLoginForm) method = Domoticz.Authentication.Method.AUTH_METHOD_LOGIN_FORM;
+        else method = Domoticz.Authentication.Method.AUTH_METHOD_BASIC_AUTHENTICATION;
 
         return method;
     }
@@ -215,8 +215,8 @@ public class SharedPrefUtil {
                 prefs.getBoolean(LOCAL_SERVER_AUTHENTICATION_METHOD, true);
         String method;
 
-        if (localServerAuthenticationMethodIsLoginForm) method = Domoticz.AUTH_METHOD_LOGIN_FORM;
-        else method = Domoticz.AUTH_METHOD_BASIC_AUTHENTICATION;
+        if (localServerAuthenticationMethodIsLoginForm) method = Domoticz.Authentication.Method.AUTH_METHOD_LOGIN_FORM;
+        else method = Domoticz.Authentication.Method.AUTH_METHOD_BASIC_AUTHENTICATION;
 
         return method;
     }
@@ -225,7 +225,7 @@ public class SharedPrefUtil {
 
         boolean methodIsLoginForm;
 
-        methodIsLoginForm = method.equalsIgnoreCase(Domoticz.AUTH_METHOD_LOGIN_FORM);
+        methodIsLoginForm = method.equalsIgnoreCase(Domoticz.Authentication.Method.AUTH_METHOD_LOGIN_FORM);
 
         editor.putBoolean(LOCAL_SERVER_AUTHENTICATION_METHOD, methodIsLoginForm).apply();
     }

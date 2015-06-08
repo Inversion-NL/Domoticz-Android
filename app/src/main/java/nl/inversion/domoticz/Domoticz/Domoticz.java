@@ -38,19 +38,25 @@ public class Domoticz {
 
     public static final int batteryLevelMax = 100;
     public static final int signalLevelMax = 12;
+    public static final int DOMOTICZ_FAKE_ID = 99999;
+    public static final String HIDDEN_CHARACTER = "$";
 
     public static final String UTILITIES_TYPE_THERMOSTAT = "Thermostat";
-    public static final String AUTH_METHOD_LOGIN_FORM = "Login form";
-    public static final String AUTH_METHOD_BASIC_AUTHENTICATION = "Basic authentication";
-    public static final String DOMOTICZ_RESULT_ERROR = "ERR";
-    public static final String DOMOTICZ_RESULT_OK = "OK";
-    public static final int DOMOTICZ_FAKE_ID = 99999;
-
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
-    public static final String HIDDEN_CHARACTER = "$";
     public static final String[] ITEMS_UTILITIES = {UTILITIES_TYPE_THERMOSTAT};
 
+    public interface Authentication {
+        String USERNAME = "username";
+        String PASSWORD = "password";
+
+        interface Method {
+            String AUTH_METHOD_LOGIN_FORM = "Login form";
+            String AUTH_METHOD_BASIC_AUTHENTICATION = "Basic authentication";
+        }
+    }
+    public interface Result {
+        String ERROR = "ERR";
+        String OK = "OK";
+    }
     public interface Protocol {
         String SECURE = "HTTPS";
         String INSECURE = "HTTP";
@@ -213,7 +219,6 @@ public class Domoticz {
     private interface FavoriteAction {
         String ON =    "1";
         String OFF =   "0";
-
     }
 
     public static boolean debug;
@@ -570,7 +575,7 @@ public class Domoticz {
 
     public String getUserCredentials(String credential) {
 
-        if (credential.equals(USERNAME) || credential.equals(PASSWORD)) {
+        if (credential.equals(Authentication.USERNAME) || credential.equals(Authentication.PASSWORD)) {
 
             SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
             String username, password;
@@ -585,8 +590,8 @@ public class Domoticz {
                 password = mSharedPrefUtil.getDomoticzRemotePassword();
             }
             HashMap<String, String> credentials = new HashMap<>();
-            credentials.put(USERNAME, username);
-            credentials.put(PASSWORD, password);
+            credentials.put(Authentication.USERNAME, username);
+            credentials.put(Authentication.PASSWORD, password);
 
             return credentials.get(credential);
         } else return "";
@@ -596,21 +601,21 @@ public class Domoticz {
         VersionParser parser = new VersionParser(receiver);
         String url = constructGetUrl(Json.Url.Request.VERSION);
         RequestUtil.makeJsonVersionRequest(parser,
-                getUserCredentials(USERNAME), getUserCredentials(PASSWORD), url);
+                getUserCredentials(Authentication.USERNAME), getUserCredentials(Authentication.PASSWORD), url);
     }
 
     public void getScenes(ScenesReceiver receiver) {
         ScenesParser parser = new ScenesParser(receiver);
         String url = constructGetUrl(Json.Url.Request.SCENES);
         RequestUtil.makeJsonGetRequest(parser,
-                getUserCredentials(USERNAME), getUserCredentials(PASSWORD), url, mSharedPrefUtil.isDomoticzLocalSecure());
+                getUserCredentials(Authentication.USERNAME), getUserCredentials(Authentication.PASSWORD), url, mSharedPrefUtil.isDomoticzLocalSecure());
     }
 
     public void getSwitches(SwitchesReceiver switchesReceiver) {
         SwitchesParser parser = new SwitchesParser(switchesReceiver);
         String url = constructGetUrl(Json.Url.Request.SWITCHES);
         RequestUtil.makeJsonGetRequest(parser,
-                getUserCredentials(USERNAME), getUserCredentials(PASSWORD), url, mSharedPrefUtil.isDomoticzLocalSecure());
+                getUserCredentials(Authentication.USERNAME), getUserCredentials(Authentication.PASSWORD), url, mSharedPrefUtil.isDomoticzLocalSecure());
     }
 
     public void setAction(int idx,
@@ -622,7 +627,7 @@ public class Domoticz {
         setCommandParser parser = new setCommandParser(receiver);
         String url = constructSetUrl(jsonUrl, idx, jsonAction, value);
         RequestUtil.makeJsonPutRequest(parser,
-                getUserCredentials(USERNAME), getUserCredentials(PASSWORD), url);
+                getUserCredentials(Authentication.USERNAME), getUserCredentials(Authentication.PASSWORD), url);
     }
 
     public void getStatus(int idx, StatusReceiver receiver) {
@@ -631,20 +636,20 @@ public class Domoticz {
         if (debug) Log.d(TAG, "for idx: " + String.valueOf(idx));
 
         RequestUtil.makeJsonGetRequest(parser,
-                getUserCredentials(USERNAME), getUserCredentials(PASSWORD), url, mSharedPrefUtil.isDomoticzLocalSecure());
+                getUserCredentials(Authentication.USERNAME), getUserCredentials(Authentication.PASSWORD), url, mSharedPrefUtil.isDomoticzLocalSecure());
     }
 
     public void getUtilities(UtilitiesReceiver receiver) {
         UtilitiesParser parser = new UtilitiesParser(receiver);
         String url = constructGetUrl(Json.Url.Request.UTILITIES);
         RequestUtil.makeJsonGetRequest(parser,
-                getUserCredentials(USERNAME), getUserCredentials(PASSWORD), url, mSharedPrefUtil.isDomoticzLocalSecure());
+                getUserCredentials(Authentication.USERNAME), getUserCredentials(Authentication.PASSWORD), url, mSharedPrefUtil.isDomoticzLocalSecure());
     }
 
     public void getDevices(DevicesReceiver receiver) {
         DevicesParser parser = new DevicesParser(receiver);
         String url = constructGetUrl(Json.Url.Request.DEVICES);
         RequestUtil.makeJsonGetRequest(parser,
-                getUserCredentials(USERNAME), getUserCredentials(PASSWORD), url, mSharedPrefUtil.isDomoticzLocalSecure());
+                getUserCredentials(Authentication.USERNAME), getUserCredentials(Authentication.PASSWORD), url, mSharedPrefUtil.isDomoticzLocalSecure());
     }
 }
