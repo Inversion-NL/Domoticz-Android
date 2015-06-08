@@ -44,6 +44,7 @@ public class Domoticz {
     public static final String AUTH_METHOD_BASIC_AUTHENTICATION = "Basic authentication";
     public static final String DOMOTICZ_RESULT_ERROR = "ERR";
     public static final String DOMOTICZ_RESULT_OK = "OK";
+    public static final int DOMOTICZ_FAKE_ID = 99999;
 
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";

@@ -1,7 +1,11 @@
 package nl.inversion.domoticz.Containers;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import nl.inversion.domoticz.Domoticz.Domoticz;
 
 @SuppressWarnings("unused")
 public class ExtendedStatusInfo {
@@ -24,23 +28,96 @@ public class ExtendedStatusInfo {
     String lastUpdate;
     int idx;
 
+    private final String UNKNOWN = "Unknown";
+    private final String TAG = ExtendedStatusInfo.class.getSimpleName();
+
     public ExtendedStatusInfo(JSONObject row) throws JSONException {
         this.jsonObject = row;
 
+        try {
         name = row.getString("Name");
-        hardwareName = row.getString("HardwareName");
-        isProtected = row.getBoolean("Protected");
-        level = row.getInt("LevelInt");
+        } catch (Exception e) {
+            exceptionHandling(e);
+            name = UNKNOWN;
+        }
+        try {
+            hardwareName = row.getString("HardwareName");
+        } catch (Exception e) {
+            exceptionHandling(e);
+            hardwareName = UNKNOWN;
+        }
+        try {
+            isProtected = row.getBoolean("Protected");
+        } catch (Exception e) {
+            exceptionHandling(e);
+            isProtected = false;
+        }
+        try {
+            level = row.getInt("LevelInt");
+        } catch (Exception e) {
+            exceptionHandling(e);
+            level = 0;
+        }
+        try {
         favorite = row.getInt("Favorite");
+        } catch (Exception e) {
+            exceptionHandling(e);
+            favorite = 0;
+        }
+        try {
         type = row.getString("Type");
-        status = row.getString("Status");
-        batteryLevel = row.getInt("BatteryLevel");
-        signalLevel = row.getInt("SignalLevel");
-        maxDimLevel = row.getInt("MaxDimLevel");
-        switchType = row.getString("SwitchType");
-        switchTypeVal = row.getInt("SwitchTypeVal");
-        lastUpdate = row.getString("LastUpdate");
-        idx = row.getInt("idx");
+        } catch (Exception e) {
+            exceptionHandling(e);
+            type = "";
+        }
+        try {
+            status = row.getString("Status");
+        } catch (Exception e) {
+            exceptionHandling(e);
+            status = UNKNOWN;
+        }
+        try {
+            batteryLevel = row.getInt("BatteryLevel");
+        } catch (Exception e) {
+            exceptionHandling(e);
+            batteryLevel = 0;
+        }
+        try {
+            signalLevel = row.getInt("SignalLevel");
+        } catch (Exception e) {
+            exceptionHandling(e);
+            signalLevel = 0;
+        }
+        try {
+            maxDimLevel = row.getInt("MaxDimLevel");
+        } catch (Exception e) {
+            exceptionHandling(e);
+            maxDimLevel = 1;
+        }
+        try {
+            switchType = row.getString("SwitchType");
+        } catch (Exception e) {
+            switchType = UNKNOWN;
+            exceptionHandling(e);
+        }
+        try {
+            switchTypeVal = row.getInt("SwitchTypeVal");
+        } catch (Exception e) {
+            switchTypeVal = 999999;
+            exceptionHandling(e);
+        }
+        try {
+            lastUpdate = row.getString("LastUpdate");
+        } catch (Exception e) {
+            lastUpdate = UNKNOWN;
+            exceptionHandling(e);
+        }
+        try {
+            idx = row.getInt("idx");
+        } catch (Exception e) {
+            idx = Domoticz.DOMOTICZ_FAKE_ID;
+            exceptionHandling(e);
+        }
     }
 
     @Override
@@ -168,5 +245,10 @@ public class ExtendedStatusInfo {
 
     public void setIsProtected(boolean isProtected) {
         this.isProtected = isProtected;
+    }
+
+    private void exceptionHandling(Exception error) {
+        Log.e(TAG, "Exception occurred");
+        error.printStackTrace();
     }
 }
