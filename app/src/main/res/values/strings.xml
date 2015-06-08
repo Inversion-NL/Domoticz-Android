@@ -24,6 +24,8 @@
     <string name="status">Status</string>
     <string name="set_point">Set point</string>
     <string name="action_success">Action successful</string>
+    <string name="action_failed">Action failed</string>
+    <string name="action_unknown">Action result unknown</string>
 
     <string name="debug_textview_title">Debugging info</string>
 

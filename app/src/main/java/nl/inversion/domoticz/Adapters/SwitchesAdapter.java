@@ -32,6 +32,7 @@ public class SwitchesAdapter extends BaseAdapter {
     private switchesClickListener listener;
     private int layoutResourceId;
     private ViewGroup parent;
+    private int previousDimmerValue;
 
     public SwitchesAdapter(Context context,
                            ArrayList<ExtendedStatusInfo> data,
@@ -240,6 +241,7 @@ public class SwitchesAdapter extends BaseAdapter {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+                previousDimmerValue = seekBar.getProgress();
             }
 
             @Override
@@ -248,8 +250,10 @@ public class SwitchesAdapter extends BaseAdapter {
                 Switch dimmerOnOffSwitch = (Switch) seekBar.getRootView()
                         .findViewById(mExtendedStatusInfo.getIdx() + ID_SWITCH);
 
-                if (progress == 0 && dimmerOnOffSwitch.isChecked())
+                if (progress == 0 && dimmerOnOffSwitch.isChecked()) {
                     dimmerOnOffSwitch.setChecked(false);
+                    seekBar.setProgress(previousDimmerValue);
+                }
                 else if (progress > 0 && !dimmerOnOffSwitch.isChecked())
                     dimmerOnOffSwitch.setChecked(true);
                 handleDimmerChange(mExtendedStatusInfo.getIdx(), progress + 1);

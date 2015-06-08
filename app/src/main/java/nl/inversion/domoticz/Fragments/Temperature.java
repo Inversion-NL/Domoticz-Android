@@ -70,7 +70,7 @@ public class Temperature extends DomoticzFragment implements DomoticzFragmentLis
         final int totalNumberOfSwitches = switchInfos.size();
 
         for (SwitchInfo switchInfo : switchInfos) {
-            successHandling(switchInfos.toString());
+            successHandling(switchInfos.toString(), false);
             int idx = switchInfo.getIdx();
 
             mDomoticz.getStatus(idx, new StatusReceiver() {
@@ -151,7 +151,7 @@ public class Temperature extends DomoticzFragment implements DomoticzFragmentLis
             mDomoticz.setAction(mSwitch.getIdx(), jsonUrl, jsonAction, 0, new setCommandReceiver() {
                 @Override
                 public void onReceiveResult(String result) {
-                    successHandling(result);
+                    successHandling(result, false);
                 }
 
                 @Override
@@ -178,7 +178,7 @@ public class Temperature extends DomoticzFragment implements DomoticzFragmentLis
         mDomoticz.setAction(idx, jsonUrl, jsonAction, 0, new setCommandReceiver() {
             @Override
             public void onReceiveResult(String result) {
-                successHandling(result);
+                successHandling(result, true);
             }
 
             @Override
@@ -198,7 +198,7 @@ public class Temperature extends DomoticzFragment implements DomoticzFragmentLis
         mDomoticz.setAction(idx, jsonUrl, jsonAction, 0, new setCommandReceiver() {
             @Override
             public void onReceiveResult(String result) {
-                successHandling(result);
+                successHandling(result, true);
             }
 
             @Override

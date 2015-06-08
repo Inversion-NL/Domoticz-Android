@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -93,7 +94,16 @@ public class DomoticzFragment extends Fragment {
      *
      * @param result Result text to handle
      */
-    public void successHandling(String result) {
+    public void successHandling(String result, boolean displayToast) {
+        if (result.equalsIgnoreCase(Domoticz.DOMOTICZ_RESULT_ERROR))
+            Toast.makeText(getActivity(), R.string.action_failed, Toast.LENGTH_SHORT).show();
+        else if (result.equalsIgnoreCase(Domoticz.DOMOTICZ_RESULT_OK)) {
+            if (displayToast)
+                Toast.makeText(getActivity(), R.string.action_success, Toast.LENGTH_SHORT).show();
+        } else {
+            if (displayToast)
+                Toast.makeText(getActivity(), R.string.action_unknown, Toast.LENGTH_SHORT).show();
+        }
         Logger(fragmentName, "Result: " + result);
         if (debug) addDebugText(result);
     }

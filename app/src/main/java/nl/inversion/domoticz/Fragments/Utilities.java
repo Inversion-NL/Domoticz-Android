@@ -3,7 +3,6 @@ package nl.inversion.domoticz.Fragments;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -51,7 +50,7 @@ public class Utilities extends DomoticzFragment implements DomoticzFragmentListe
 
             @Override
             public void onReceiveUtilities(ArrayList<UtilitiesInfo> mUtilitiesInfos) {
-                successHandling(mUtilitiesInfos.toString());
+                successHandling(mUtilitiesInfos.toString(), false);
 
                 Utilities.this.mUtilitiesInfos = mUtilitiesInfos;
 
@@ -82,8 +81,7 @@ public class Utilities extends DomoticzFragment implements DomoticzFragmentListe
             @Override
             public void onReceiveResult(String result) {
                 updateThermostatSetPointValue(clickedIdx, thermostatSetPointValue);
-                Toast.makeText(getActivity(), R.string.action_success, Toast.LENGTH_SHORT).show();
-                successHandling(result);
+                successHandling(result, false);
             }
 
             @Override
