@@ -2,6 +2,7 @@ package nl.inversion.domoticz.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 
 import nl.inversion.domoticz.Containers.ExtendedStatusInfo;
 import nl.inversion.domoticz.Domoticz.Domoticz;
+import nl.inversion.domoticz.Fragments.Switches;
 import nl.inversion.domoticz.Interfaces.switchesClickListener;
 import nl.inversion.domoticz.R;
 
@@ -28,11 +30,11 @@ public class SwitchesAdapter extends BaseAdapter {
     private final int ID_SWITCH = 2000;
     private Context context;
     private ArrayList<ExtendedStatusInfo> data = null;
-    private ViewHolder holder;
     private switchesClickListener listener;
     private int layoutResourceId;
     private ViewGroup parent;
     private int previousDimmerValue;
+    private String TAG = Switches.class.getSimpleName();
 
     public SwitchesAdapter(Context context,
                            ArrayList<ExtendedStatusInfo> data,
@@ -62,35 +64,36 @@ public class SwitchesAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View row = convertView;
+        ViewHolder holder;
         this.parent = parent;
-
+        Log.d(TAG, "Currently building for row: " + position);
         ExtendedStatusInfo extendedStatusInfo = data.get(position);
 
-        if (row == null) {
+        // TODO use recycling with a view holder
+        //if (convertView == null) {
             holder = new ViewHolder();
-            row = setSwitchRowData(extendedStatusInfo);
-            row.setTag(holder);
-        } else holder = (ViewHolder) row.getTag();
+            convertView = setSwitchRowData(extendedStatusInfo, holder);
+            convertView.setTag(holder);
+        //} else holder = (ViewHolder) convertView.getTag();
 
-        return row;
+        return convertView;
     }
 
-    private View setSwitchRowData(ExtendedStatusInfo mExtendedStatusInfo) {
+    private View setSwitchRowData(ExtendedStatusInfo mExtendedStatusInfo, ViewHolder holder) {
 
         View row;
 
         switch (mExtendedStatusInfo.getSwitchTypeVal()) {
             case Domoticz.Device.Type.Value.ON_OFF:
-                row = setOnOffSwitchRowData(mExtendedStatusInfo);
+                row = setOnOffSwitchRowData(mExtendedStatusInfo, holder);
                 break;
 
             case Domoticz.Device.Type.Value.BLINDS:
-                row = setBlindsRowData(mExtendedStatusInfo);
+                row = setBlindsRowData(mExtendedStatusInfo, holder);
                 break;
 
             case Domoticz.Device.Type.Value.DIMMER:
-                row = setDimmerRowData(mExtendedStatusInfo);
+                row = setDimmerRowData(mExtendedStatusInfo, holder);
                 break;
 
             default:
@@ -99,7 +102,7 @@ public class SwitchesAdapter extends BaseAdapter {
         return row;
     }
 
-    private View setOnOffSwitchRowData(ExtendedStatusInfo mExtendedStatusInfo) {
+    private View setOnOffSwitchRowData(ExtendedStatusInfo mExtendedStatusInfo, ViewHolder holder) {
 
         layoutResourceId = R.layout.switch_row_on_off;
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
@@ -116,8 +119,11 @@ public class SwitchesAdapter extends BaseAdapter {
         holder.signal_level.setText(text);
 
         holder.switch_battery_level = (TextView) row.findViewById(R.id.switch_battery_level);
-        text = context.getString(R.string.battery_level) +
-                ": " + String.valueOf(mExtendedStatusInfo.getBatteryLevel());
+        int batteryLevel = mExtendedStatusInfo.getBatteryLevel();
+        if (batteryLevel == 255) text = context.getText(R.string.battery_level) +
+                ": " + "N/A";
+        else text = context.getString(R.string.battery_level) +
+                ": " + String.valueOf(batteryLevel);
         holder.switch_battery_level.setText(text);
 
         holder.onOffSwitch = (Switch) row.findViewById(R.id.switch_button);
@@ -134,7 +140,7 @@ public class SwitchesAdapter extends BaseAdapter {
         return row;
     }
 
-    private View setBlindsRowData(ExtendedStatusInfo mExtendedStatusInfo) {
+    private View setBlindsRowData(ExtendedStatusInfo mExtendedStatusInfo, ViewHolder holder) {
 
         layoutResourceId = R.layout.switch_row_blinds;
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
@@ -187,7 +193,7 @@ public class SwitchesAdapter extends BaseAdapter {
         return row;
     }
 
-    private View setDimmerRowData(final ExtendedStatusInfo mExtendedStatusInfo) {
+    private View setDimmerRowData(final ExtendedStatusInfo mExtendedStatusInfo, ViewHolder holder) {
 
         layoutResourceId = R.layout.switch_row_dimmer;
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
@@ -204,8 +210,11 @@ public class SwitchesAdapter extends BaseAdapter {
         holder.signal_level.setText(text);
 
         holder.switch_battery_level = (TextView) row.findViewById(R.id.switch_battery_level);
-        text = context.getString(R.string.battery_level) +
-                ": " + String.valueOf(mExtendedStatusInfo.getBatteryLevel());
+        int batteryLevel = mExtendedStatusInfo.getBatteryLevel();
+        if (batteryLevel == 255) text = context.getText(R.string.battery_level) +
+                ": " + "N/A";
+        else text = context.getString(R.string.battery_level) +
+                ": " + String.valueOf(batteryLevel);
         holder.switch_battery_level.setText(text);
 
         holder.switch_dimmer_level = (TextView) row.findViewById(R.id.switch_dimmer_level);

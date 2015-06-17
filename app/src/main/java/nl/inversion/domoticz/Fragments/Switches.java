@@ -28,7 +28,7 @@ public class Switches extends DomoticzFragment implements DomoticzFragmentListen
         switchesClickListener,
         switchInfoDialog.InfoDialogSwitchChangeListener {
 
-    private static final String TAG = Temperature.class.getSimpleName();
+    private static final String TAG = Switches.class.getSimpleName();
     private final ArrayList<ExtendedStatusInfo> supportedSwitches = new ArrayList<>();
     private ProgressDialog progressDialog;
     private Domoticz mDomoticz;
