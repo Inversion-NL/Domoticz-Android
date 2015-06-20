@@ -2,7 +2,6 @@ package nl.inversion.domoticz.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +65,6 @@ public class SwitchesAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         this.parent = parent;
-        Log.d(TAG, "Currently building for row: " + position);
         ExtendedStatusInfo extendedStatusInfo = data.get(position);
 
         // TODO use recycling with a view holder

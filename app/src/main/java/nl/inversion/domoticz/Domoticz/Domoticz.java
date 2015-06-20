@@ -467,6 +467,14 @@ public class Domoticz {
         }
 
         switch (action) {
+            case Scene.Action.ON:
+                actionUrl = Url.Action.ON;
+                break;
+
+            case Scene.Action.OFF:
+                actionUrl = Url.Action.OFF;
+                break;
+
             case Device.Switch.Action.ON:
                 actionUrl = Url.Action.ON;
                 break;

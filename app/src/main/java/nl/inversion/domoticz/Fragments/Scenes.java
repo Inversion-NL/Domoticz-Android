@@ -186,9 +186,6 @@ public class Scenes extends Fragment {
      * @param checked is the button currently checked?
      */
     public void handleClick(int idx, boolean checked) {
-        Log.d(TAG, "handleClick");
-        Log.d(TAG, "Set idx " + idx + " to " + checked);
-
         int jsonAction;
         int jsonUrl = Domoticz.Json.Url.Set.SCENES;
 

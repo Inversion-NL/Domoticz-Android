@@ -55,7 +55,12 @@ public class WelcomePage3 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        callingInstance = getArguments().getInt(INSTANCE);
+        try {
+            callingInstance = getArguments().getInt(INSTANCE);
+        }
+        catch (Exception e) {
+            callingInstance = WELCOME_WIZARD;
+        }
 
         v = inflater.inflate(R.layout.fragment_welcome3, container, false);
 
@@ -308,6 +313,9 @@ public class WelcomePage3 extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (callingInstance == SETTINGS) writePreferenceValues();   // Only when used by settings
+        if (callingInstance == SETTINGS) {
+
+            writePreferenceValues();   // Only when used by settings
+        }
     }
 }

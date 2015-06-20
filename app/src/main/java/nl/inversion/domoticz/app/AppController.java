@@ -46,25 +46,22 @@ public class AppController extends Application {
             // register MemorizingTrustManager for HTTPS
             Context context = getApplicationContext();
 
-            if (mSharedPref.isDomoticzLocalSecure() || mSharedPref.isDomoticzRemoteSecure()) {
-                Log.d(TAG, "Secure connection, initializing MemorizingTrustManager");
-                try {
-                    SSLContext sc = SSLContext.getInstance("TLS");
-                    MemorizingTrustManager mtm = new MemorizingTrustManager(context);
-                    sc.init(null, new X509TrustManager[]{mtm}, new java.security.SecureRandom());
+            //TODO Maybe only load when SSL is needed
+            //TODO Keep in mind when user changes settings to SSL mtm has to be initialized!
+            try {
+                Log.d(TAG, "Initializing SSL");
+                SSLContext sc = SSLContext.getInstance("TLS");
+                MemorizingTrustManager mtm = new MemorizingTrustManager(context);
+                sc.init(null, new X509TrustManager[]{mtm}, new java.security.SecureRandom());
 
-                    HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-                    HttpsURLConnection.setDefaultHostnameVerifier(
-                            mtm.wrapHostnameVerifier(HttpsURLConnection.getDefaultHostnameVerifier()));
-
-
-
-                } catch (KeyManagementException e) {
-                    e.printStackTrace();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
-            } else Log.d(TAG, "No secure connection, not initializing MemorizingTrustManager");
+                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+                HttpsURLConnection.setDefaultHostnameVerifier(
+                        mtm.wrapHostnameVerifier(HttpsURLConnection.getDefaultHostnameVerifier()));
+            } catch (KeyManagementException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
             mRequestQueue = Volley.newRequestQueue(context);
         }
         return mRequestQueue;
