@@ -22,6 +22,7 @@ import nl.inversion.domoticz.Interfaces.DomoticzFragmentListener;
 import nl.inversion.domoticz.R;
 import nl.inversion.domoticz.Utils.PhoneConnectionUtil;
 
+@SuppressWarnings("unused")
 public class DomoticzFragment extends Fragment {
 
     private DomoticzFragmentListener listener;
@@ -85,7 +86,10 @@ public class DomoticzFragment extends Fragment {
 
         PhoneConnectionUtil mPhoneConnectionUtil = new PhoneConnectionUtil(getActivity());
 
-        if (mPhoneConnectionUtil.isNetworkAvailable()) listener.onConnectionOk();
+        if (mPhoneConnectionUtil.isNetworkAvailable()) {
+            addDebugText("Connection OK");
+            listener.onConnectionOk();
+        }
         else setErrorMessage(getString(R.string.error_notConnected));
     }
 
@@ -104,8 +108,7 @@ public class DomoticzFragment extends Fragment {
             if (displayToast)
                 Toast.makeText(getActivity(), R.string.action_unknown, Toast.LENGTH_SHORT).show();
         }
-        Logger(fragmentName, "Result: " + result);
-        if (debug) addDebugText(result);
+        if (debug) addDebugText("- Result: " + result);
     }
 
     /**
@@ -115,7 +118,8 @@ public class DomoticzFragment extends Fragment {
      */
     public void errorHandling(Exception error) {
         error.printStackTrace();
-        setErrorMessage(mDomoticz.getErrorMessage(error));
+        String errorMessage = mDomoticz.getErrorMessage(error);
+        setErrorMessage(errorMessage);
     }
 
     public ActionBar getActionBar() {
@@ -123,24 +127,29 @@ public class DomoticzFragment extends Fragment {
     }
 
     private void setErrorMessage(String message) {
-        Logger(fragmentName, message);
+
         if (debug) addDebugText(message);
-        else setErrorLayoutMessage(message);
+        else {
+            Logger(fragmentName, message);
+            setErrorLayoutMessage(message);
+        }
     }
 
-    private void addDebugText(String text) {
+    public void addDebugText(String text) {
         Logger(fragmentName, text);
 
-        if (debugText != null) {
-            String temp = debugText.getText().toString();
-            if (temp.isEmpty() || temp.equals("")) debugText.setText(text);
-            else {
-                temp = temp + "\n";
-                temp = temp + text;
-                debugText.setText(temp);
-            }
-        } else throw new RuntimeException(
-                "Layout should have a TextView defined with the ID of debugText");
+        if (debug) {
+            if (debugText != null) {
+                String temp = debugText.getText().toString();
+                if (temp.isEmpty() || temp.equals("")) debugText.setText(text);
+                else {
+                    temp = temp + "\n";
+                    temp = temp + text;
+                    debugText.setText(temp);
+                }
+            } else throw new RuntimeException(
+                    "Layout should have a TextView defined with the ID \"debugText\"");
+        }
     }
 
     private void setErrorLayoutMessage(String message) {

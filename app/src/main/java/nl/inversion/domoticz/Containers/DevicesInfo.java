@@ -32,11 +32,11 @@ public class DevicesInfo {
     public String toString() {
         return "UtilitiesInfo{" +
                 "idx=" + idx +
-                ", Name='" + Name + '\'' +
-                ", LastUpdate='" + LastUpdate + '\'' +
-                ", Type='" + Type + '\'' +
-                ", Favorite=" + Favorite +
-                ", HardwareID=" + HardwareID +
+                ", name='" + Name + '\'' +
+                ", lastUpdate='" + LastUpdate + '\'' +
+                ", type='" + Type + '\'' +
+                ", favorite=" + Favorite +
+                ", hardwareID=" + HardwareID +
                 '}';
     }
 

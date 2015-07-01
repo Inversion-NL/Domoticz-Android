@@ -136,6 +136,9 @@ public class Domoticz {
                 int SUNRISE_SUNSET = 8;
                 int VERSION = 9;
                 int DEVICES = 10;
+                int PLANS = 11;
+                int PLAN_DEVICES = 12;
+                int LOG = 13;
             }
 
             interface Set {
@@ -169,51 +172,62 @@ public class Domoticz {
 
     private interface Url{
         interface Action {
-            String ON =             "On";
-            String OFF =            "Off";
-            String UP =             "Up";
-            String STOP =           "Stop";
-            String DOWN =           "Down";
-            String PLUS =           "Plus";
-            String MIN =            "Min";
+            String ON           = "On";
+            String OFF          = "Off";
+            String UP           = "Up";
+            String STOP         = "Stop";
+            String DOWN         = "Down";
+            String PLUS         = "Plus";
+            String MIN          = "Min";
         }
         interface Category {
-            String VERSION =           "/json.htm?type=command&param=getversion";
-            String DASHBOARD =         "";
-            String SCENES =            "/json.htm?type=scenes";
-            String SWITCHES =          "/json.htm?type=command&param=getlightswitches";
-            String TEMPERATURE =       "";
-            String WEATHER =           "";
-            String CAMERAS =           "";
-            String DEVICES =           "/json.htm?type=devices";
-            String UTILITIES =          DEVICES;
+            String VERSION      = "/json.htm?type=command&param=getversion";
+            String DASHBOARD    = "";
+            String SCENES       = "/json.htm?type=scenes";
+            String SWITCHES     = "/json.htm?type=command&param=getlightswitches";
+            String TEMPERATURE  = "";
+            String WEATHER      = "";
+            String CAMERAS      = "";
+            String DEVICES      = "/json.htm?type=devices";
+            String UTILITIES    = DEVICES;
         }
         interface Switch{
-            String DIM_LEVEL = "Set%20Level&level=";
-            String GET = "/json.htm?type=command&param=switchlight&idx=";
-            String CMD = "&switchcmd=";
-            String LEVEL = "&level=";
+            String DIM_LEVEL    = "Set%20Level&level=";
+            String GET          = "/json.htm?type=command&param=switchlight&idx=";
+            String CMD          = "&switchcmd=";
+            String LEVEL        = "&level=";
         }
         interface Scene{
-            String GET = "/json.htm?type=command&param=switchscene&idx=";
+            String GET          = "/json.htm?type=command&param=switchscene&idx=";
         }
         interface Temp{
-            String GET = "/json.htm?type=command&param=udevice&idx=";
-            String VALUE = "&nvalue=0&svalue=";
+            String GET          = "/json.htm?type=command&param=udevice&idx=";
+            String VALUE        = "&nvalue=0&svalue=";
         }
         interface Favorite{
-            String GET =     "/json.htm?type=command&param=makefavorite&idx=";
-            String VALUE =    "&isfavorite=";
+            String GET          =     "/json.htm?type=command&param=makefavorite&idx=";
+            String VALUE        =    "&isfavorite=";
         }
         interface Protocol{
-            String HTTP = "http://";
-            String HTTPS =   "https://";
+            String HTTP         = "http://";
+            String HTTPS        =   "https://";
         }
         interface Device{
-            String STATUS = "/json.htm?type=devices&rid=";
+            String STATUS       = "/json.htm?type=devices&rid=";
         }
         interface Sunrise{
-            String GET = "/json.htm?type=command&param=getSunRiseSet";
+            String GET          = "/json.htm?type=command&param=getSunRiseSet";
+        }
+        interface Plan{
+            String GET          = "/json.htm?type=plans";
+            String DEVICES      = "/json.htm?type=command&param=getplandevices&idx=";
+        }
+        interface Log{
+            String GET_LOG      = "/json.htm?type=command&param=getlog";
+            String GET_FROMLASTLOGTIME = "/json.htm?type=command&param=getlog&lastlogtime=";
+        }
+        interface Security{
+            String GET          = "/json.htm?type=command&param=getsecstatus";
         }
     }
     private interface FavoriteAction {
@@ -235,6 +249,10 @@ public class Domoticz {
 
     public boolean isDebugEnabled() {
         return mSharedPrefUtil.isDebugEnabled();
+    }
+
+    public void logger(String text) {
+        if (debug) Log.d(TAG, text);
     }
 
     public boolean isUserOnLocalWifi() {
@@ -272,13 +290,13 @@ public class Domoticz {
         for (Map.Entry<String, String> entry : stringHashMap.entrySet()) {
 
             if (UsefulBits.isStringEmpty(entry.getValue())) {
-                Log.d(TAG, entry.getKey() + " is empty");
+                logger(entry.getKey() + " is empty");
                 result = false;
                 break;
             }
 
         }
-        if (debug) Log.d(TAG, "isConnectionDataComplete = " + result);
+        logger("isConnectionDataComplete = " + result);
         return result;
     }
 
@@ -292,7 +310,7 @@ public class Domoticz {
         for (Map.Entry<String, String> entry : stringHashMap.entrySet()) {
 
             if (entry.getValue().toLowerCase().startsWith("http")) {
-                Log.d(TAG, entry.getKey() + " starts with http");
+                logger(entry.getKey() + " starts with http");
                 result = false;
                 break;
             }
@@ -348,6 +366,8 @@ public class Domoticz {
         switchesSupported.add(Device.Type.Name.ON_OFF);
         switchesSupported.add(Device.Type.Name.DIMMER);
         switchesSupported.add(Device.Type.Name.BLINDS);
+        //switchesSupported.add(Device.Type.Name.SMOKE_DETECTOR);  // Not yet supported
+        //switchesSupported.add(Device.Type.Name.PUSH_ON_BUTTON);    // Not yet supported
 
         return switchesSupported;
     }
@@ -364,7 +384,7 @@ public class Domoticz {
 
     private String getJsonGetUrl(int jsonGetUrl) {
 
-        String url = Url.Category.SWITCHES;
+        String url;
 
         switch (jsonGetUrl) {
             case Json.Url.Request.VERSION:
@@ -406,6 +426,9 @@ public class Domoticz {
             case Json.Get.STATUS:
                 url = Url.Device.STATUS;
                 break;
+
+            default:
+                throw new NullPointerException("getJsonGetUrl: No known JSON URL specified");
         }
         return url;
     }
@@ -438,7 +461,7 @@ public class Domoticz {
                 .append(port)
                 .append(jsonUrl).toString();
 
-        if (debug) Log.d(TAG, "Constructed url: " + fullString);
+        logger("Constructed url: " + fullString);
 
         return fullString;
     }
@@ -554,7 +577,7 @@ public class Domoticz {
                 .append(port)
                 .append(jsonUrl).toString();
 
-        if (debug) Log.d(TAG, "Constructed url: " + fullString);
+        logger("Constructed url: " + fullString);
 
         return fullString;
     }
@@ -589,11 +612,11 @@ public class Domoticz {
             String username, password;
 
             if (isUserOnLocalWifi()) {
-                Log.d(TAG, "On local wifi");
+                logger("On local wifi");
                 username = mSharedPrefUtil.getDomoticzLocalUsername();
                 password = mSharedPrefUtil.getDomoticzLocalPassword();
             } else {
-                Log.d(TAG, "Not on local wifi");
+                logger("Not on local wifi");
                 username = mSharedPrefUtil.getDomoticzRemoteUsername();
                 password = mSharedPrefUtil.getDomoticzRemotePassword();
             }
@@ -641,7 +664,7 @@ public class Domoticz {
     public void getStatus(int idx, StatusReceiver receiver) {
         StatusInfoParser parser = new StatusInfoParser(receiver);
         String url = constructGetUrl(Json.Get.STATUS) + String.valueOf(idx);
-        if (debug) Log.d(TAG, "for idx: " + String.valueOf(idx));
+        logger("for idx: " + String.valueOf(idx));
 
         RequestUtil.makeJsonGetRequest(parser,
                 getUserCredentials(Authentication.USERNAME), getUserCredentials(Authentication.PASSWORD), url, mSharedPrefUtil.isDomoticzLocalSecure());
@@ -658,6 +681,9 @@ public class Domoticz {
         DevicesParser parser = new DevicesParser(receiver);
         String url = constructGetUrl(Json.Url.Request.DEVICES);
         RequestUtil.makeJsonGetRequest(parser,
-                getUserCredentials(Authentication.USERNAME), getUserCredentials(Authentication.PASSWORD), url, mSharedPrefUtil.isDomoticzLocalSecure());
+                getUserCredentials(Authentication.USERNAME),
+                getUserCredentials(Authentication.PASSWORD),
+                url,
+                mSharedPrefUtil.isDomoticzLocalSecure());
     }
 }

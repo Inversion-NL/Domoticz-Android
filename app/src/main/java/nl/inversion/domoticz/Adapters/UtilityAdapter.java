@@ -5,11 +5,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import nl.inversion.domoticz.Containers.UtilitiesInfo;
 import nl.inversion.domoticz.Domoticz.Domoticz;
@@ -18,7 +20,9 @@ import nl.inversion.domoticz.R;
 
 // Example used: http://www.ezzylearning.com/tutorial/customizing-android-listview-items-with-custom-arrayadapter
 // And: http://www.survivingwithandroid.com/2013/02/android-listview-adapter-checkbox-item_7.html
-public class UtilityAdapter extends ArrayAdapter<UtilitiesInfo> {
+public class UtilityAdapter extends BaseAdapter {
+
+    private static final String TAG = UtilityAdapter.class.getSimpleName();
 
     private final thermostatClickListener listener;
     Context context;
@@ -28,65 +32,96 @@ public class UtilityAdapter extends ArrayAdapter<UtilitiesInfo> {
     public UtilityAdapter(Context context,
                           ArrayList<UtilitiesInfo> data,
                           thermostatClickListener listener) {
-        super(context, 0, data);
+        super();
 
         this.context = context;
+        Collections.sort(data, new Comparator<UtilitiesInfo>() {
+            @Override
+            public int compare(UtilitiesInfo left, UtilitiesInfo right) {
+                return left.getName().compareTo(right.getName());
+            }
+        });
         this.data = data;
         this.listener = listener;
     }
 
     @Override
+    public int getCount() {
+        return data.size();
+    }
+
+    @Override
+    public Object getItem(int i) {
+        return data.get(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return 0;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View row = convertView;
         ViewHolder holder;
         int layoutResourceId;
 
         UtilitiesInfo mUtilitiesInfo = data.get(position);
+        final long setPoint = mUtilitiesInfo.getSetPoint();
 
-        if (row == null) {
+        //if (convertView == null) {
             holder = new ViewHolder();
 
             if (Domoticz.UTILITIES_TYPE_THERMOSTAT.equalsIgnoreCase(mUtilitiesInfo.getType())) {
 
                 layoutResourceId = R.layout.utilities_row_thermostat;
-
-                final long setPoint = mUtilitiesInfo.getSetPoint();
-
                 LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-                row = inflater.inflate(layoutResourceId, parent, false);
+                convertView = inflater.inflate(layoutResourceId, parent, false);
 
-                holder.thermostat_name = (TextView) row.findViewById(R.id.thermostat_name);
-                holder.lastSeen = (TextView) row.findViewById(R.id.thermostat_lastSeen);
-                holder.setPoint = (TextView) row.findViewById(R.id.thermostat_set_point);
-                holder.buttonPlus = (ImageButton) row.findViewById(R.id.utilities_plus);
-                holder.buttonPlus.setId(mUtilitiesInfo.getIdx());
-                holder.buttonMinus = (ImageButton) row.findViewById(R.id.utilities_minus);
-                holder.buttonMinus.setId(mUtilitiesInfo.getIdx());
+                holder.isProtected = mUtilitiesInfo.isProtected();
 
-                holder.thermostat_name.setText(mUtilitiesInfo.getName());
-                holder.lastSeen.setText(mUtilitiesInfo.getLastUpdate());
-                holder.setPoint.setText(context.getString(R.string.set_point) + ": " + String.valueOf(setPoint));
+                holder.thermostat_name = (TextView) convertView.findViewById(R.id.thermostat_name);
+                holder.lastSeen = (TextView) convertView.findViewById(R.id.thermostat_lastSeen);
+                holder.setPoint = (TextView) convertView.findViewById(R.id.thermostat_set_point);
+                holder.buttonPlus = (ImageButton) convertView.findViewById(R.id.utilities_plus);
+                if (holder.isProtected) holder.buttonPlus.setEnabled(false);
+                holder.buttonMinus = (ImageButton) convertView.findViewById(R.id.utilities_minus);
+                if (holder.isProtected) holder.buttonMinus.setEnabled(false);
 
                 holder.buttonMinus.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         long newValue = setPoint - 1;
-                        handleThermostatClick(view.getId(), Domoticz.Device.Thermostat.Action.MIN, newValue);
+                        handleThermostatClick(view.getId(),
+                                Domoticz.Device.Thermostat.Action.MIN,
+                                newValue);
                     }
                 });
                 holder.buttonPlus.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         long newValue = setPoint + 1;
-                        handleThermostatClick(view.getId(), Domoticz.Device.Thermostat.Action.PLUS, newValue);
+                        handleThermostatClick(view.getId(),
+                                Domoticz.Device.Thermostat.Action.PLUS,
+                                newValue);
                     }
                 });
-            }
-            if (row != null) row.setTag(holder);
+            } else throw new NullPointerException("Scene type not supported in the adapter for:\n"
+                    + mUtilitiesInfo.toString());
+            convertView.setTag(holder);
 
-        } else holder = (ViewHolder) row.getTag();
+        //} else holder = (ViewHolder) convertView.getTag();
 
-        return row;
+        if (Domoticz.UTILITIES_TYPE_THERMOSTAT.equalsIgnoreCase(mUtilitiesInfo.getType())) {
+
+            holder.buttonPlus.setId(mUtilitiesInfo.getIdx());
+            holder.buttonMinus.setId(mUtilitiesInfo.getIdx());
+            holder.thermostat_name.setText(mUtilitiesInfo.getName());
+            holder.lastSeen.setText(mUtilitiesInfo.getLastUpdate());
+            holder.setPoint.setText(context.getString(R.string.set_point) + ": " + String.valueOf(setPoint));
+        } else throw new NullPointerException(TAG + ": "+ "No layout defined for scene type: "
+                + mUtilitiesInfo.getType());
+
+        return convertView;
     }
 
     public void handleThermostatClick(int idx, int action, long newSetPoint) {
@@ -99,5 +134,6 @@ public class UtilityAdapter extends ArrayAdapter<UtilitiesInfo> {
         TextView setPoint;
         ImageButton buttonPlus;
         ImageButton buttonMinus;
+        Boolean isProtected;
     }
 }

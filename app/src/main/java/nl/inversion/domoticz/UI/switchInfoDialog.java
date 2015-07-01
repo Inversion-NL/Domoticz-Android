@@ -17,9 +17,8 @@ import nl.inversion.domoticz.R;
 
 public class switchInfoDialog implements DialogInterface.OnDismissListener {
 
-    private final InfoDialogSwitchChangeListener infoDialogSwitchChangeListener;
     private final MaterialDialog.Builder mdb;
-    private InfoDialogDismissListener infoDialogDismissListener;
+    private DismissListener dismissListener;
     private ExtendedStatusInfo mSwitch;
     private String idx;
     private String lastUpdate;
@@ -27,14 +26,14 @@ public class switchInfoDialog implements DialogInterface.OnDismissListener {
     private String batteryLevel;
     private boolean isFavorite;
     private Context mContext;
+    private Switch favorite_switch;
 
     public switchInfoDialog(Context mContext,
                             ExtendedStatusInfo mSwitch,
-                            int layout,
-                            InfoDialogSwitchChangeListener infoDialogSwitchChangeListener) {
+                            int layout) {
         this.mContext = mContext;
         this.mSwitch = mSwitch;
-        this.infoDialogSwitchChangeListener = infoDialogSwitchChangeListener;
+
         mdb = new MaterialDialog.Builder(mContext);
         boolean wrapInScrollView = true;
         mdb.customView(layout, wrapInScrollView)
@@ -126,13 +125,12 @@ public class switchInfoDialog implements DialogInterface.OnDismissListener {
         }
 
 
-        Switch favorite_switch = (Switch) view.findViewById(R.id.favorite_switch);
+        favorite_switch = (Switch) view.findViewById(R.id.favorite_switch);
         favorite_switch.setChecked(isFavorite);
         favorite_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                infoDialogSwitchChangeListener.onInfoDialogSwitchChange(
-                        compoundButton.getId(), isChecked);
+
             }
         });
 
@@ -141,18 +139,18 @@ public class switchInfoDialog implements DialogInterface.OnDismissListener {
 
     @Override
     public void onDismiss(DialogInterface dialogInterface) {
-        if (infoDialogDismissListener != null )infoDialogDismissListener.onDismiss();
+        boolean isChanged = false;
+        boolean isChecked = favorite_switch.isChecked();
+        if (isChecked != isFavorite) isChanged = true;
+        if (dismissListener != null )
+            dismissListener.onDismiss(isChanged, isChecked);
     }
 
-    public void onDismissListener(InfoDialogDismissListener infoDialogDismissListener) {
-        this.infoDialogDismissListener = infoDialogDismissListener;
-    }
-
-    public interface InfoDialogSwitchChangeListener {
-        void onInfoDialogSwitchChange(int id, boolean isChecked);
+    public void onDismissListener(DismissListener dismissListener) {
+        this.dismissListener = dismissListener;
     }
     
-    public interface InfoDialogDismissListener {
-        void onDismiss();
+    public interface DismissListener {
+        void onDismiss(boolean isChanged, boolean isFavorite);
     }
 }

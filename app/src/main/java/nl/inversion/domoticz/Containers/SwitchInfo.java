@@ -60,7 +60,7 @@ public class SwitchInfo {
     public String toString() {
         return "SwitchInfo{" +
                 "IsDimmer='" + IsDimmer + '\'' +
-                ", Name='" + Name + '\'' +
+                ", name='" + Name + '\'' +
                 ", SubType='" + SubType + '\'' +
                 ", type='" + type + '\'' +
                 ", idx=" + idx +

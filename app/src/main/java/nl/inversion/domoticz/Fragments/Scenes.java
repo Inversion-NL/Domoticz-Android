@@ -1,100 +1,43 @@
 package nl.inversion.domoticz.Fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ToggleButton;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import nl.inversion.domoticz.Adapters.SceneAdapter;
 import nl.inversion.domoticz.Containers.SceneInfo;
 import nl.inversion.domoticz.Domoticz.Domoticz;
+import nl.inversion.domoticz.Interfaces.DomoticzFragmentListener;
+import nl.inversion.domoticz.Interfaces.ScenesClickListener;
 import nl.inversion.domoticz.Interfaces.ScenesReceiver;
 import nl.inversion.domoticz.Interfaces.setCommandReceiver;
 import nl.inversion.domoticz.R;
+import nl.inversion.domoticz.UI.sceneInfoDialog;
+import nl.inversion.domoticz.app.DomoticzFragment;
 
-public class Scenes extends Fragment {
+public class Scenes extends DomoticzFragment implements DomoticzFragmentListener,
+        ScenesClickListener {
 
     private static final String TAG = Scenes.class.getSimpleName();
-    LinearLayout container;
     private ProgressDialog progressDialog;
+    private Activity mActivity;
     private Domoticz mDomoticz;
-    private TextView debugText;
-    private boolean debug;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_scenes, null);
-
-        getActionBar().setTitle(R.string.title_scenes);
-
-        return root;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        mDomoticz = new Domoticz(getActivity());
-        debug = Domoticz.debug;
-
-        container = (LinearLayout) getView().findViewById(R.id.container);
-
-        // Initialize the progress dialog
-        progressDialog = new ProgressDialog(this.getActivity());
-        progressDialog.setMessage(getString(R.string.msg_please_wait));
-        progressDialog.setCancelable(false);
-
-        if (debug) {
-            LinearLayout debugLayout = (LinearLayout) getView().findViewById(R.id.debugLayout);
-            debugLayout.setVisibility(View.VISIBLE);
-
-            debugText = (TextView) getView().findViewById(R.id.debugText);
-        }
-        cleanScreen();
-        getData();
-    }
-
-    /**
-     * Clears the container layout and, if in debugging, the debug text
-     */
-    private void cleanScreen() {
-        if (debug) {
-            debugText.setText("");
-        }
-
-        container.removeAllViews();
-    }
-
-    /**
-     * Gets the data through the scenes receiver with a call back on receive or error
-     */
-    private void getData() {
-
+    public void onConnectionOk() {
         showProgressDialog();
 
+        mDomoticz = new Domoticz(mActivity);
         mDomoticz.getScenes(new ScenesReceiver() {
+
             @Override
             public void onReceiveScenes(ArrayList<SceneInfo> scenes) {
-
-                successHandling(scenes.toString());
-                hideProgressDialog();
-
-                for (SceneInfo mScene : scenes) {
-                    createRow(mScene);
-                }
+                successHandling(scenes.toString(), false);
+                createListView(scenes);
             }
 
             @Override
@@ -104,100 +47,92 @@ public class Scenes extends Fragment {
         });
     }
 
-    /**
-     * Creates a row dynamically based on the data of the scene
-     * @param mScene the scene information
-     */
-    private void createRow(SceneInfo mScene) {
-        // Example: http://android-er.blogspot.nl/2013/05/add-and-remove-view-dynamically.html
+    public void createListView(final ArrayList<SceneInfo> scenes) {
 
-        if (debug) {
-            String temp = debugText.getText().toString();
-            temp = temp + "\n\n";
-            temp = temp + mScene.getJsonObject().toString();
-            debugText.setText(temp);
-        }
+        final ScenesClickListener listener = this;
 
-        if (mScene.getType().equalsIgnoreCase(Domoticz.Scene.Type.SCENE)) {
+        SceneAdapter adapter = new SceneAdapter(mActivity, scenes, listener);
+        ListView listView = (ListView) getView().findViewById(R.id.listView);
+        listView.setAdapter(adapter);
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view,
+                                           int index, long id) {
+                showInfoDialog(scenes.get(index));
+                return true;
+            }
+        });
 
-            LayoutInflater layoutInflater =
-                    (LayoutInflater) getActivity()
-                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            final View sceneRow_switch = layoutInflater.inflate(R.layout.scene_row_scene, null);
-
-            String lastUpdate = mScene.getLastUpdate();
-            String name = mScene.getName();
-
-            Button button = (Button) sceneRow_switch.findViewById(R.id.scene_button);
-            button.setId(mScene.getIdx());
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    handleClick(view.getId(), true);
-                }
-            });
-
-
-            TextView switch_name = (TextView) sceneRow_switch.findViewById(R.id.scene_name);
-            TextView switch_last_seen =
-                    (TextView) sceneRow_switch.findViewById(R.id.switch_lastSeen);
-
-            switch_name.setText(name);
-            switch_last_seen.setText(lastUpdate);
-
-            container.addView(sceneRow_switch);
-
-        } else if (mScene.getType().equalsIgnoreCase(Domoticz.Scene.Type.GROUP)) {
-
-            LayoutInflater layoutInflater =
-                    (LayoutInflater) getActivity()
-                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            final View sceneRow_switch = layoutInflater.inflate(R.layout.scene_row_group, null);
-
-            String lastUpdate = mScene.getLastUpdate();
-            String name = mScene.getName();
-            boolean status = mScene.getStatusInBoolean();
-
-            ToggleButton toggleButton =
-                    (ToggleButton) sceneRow_switch.findViewById(R.id.scene_button);
-            toggleButton.setId(mScene.getIdx());
-            toggleButton.setChecked(status);
-            toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    handleClick(compoundButton.getId(), checked);
-                }
-            });
-
-            TextView switch_name = (TextView) sceneRow_switch.findViewById(R.id.scene_name);
-            TextView switch_last_seen = (
-                    TextView) sceneRow_switch.findViewById(R.id.switch_lastSeen);
-
-            switch_name.setText(name);
-            switch_last_seen.setText(lastUpdate);
-
-            container.addView(sceneRow_switch);
-        }
+        hideProgressDialog();
     }
 
-    /**
-     * Handles the clicks of the dynamically created rows
-     * @param idx idx code of the button (Domoticz)
-     * @param checked is the button currently checked?
-     */
-    public void handleClick(int idx, boolean checked) {
+    private void showInfoDialog(final SceneInfo mSceneInfo) {
+
+        sceneInfoDialog infoDialog = new sceneInfoDialog(
+                getActivity(),
+                mSceneInfo,
+                R.layout.dialog_scene_info);
+        infoDialog.setIdx(String.valueOf(mSceneInfo.getIdx()));
+        infoDialog.setLastUpdate(mSceneInfo.getLastUpdate());
+        infoDialog.setIsFavorite(mSceneInfo.getFavoriteBoolean());
+        infoDialog.show();
+        infoDialog.onDismissListener(new sceneInfoDialog.DismissListener() {
+
+            @Override
+            public void onDismiss(boolean isChanged, boolean isFavorite) {
+                if (isChanged) changeFavorite(mSceneInfo, isFavorite);
+            }
+        });
+    }
+
+    private void changeFavorite(final SceneInfo mSceneInfo, final boolean isFavorite) {
+        addDebugText("changeFavorite");
+        addDebugText("Set idx " + mSceneInfo.getIdx() + " favorite to " + isFavorite);
+
+        int jsonAction;
+        int jsonUrl = Domoticz.Json.Url.Set.FAVORITE;
+
+        if (isFavorite) jsonAction = Domoticz.Device.Favorite.ON;
+        else jsonAction = Domoticz.Device.Favorite.OFF;
+
+        mDomoticz.setAction(mSceneInfo.getIdx(), jsonUrl, jsonAction, 0, new setCommandReceiver() {
+            @Override
+            public void onReceiveResult(String result) {
+                successHandling(result, false);
+                mSceneInfo.setFavoriteBoolean(isFavorite);
+            }
+
+            @Override
+            public void onError(Exception error) {
+                // Domoticz always gives an error: ignore
+                errorHandling(error);
+            }
+        });
+
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = activity;
+        getActionBar().setTitle(R.string.title_scenes);
+    }
+
+    @Override
+    public void onSceneClick(int idx, boolean action) {
+        addDebugText("onSceneClick");
+        addDebugText("Set " + idx + " to " + action);
+
         int jsonAction;
         int jsonUrl = Domoticz.Json.Url.Set.SCENES;
 
-        if (checked) jsonAction = Domoticz.Scene.Action.ON;
+        if (action) jsonAction = Domoticz.Scene.Action.ON;
         else jsonAction = Domoticz.Scene.Action.OFF;
 
         mDomoticz.setAction(idx, jsonUrl, jsonAction, 0, new setCommandReceiver() {
             @Override
             public void onReceiveResult(String result) {
-                Toast.makeText(getActivity(), R.string.action_success, Toast.LENGTH_LONG).show();
-                successHandling(result);
-                hideProgressDialog();
+                successHandling(result, true);
             }
 
             @Override
@@ -205,13 +140,22 @@ public class Scenes extends Fragment {
                 errorHandling(error);
             }
         });
+    }
 
+    /**
+     * Initializes the progress dialog
+     */
+    private void initProgressDialog() {
+        progressDialog = new ProgressDialog(this.getActivity());
+        progressDialog.setMessage(getString(R.string.msg_please_wait));
+        progressDialog.setCancelable(false);
     }
 
     /**
      * Shows the progress dialog if isn't already showing
      */
     private void showProgressDialog() {
+        if (progressDialog == null) initProgressDialog();
         if (!progressDialog.isShowing())
             progressDialog.show();
     }
@@ -224,38 +168,9 @@ public class Scenes extends Fragment {
             progressDialog.dismiss();
     }
 
-    /**
-     * Handles the success messages
-     * @param result String result to handle
-     */
-    private void successHandling(String result) {
+    @Override
+    public void errorHandling(Exception error) {
+        super.errorHandling(error);
         hideProgressDialog();
-
-        Log.d(TAG, result);
-        if (debug) {
-            String temp = debugText.getText().toString();
-            debugText.setText(temp + "\n\n" + result);
-        }
-    }
-
-    /**
-     * Handles the error messages
-     * @param error Exception
-     */
-    private void errorHandling(Exception error) {
-        hideProgressDialog();
-
-        error.printStackTrace();
-
-        if (debug) {
-            String temp = debugText.getText().toString();
-            debugText.setText(temp  + "\n\n" + error.getCause().getMessage());
-        } else {
-            mDomoticz.errorToast(error);
-        }
-    }
-
-    private ActionBar getActionBar() {
-        return ((ActionBarActivity) getActivity()).getSupportActionBar();
     }
 }

@@ -2,7 +2,8 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:longClickable="true">
 
     <Button
         android:id="@+id/scene_button"
@@ -16,15 +17,9 @@
         style="@style/scene_row_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:text="Scene name"/>
-
-    <TextView
-        android:id="@+id/switch_lastSeen"
-        style="@style/scene_row_lastSeen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/scene_name"
-        android:text="@string/last_update" />
+        android:text="Scene name"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

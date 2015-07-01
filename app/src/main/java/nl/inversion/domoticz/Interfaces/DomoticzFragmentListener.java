@@ -1,5 +1,6 @@
 package nl.inversion.domoticz.Interfaces;
 
+@SuppressWarnings("unused")
 public interface DomoticzFragmentListener {
 
     /**

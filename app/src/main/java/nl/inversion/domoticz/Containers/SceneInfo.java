@@ -6,88 +6,107 @@ import org.json.JSONObject;
 @SuppressWarnings("unused")
 public class SceneInfo {
 
+    private final boolean isProtected;
     JSONObject jsonObject;
 
-    int Favorite;
-    int HardwareID;
-    String LastUpdate;
-    String Name;
-    String OffAction;
-    String OnAction;
-    String Status;
-    Boolean Timers;
-    String Type;
+    int favorite;
+    int hardwareID;
+    String lastUpdate;
+    String name;
+    String offAction;
+    String onAction;
+    String status;
+    Boolean timers;
+    String type;
     int idx;
 
     public SceneInfo(JSONObject row) throws JSONException {
         this.jsonObject = row;
 
-        Favorite = row.getInt("Favorite");
-        HardwareID = row.getInt("HardwareID");
-        LastUpdate = row.getString("LastUpdate");
-        Name = row.getString("Name");
-        OffAction = row.getString("OffAction");
-        OnAction = row.getString("OnAction");
-        Status = row.getString("Status");
-        Timers = row.getBoolean("Timers");
-        Type = row.getString("Type");
+        favorite = row.getInt("Favorite");
+        isProtected = row.getBoolean("Protected");
+        hardwareID = row.getInt("HardwareID");
+        lastUpdate = row.getString("LastUpdate");
+        name = row.getString("Name");
+        offAction = row.getString("OffAction");
+        onAction = row.getString("OnAction");
+        status = row.getString("Status");
+        timers = row.getBoolean("Timers");
+        type = row.getString("Type");
         idx = row.getInt("idx");
     }
 
     @Override
     public String toString() {
         return "SceneInfo{" +
-                "Favorite=" + Favorite +
-                ", HardwareID=" + HardwareID +
-                ", LastUpdate='" + LastUpdate + '\'' +
-                ", Name='" + Name + '\'' +
-                ", OffAction='" + OffAction + '\'' +
-                ", OnAction='" + OnAction + '\'' +
-                ", Status='" + Status + '\'' +
-                ", Timers=" + Timers +
-                ", Type='" + Type + '\'' +
+                "isProtected=" + isProtected +
+                ", jsonObject=" + jsonObject +
+                ", favorite=" + favorite +
+                ", hardwareID=" + hardwareID +
+                ", lastUpdate='" + lastUpdate + '\'' +
+                ", name='" + name + '\'' +
+                ", offAction='" + offAction + '\'' +
+                ", onAction='" + onAction + '\'' +
+                ", status='" + status + '\'' +
+                ", timers=" + timers +
+                ", type='" + type + '\'' +
                 ", idx=" + idx +
                 '}';
     }
 
+    public boolean isProtected() {
+        return isProtected;
+    }
+
     public int getFavorite() {
-        return Favorite;
+        return favorite;
+    }
+
+    public boolean getFavoriteBoolean() {
+        boolean favorite = false;
+        if (this.favorite == 1) favorite = true;
+        return favorite;
+    }
+
+    public void setFavoriteBoolean(boolean favorite) {
+        if (favorite) this.favorite = 1;
+        else this.favorite = 0;
     }
 
     public int getHardwareID() {
-        return HardwareID;
+        return hardwareID;
     };
 
     public String getLastUpdate() {
-        return LastUpdate;
+        return lastUpdate;
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public String getOffAction() {
-        return OffAction;
+        return offAction;
     }
 
     public String getOnAction() {
-        return OnAction;
+        return onAction;
     }
 
     public boolean getStatusInBoolean() {
-        return Status.equalsIgnoreCase("on");
+        return status.equalsIgnoreCase("on");
     }
 
     public String getStatusInString() {
-        return Status;
+        return status;
     }
 
     public Boolean isTimers() {
-        return Timers;
+        return timers;
     }
 
     public String getType() {
-        return Type;
+        return type;
     }
 
     public int getIdx() {

@@ -6,6 +6,7 @@ import org.json.JSONObject;
 @SuppressWarnings("unused")
 public class UtilitiesInfo {
 
+    private final boolean isProtected;
     JSONObject jsonObject;
 
     int idx;
@@ -21,6 +22,7 @@ public class UtilitiesInfo {
         this.jsonObject = row;
 
         Favorite = row.getInt("Favorite");
+        isProtected = row.getBoolean("Protected");
         HardwareID = row.getInt("HardwareID");
         LastUpdate = row.getString("LastUpdate");
         setPoint = row.getLong("SetPoint");
@@ -33,18 +35,29 @@ public class UtilitiesInfo {
     @Override
     public String toString() {
         return "UtilitiesInfo{" +
-                "idx=" + idx +
+                "isProtected=" + isProtected +
+                ", jsonObject=" + jsonObject +
+                ", idx=" + idx +
                 ", Name='" + Name + '\'' +
                 ", LastUpdate='" + LastUpdate + '\'' +
                 ", setPoint=" + setPoint +
                 ", Type='" + Type + '\'' +
                 ", Favorite=" + Favorite +
                 ", HardwareID=" + HardwareID +
+                ", signalLevel=" + signalLevel +
                 '}';
     }
 
     public int getIdx() {
         return idx;
+    }
+
+    public boolean isProtected() {
+        return isProtected;
+    }
+
+    public int getSignalLevel() {
+        return signalLevel;
     }
 
     public String getName() {

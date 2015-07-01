@@ -19,15 +19,13 @@ import nl.inversion.domoticz.app.DomoticzFragment;
 public class Utilities extends DomoticzFragment implements DomoticzFragmentListener,
         thermostatClickListener {
 
-    private static final String TAG = Utilities.class.getSimpleName();
-
     private Domoticz mDomoticz;
     private ArrayList<UtilitiesInfo> mUtilitiesInfos;
 
-    private int clickedIdx;
+
     private long thermostatSetPointValue;
 
-    private ListView utilitiesListView;
+    private ListView listView;
     private UtilityAdapter adapter;
     private ProgressDialog progressDialog;
     private Activity mActivity;
@@ -55,8 +53,8 @@ public class Utilities extends DomoticzFragment implements DomoticzFragmentListe
                 Utilities.this.mUtilitiesInfos = mUtilitiesInfos;
 
                 adapter = new UtilityAdapter(mActivity, mUtilitiesInfos, listener);
-                utilitiesListView = (ListView) getView().findViewById(R.id.listView);
-                utilitiesListView.setAdapter(adapter);
+                listView = (ListView) getView().findViewById(R.id.listView);
+                listView.setAdapter(adapter);
 
                 hideProgressDialog();
             }
@@ -69,18 +67,18 @@ public class Utilities extends DomoticzFragment implements DomoticzFragmentListe
     }
 
     @Override
-    public void onClick(int idx, int action, long newSetPoint) {
+    public void onClick(final int idx, int action, long newSetPoint) {
+        addDebugText("onClick");
+        addDebugText("Set idx " + idx + " to " + String.valueOf(newSetPoint));
 
-        clickedIdx = idx;
         thermostatSetPointValue = newSetPoint;
 
         int jsonUrl = Domoticz.Json.Url.Set.TEMP;
-        int jsonAction = action;
 
-        mDomoticz.setAction(idx, jsonUrl, jsonAction, newSetPoint, new setCommandReceiver() {
+        mDomoticz.setAction(idx, jsonUrl, action, newSetPoint, new setCommandReceiver() {
             @Override
             public void onReceiveResult(String result) {
-                updateThermostatSetPointValue(clickedIdx, thermostatSetPointValue);
+                updateThermostatSetPointValue(idx, thermostatSetPointValue);
                 successHandling(result, false);
             }
 
@@ -98,6 +96,7 @@ public class Utilities extends DomoticzFragment implements DomoticzFragmentListe
      * @param newSetPoint The new set point value
      */
     private void updateThermostatSetPointValue(int idx, long newSetPoint) {
+        addDebugText("updateThermostatSetPointValue");
 
         for (UtilitiesInfo info : mUtilitiesInfos) {
             if (info.getIdx() == idx) {
@@ -112,9 +111,9 @@ public class Utilities extends DomoticzFragment implements DomoticzFragmentListe
      * Notifies the list view adapter the data has changed and refreshes the list view
      */
     private void notifyDataSetChanged() {
-
+        addDebugText("notifyDataSetChanged");
         // adapter.notifyDataSetChanged();
-        utilitiesListView.setAdapter(adapter);
+        listView.setAdapter(adapter);
 
     }
 
