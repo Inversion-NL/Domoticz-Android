@@ -12,6 +12,7 @@ import nl.inversion.domoticz.Containers.SwitchInfo;
 import nl.inversion.domoticz.Interfaces.JSONParserInterface;
 import nl.inversion.domoticz.Interfaces.SwitchesReceiver;
 
+@SuppressWarnings("unused")
 public class SwitchesParser implements JSONParserInterface {
 
     private static final String TAG = SwitchesParser.class.getSimpleName();

@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import nl.inversion.domoticz.Interfaces.DevicesReceiver;
+import nl.inversion.domoticz.Interfaces.PlansReceiver;
 import nl.inversion.domoticz.Interfaces.ScenesReceiver;
 import nl.inversion.domoticz.Interfaces.StatusReceiver;
 import nl.inversion.domoticz.Interfaces.SwitchesReceiver;
@@ -190,6 +191,7 @@ public class Domoticz {
             String CAMERAS      = "";
             String DEVICES      = "/json.htm?type=devices";
             String UTILITIES    = DEVICES;
+            String PLANS        = "/json.htm?type=plans";
         }
         interface Switch{
             String DIM_LEVEL    = "Set%20Level&level=";
@@ -210,7 +212,7 @@ public class Domoticz {
         }
         interface Protocol{
             String HTTP         = "http://";
-            String HTTPS        =   "https://";
+            String HTTPS        = "https://";
         }
         interface Device{
             String STATUS       = "/json.htm?type=devices&rid=";
@@ -375,7 +377,8 @@ public class Domoticz {
     public void debugTextToClipboard(TextView debugText) {
         String message = debugText.getText().toString();
 
-        ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipboardManager clipboard =
+                (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("Domoticz debug data", message);
         clipboard.setPrimaryClip(clip);
 
@@ -425,6 +428,10 @@ public class Domoticz {
 
             case Json.Get.STATUS:
                 url = Url.Device.STATUS;
+                break;
+
+            case Json.Url.Request.PLANS:
+                url = Url.Category.PLANS;
                 break;
 
             default:
@@ -539,7 +546,8 @@ public class Domoticz {
                 break;
 
             default:
-                throw new NullPointerException("Action not found in method Domoticz.constructSetUrl");
+                throw new NullPointerException(
+                        "Action not found in method Domoticz.constructSetUrl");
         }
 
         switch (jsonSetUrl) {
@@ -591,7 +599,8 @@ public class Domoticz {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext)
                 .setTitle(R.string.msg_connectionSettingsIncomplete_title)
                 .setCancelable(false)
-                .setMessage(mContext.getString(R.string.msg_connectionSettingsIncomplete_msg1) + "\n\n" +
+                .setMessage(mContext.getString(
+                        R.string.msg_connectionSettingsIncomplete_msg1) + "\n\n" +
                         mContext.getString(R.string.msg_connectionSettingsIncomplete_msg2))
                 .setPositiveButton(R.string.settingsActivity_name, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -606,7 +615,8 @@ public class Domoticz {
 
     public String getUserCredentials(String credential) {
 
-        if (credential.equals(Authentication.USERNAME) || credential.equals(Authentication.PASSWORD)) {
+        if (credential.equals(Authentication.USERNAME)
+                || credential.equals(Authentication.PASSWORD)) {
 
             SharedPrefUtil mSharedPrefUtil = new SharedPrefUtil(mContext);
             String username, password;
@@ -632,21 +642,39 @@ public class Domoticz {
         VersionParser parser = new VersionParser(receiver);
         String url = constructGetUrl(Json.Url.Request.VERSION);
         RequestUtil.makeJsonVersionRequest(parser,
-                getUserCredentials(Authentication.USERNAME), getUserCredentials(Authentication.PASSWORD), url);
+                getUserCredentials(Authentication.USERNAME),
+                getUserCredentials(Authentication.PASSWORD),
+                url);
     }
 
     public void getScenes(ScenesReceiver receiver) {
         ScenesParser parser = new ScenesParser(receiver);
         String url = constructGetUrl(Json.Url.Request.SCENES);
         RequestUtil.makeJsonGetRequest(parser,
-                getUserCredentials(Authentication.USERNAME), getUserCredentials(Authentication.PASSWORD), url, mSharedPrefUtil.isDomoticzLocalSecure());
+                getUserCredentials(Authentication.USERNAME),
+                getUserCredentials(Authentication.PASSWORD),
+                url,
+                mSharedPrefUtil.isDomoticzLocalSecure());
+    }
+
+    public void getPlans(PlansReceiver receiver) {
+        PlanParser parser = new PlanParser(receiver);
+        String url = constructGetUrl(Json.Url.Request.PLANS);
+        RequestUtil.makeJsonGetRequest(parser,
+                getUserCredentials(Authentication.USERNAME),
+                getUserCredentials(Authentication.PASSWORD),
+                url,
+                mSharedPrefUtil.isDomoticzLocalSecure());
     }
 
     public void getSwitches(SwitchesReceiver switchesReceiver) {
         SwitchesParser parser = new SwitchesParser(switchesReceiver);
         String url = constructGetUrl(Json.Url.Request.SWITCHES);
         RequestUtil.makeJsonGetRequest(parser,
-                getUserCredentials(Authentication.USERNAME), getUserCredentials(Authentication.PASSWORD), url, mSharedPrefUtil.isDomoticzLocalSecure());
+                getUserCredentials(Authentication.USERNAME),
+                getUserCredentials(Authentication.PASSWORD),
+                url,
+                mSharedPrefUtil.isDomoticzLocalSecure());
     }
 
     public void setAction(int idx,
@@ -658,7 +686,9 @@ public class Domoticz {
         setCommandParser parser = new setCommandParser(receiver);
         String url = constructSetUrl(jsonUrl, idx, jsonAction, value);
         RequestUtil.makeJsonPutRequest(parser,
-                getUserCredentials(Authentication.USERNAME), getUserCredentials(Authentication.PASSWORD), url);
+                getUserCredentials(Authentication.USERNAME),
+                getUserCredentials(Authentication.PASSWORD),
+                url);
     }
 
     public void getStatus(int idx, StatusReceiver receiver) {
@@ -667,14 +697,20 @@ public class Domoticz {
         logger("for idx: " + String.valueOf(idx));
 
         RequestUtil.makeJsonGetRequest(parser,
-                getUserCredentials(Authentication.USERNAME), getUserCredentials(Authentication.PASSWORD), url, mSharedPrefUtil.isDomoticzLocalSecure());
+                getUserCredentials(Authentication.USERNAME),
+                getUserCredentials(Authentication.PASSWORD),
+                url,
+                mSharedPrefUtil.isDomoticzLocalSecure());
     }
 
     public void getUtilities(UtilitiesReceiver receiver) {
         UtilitiesParser parser = new UtilitiesParser(receiver);
         String url = constructGetUrl(Json.Url.Request.UTILITIES);
         RequestUtil.makeJsonGetRequest(parser,
-                getUserCredentials(Authentication.USERNAME), getUserCredentials(Authentication.PASSWORD), url, mSharedPrefUtil.isDomoticzLocalSecure());
+                getUserCredentials(Authentication.USERNAME),
+                getUserCredentials(Authentication.PASSWORD),
+                url,
+                mSharedPrefUtil.isDomoticzLocalSecure());
     }
 
     public void getDevices(DevicesReceiver receiver) {

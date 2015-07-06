@@ -37,7 +37,7 @@ public class PlanParser implements JSONParserInterface {
                 }
 
             }
-            receiver.onReceiveScenes(mPlans);
+            receiver.OnReceivePlans(mPlans);
 
         } catch (JSONException e) {
             Log.e(TAG, "PlanParser JSON exception");

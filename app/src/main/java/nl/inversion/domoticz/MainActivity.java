@@ -90,8 +90,7 @@ public class MainActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
                     FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-                    tx.replace(R.id.main, Fragment.instantiate(MainActivity.this,
-                            fragments[position]));
+                    tx.replace(R.id.main, Fragment.instantiate(MainActivity.this, fragments[position]));
                     tx.commit();
                 } catch (Exception e) {
                     Log.e(TAG, "Fragment error");

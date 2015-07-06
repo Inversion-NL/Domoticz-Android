@@ -6,7 +6,7 @@ import nl.inversion.domoticz.Containers.PlanInfo;
 
 public interface PlansReceiver {
 
-    void onReceiveScenes(ArrayList<PlanInfo> plans);
+    void OnReceivePlans(ArrayList<PlanInfo> plans);
 
     void onError(Exception error);
 }

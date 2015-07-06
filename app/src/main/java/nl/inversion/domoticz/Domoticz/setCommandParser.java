@@ -5,6 +5,7 @@ import android.util.Log;
 import nl.inversion.domoticz.Interfaces.JSONParserInterface;
 import nl.inversion.domoticz.Interfaces.setCommandReceiver;
 
+@SuppressWarnings("unused")
 public class setCommandParser implements JSONParserInterface{
 
     private static final String TAG = setCommandParser.class.getSimpleName();

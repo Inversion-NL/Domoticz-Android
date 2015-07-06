@@ -10,13 +10,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import nl.inversion.domoticz.Containers.SceneInfo;
 import nl.inversion.domoticz.Containers.UtilitiesInfo;
-import nl.inversion.domoticz.Fragments.Utilities;
 import nl.inversion.domoticz.Interfaces.JSONParserInterface;
-import nl.inversion.domoticz.Interfaces.ScenesReceiver;
 import nl.inversion.domoticz.Interfaces.UtilitiesReceiver;
 
+@SuppressWarnings("unused")
 public class UtilitiesParser implements JSONParserInterface {
 
     private static final String TAG = UtilitiesParser.class.getSimpleName();

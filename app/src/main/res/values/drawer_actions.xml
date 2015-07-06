@@ -8,6 +8,7 @@
         <item>Temperature</item>
         <item>Weather</item>
         <item>Cameras</item>
+        <item>Plans</item>
     </string-array>
 
     <string-array name="drawer_fragments" translatable="false">
@@ -18,5 +19,6 @@
         <item>nl.inversion.domoticz.Fragments.Temperature</item>
         <item>nl.inversion.domoticz.Fragments.Weather</item>
         <item>nl.inversion.domoticz.Fragments.Cameras</item>
+        <item>nl.inversion.domoticz.Fragments.Plans</item>
     </string-array>
 </resources>

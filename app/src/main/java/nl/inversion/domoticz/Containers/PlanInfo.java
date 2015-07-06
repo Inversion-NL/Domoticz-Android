@@ -21,4 +21,20 @@ public class PlanInfo {
         order = row.getInt("Order");
         idx = row.getInt("idx");
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getIdx() {
+        return idx;
+    }
+
+    public int getDevices() {
+        return devices;
+    }
+
+    public int getOrder() {
+        return order;
+    }
 }

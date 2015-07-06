@@ -6,12 +6,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 import nl.inversion.domoticz.Containers.ExtendedStatusInfo;
 import nl.inversion.domoticz.Interfaces.JSONParserInterface;
 import nl.inversion.domoticz.Interfaces.StatusReceiver;
 
+@SuppressWarnings("unused")
 public class StatusInfoParser implements JSONParserInterface {
 
     private static final String TAG = StatusInfoParser.class.getSimpleName();

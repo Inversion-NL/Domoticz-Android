@@ -12,6 +12,7 @@ import nl.inversion.domoticz.Containers.SceneInfo;
 import nl.inversion.domoticz.Interfaces.JSONParserInterface;
 import nl.inversion.domoticz.Interfaces.ScenesReceiver;
 
+@SuppressWarnings("unused")
 public class ScenesParser implements JSONParserInterface {
 
     private static final String TAG = ScenesParser.class.getSimpleName();
