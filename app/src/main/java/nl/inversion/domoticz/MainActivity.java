@@ -34,7 +34,6 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         mSharedPrefs = new SharedPrefUtil(this);
 
-        //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
